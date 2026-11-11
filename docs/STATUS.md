@@ -11,16 +11,29 @@ Abschnitt aktualisiert.
   Figurenset (CC-BY-SA-3.0).
 - Grundgerüst: index.html, dunkles Brett-Theme, Chessground zeigt die
   Startstellung bei 390 px Breite an.
+- Zugausführung: Tippen-Tippen und Ziehen, erlaubte Züge markieren,
+  Schach hervorheben, letzten Zug markieren, Umwandlungsauswahl,
+  Rochade, en passant. Seite scrollt beim Ziehen nicht.
+- Steuerung: Zug zurück/vor (auch per Klick in der Zugliste), Brett
+  drehen, Neustart, FEN laden (mit Fehlermeldung) und ausgeben
+  (mit Kopieren-Knopf).
+- Spielende-Erkennung: Matt, Patt, dreifache Stellungswiederholung,
+  50-Züge-Regel, zu wenig Material — jeweils mit klarem Hinweistext.
 
-**Getestet:** Screenshot bei 390 px Breite (Playwright) sieht korrekt aus.
+**Getestet:** Browsertests mit Touch-Emulation bei 390 px Breite
+(Playwright, iPhone-Profil) für: Rochade kurz und lang, en passant,
+Bauernumwandlung (Auswahl + Ergebnis), Narrenmatt, eine Patt-Stellung,
+Zug zurück/vor, Brett drehen, FEN laden (gültig und ungültig). Alle
+Szenarien liefern die erwartete Stellung bzw. Meldung.
 
 **Offen:**
-- Touch-Bedienung, Zugregeln, Rochade, en passant, Umwandlung.
-- Zug zurück/vor, Brett drehen, Neustart, FEN laden/ausgeben, Zugliste.
-- Spielende-Erkennung (Matt, Patt, Wiederholung, 50-Züge-Regel, Material).
-- Browsertests mit Touch-Emulation bei 390 px (alle Pflichtszenarien).
+- Keine bekannten offenen Punkte für Phase 1.
 
-**Bekannte Mängel:** —
+**Bekannte Mängel:**
+- Kontrast schwarzer Figuren auf dunklen Feldern ist bewusst dezent
+  gehalten (ruhiger Stil); bei Bedarf später die Feldfarben aufhellen.
+- Zugliste zeigt noch keine Nebenlinien/Varianten, nur die gespielte
+  Hauptlinie (reicht für Phase 1).
 
 ## Phase 2 — Taktik-Training
 
