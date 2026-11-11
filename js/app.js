@@ -2,9 +2,24 @@ import { Chess } from "../vendor/chess.js/chess.js";
 import { Chessground } from "../vendor/chessground/chessground.min.js";
 
 const game = new Chess();
+let startFen = game.fen();
+let viewIndex = 0;
 
 const boardEl = document.getElementById("board");
 const statusEl = document.getElementById("status-message");
+const viewHintEl = document.getElementById("view-hint");
+const moveListEl = document.getElementById("move-list");
+
+const btnBack = document.getElementById("btn-back");
+const btnForward = document.getElementById("btn-forward");
+const btnFlip = document.getElementById("btn-flip");
+const btnReset = document.getElementById("btn-reset");
+
+const fenInput = document.getElementById("fen-input");
+const btnFenLoad = document.getElementById("btn-fen-load");
+const btnFenCopy = document.getElementById("btn-fen-copy");
+const fenErrorEl = document.getElementById("fen-error");
+
 const promotionOverlay = document.getElementById("promotion-overlay");
 const promotionChoices = document.getElementById("promotion-choices");
 
@@ -29,37 +44,102 @@ function computeDests(chess) {
   return dests;
 }
 
-function syncBoard() {
-  const turnColor = toColor(game.turn());
-  const played = game.history({ verbose: true });
-  const last = played[played.length - 1];
+function getHistory() {
+  const verbose = game.history({ verbose: true });
+  const fens = [startFen, ...verbose.map((m) => m.after)];
+  return { verbose, fens };
+}
+
+function renderPosition() {
+  const { verbose, fens } = getHistory();
+  const tip = fens.length - 1;
+  if (viewIndex > tip) viewIndex = tip;
+  if (viewIndex < 0) viewIndex = 0;
+
+  const fen = fens[viewIndex];
+  const atTip = viewIndex === tip;
+  const posInfo = atTip ? game : new Chess(fen);
+  const turnColor = toColor(posInfo.turn());
+  const frozen = !atTip;
+  const dests = frozen ? new Map() : computeDests(game);
+  const lastMove = viewIndex > 0 ? [verbose[viewIndex - 1].from, verbose[viewIndex - 1].to] : undefined;
 
   cg.set({
-    fen: game.fen(),
+    fen,
     turnColor,
-    check: game.isCheck() ? turnColor : false,
-    lastMove: last ? [last.from, last.to] : undefined,
+    check: posInfo.isCheck() ? turnColor : false,
+    lastMove,
     movable: {
-      color: "both",
-      dests: computeDests(game),
+      color: frozen ? undefined : "both",
+      dests,
     },
   });
 
-  updateStatus();
+  btnBack.disabled = viewIndex === 0;
+  btnForward.disabled = atTip;
+  viewHintEl.hidden = atTip;
+
+  renderMoveList(verbose, tip);
+  if (document.activeElement !== fenInput) fenInput.value = fen;
+  updateStatus(posInfo, atTip);
 }
 
-function updateStatus() {
-  if (game.isCheckmate()) {
-    const winner = game.turn() === "w" ? "Schwarz" : "Weiß";
+function updateStatus(posInfo, atTip) {
+  if (!atTip) {
+    statusEl.textContent = "";
+    statusEl.className = "status-message";
+    return;
+  }
+  if (posInfo.isCheckmate()) {
+    const winner = posInfo.turn() === "w" ? "Schwarz" : "Weiß";
     statusEl.textContent = `Schachmatt. ${winner} gewinnt.`;
     statusEl.className = "status-message game-over";
-  } else if (game.isCheck()) {
+  } else if (posInfo.isCheck()) {
     statusEl.textContent = "Schach.";
     statusEl.className = "status-message check";
   } else {
     statusEl.textContent = "";
     statusEl.className = "status-message";
   }
+}
+
+function renderMoveList(verbose, tip) {
+  moveListEl.innerHTML = "";
+
+  const parts = startFen.split(" ");
+  const startActiveColor = parts[1];
+  const startFullmove = parseInt(parts[5], 10) || 1;
+
+  const startBtn = document.createElement("button");
+  startBtn.type = "button";
+  startBtn.className = "move-entry" + (viewIndex === 0 ? " current" : "");
+  startBtn.textContent = "Start";
+  startBtn.addEventListener("click", () => {
+    viewIndex = 0;
+    renderPosition();
+  });
+  moveListEl.appendChild(startBtn);
+
+  verbose.forEach((move, i) => {
+    const pliesFromWhiteStart = i + (startActiveColor === "b" ? 1 : 0);
+    const moveNumber = startFullmove + Math.floor(pliesFromWhiteStart / 2);
+    const isWhiteMove = pliesFromWhiteStart % 2 === 0;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "move-entry" + (viewIndex === i + 1 ? " current" : "");
+    const numberLabel = isWhiteMove ? `${moveNumber}.` : i === 0 ? `${moveNumber}…` : "";
+    btn.innerHTML = numberLabel
+      ? `<span class="move-number">${numberLabel}</span>${move.san}`
+      : move.san;
+    btn.addEventListener("click", () => {
+      viewIndex = i + 1;
+      renderPosition();
+    });
+    moveListEl.appendChild(btn);
+  });
+
+  if (tip === 0) moveListEl.innerHTML = "";
 }
 
 function askPromotion(color, onChoose) {
@@ -84,7 +164,7 @@ function onAfterMove(orig, dest) {
   const candidates = game.moves({ verbose: true }).filter((m) => m.from === orig && m.to === dest);
 
   if (!candidates.length) {
-    syncBoard();
+    renderPosition();
     return;
   }
 
@@ -92,13 +172,28 @@ function onAfterMove(orig, dest) {
     cg.set({ movable: { color: undefined } });
     askPromotion(toColor(game.turn()), (piece) => {
       game.move({ from: orig, to: dest, promotion: piece });
-      syncBoard();
+      viewIndex = game.history().length;
+      renderPosition();
     });
     return;
   }
 
   game.move({ from: orig, to: dest });
-  syncBoard();
+  viewIndex = game.history().length;
+  renderPosition();
+}
+
+function loadFen(fen) {
+  try {
+    game.load(fen);
+    startFen = game.fen();
+    viewIndex = 0;
+    fenErrorEl.hidden = true;
+    renderPosition();
+  } catch (err) {
+    fenErrorEl.textContent = "Ungültige FEN-Stellung.";
+    fenErrorEl.hidden = false;
+  }
 }
 
 const cg = Chessground(boardEl, {
@@ -120,3 +215,45 @@ const cg = Chessground(boardEl, {
   selectable: { enabled: true },
   premovable: { enabled: false },
 });
+
+btnBack.addEventListener("click", () => {
+  viewIndex = Math.max(0, viewIndex - 1);
+  renderPosition();
+});
+
+btnForward.addEventListener("click", () => {
+  const { fens } = getHistory();
+  viewIndex = Math.min(fens.length - 1, viewIndex + 1);
+  renderPosition();
+});
+
+btnFlip.addEventListener("click", () => {
+  cg.toggleOrientation();
+});
+
+btnReset.addEventListener("click", () => {
+  game.reset();
+  startFen = game.fen();
+  viewIndex = 0;
+  fenErrorEl.hidden = true;
+  renderPosition();
+});
+
+btnFenLoad.addEventListener("click", () => {
+  loadFen(fenInput.value.trim());
+});
+
+fenInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") loadFen(fenInput.value.trim());
+});
+
+btnFenCopy.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(fenInput.value);
+  } catch (err) {
+    fenInput.select();
+    document.execCommand("copy");
+  }
+});
+
+renderPosition();
