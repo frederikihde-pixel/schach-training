@@ -1,0 +1,44 @@
+/* Eigenes, dunkles Brett-Thema (ersetzt die helle Standardfarbe von Chessground). */
+
+cg-board {
+  background-color: #2b3038;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDIiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+PHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMSIgeD0iMCIgeT0iMCIgZmlsbD0iIzJiMzAzOCIvPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHg9IjEiIHk9IjAiIGZpbGw9IiMxYjFlMjMiLz48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4PSIwIiB5PSIxIiBmaWxsPSIjMWIxZTIzIi8+PHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMSIgeD0iMSIgeT0iMSIgZmlsbD0iIzJiMzAzOCIvPjwvc3ZnPg==");
+  background-size: 25% 25%;
+}
+
+cg-board square.move-dest {
+  background: radial-gradient(
+    rgba(228, 230, 234, 0.22) 20%,
+    rgba(228, 230, 234, 0.22) 0,
+    rgba(0, 0, 0, 0) 0
+  );
+}
+
+cg-board square.move-dest:hover {
+  background: rgba(228, 230, 234, 0.3);
+}
+
+cg-board square.oc.move-dest {
+  background: radial-gradient(transparent 0%, transparent 78%, rgba(228, 230, 234, 0.28) 80%);
+}
+
+cg-board square.last-move {
+  background-color: rgba(109, 139, 176, 0.35);
+}
+
+cg-board square.selected {
+  background-color: rgba(109, 139, 176, 0.5);
+}
+
+cg-board square.check {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(196, 90, 74, 0.9) 0%,
+    rgba(196, 90, 74, 0.7) 25%,
+    rgba(196, 90, 74, 0) 89%
+  );
+}
+
+.cg-wrap coords coord {
+  color: #9aa0ab;
+}

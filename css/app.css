@@ -1,0 +1,294 @@
+:root {
+  --bg: #15171b;
+  --surface: #1d2025;
+  --surface-2: #262a31;
+  --border: #343941;
+  --text: #e4e6ea;
+  --text-muted: #9aa0ab;
+  --accent: #4d6a8a;
+  --accent-text: #e9eef5;
+  --danger: #a8605a;
+  --focus: #6c8bb0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+}
+
+.status-message {
+  min-height: 1.4em;
+  margin: 10px 16px 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.status-message:empty {
+  display: none;
+}
+
+.status-message.check {
+  color: #c9a24a;
+}
+
+.status-message.game-over {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.board-row {
+  width: 100%;
+}
+
+.board-wrap {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.board-wrap #board {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  touch-action: none;
+}
+
+.view-hint {
+  margin: 0 16px;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 14px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button:active {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.controls button {
+  flex: 1 1 auto;
+}
+
+section {
+  padding: 0 16px;
+}
+
+section h2 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.fen-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+}
+
+.fen-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.fen-buttons button {
+  flex: 1 1 auto;
+}
+
+.fen-error {
+  margin: 8px 0 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.move-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.move-list:empty::after {
+  content: "Noch keine Züge.";
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.move-entry {
+  min-height: 44px;
+  padding: 6px 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.move-entry.current {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent);
+}
+
+.move-entry .move-number {
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.move-entry.current .move-number {
+  color: var(--accent-text);
+}
+
+.promotion-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 20;
+}
+
+.promotion-overlay[hidden] {
+  display: none;
+}
+
+.promotion-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+}
+
+.promotion-box p {
+  margin: 0 0 12px;
+  color: var(--text);
+}
+
+.promotion-choices {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.promo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 72px;
+  padding: 8px 4px;
+}
+
+.promo-piece {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+.promo-piece piece {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.promo-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
