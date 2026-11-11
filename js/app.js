@@ -60,7 +60,8 @@ function renderPosition() {
   const atTip = viewIndex === tip;
   const posInfo = atTip ? game : new Chess(fen);
   const turnColor = toColor(posInfo.turn());
-  const frozen = !atTip;
+  const gameOver = atTip && posInfo.isGameOver();
+  const frozen = !atTip || gameOver;
   const dests = frozen ? new Map() : computeDests(game);
   const lastMove = viewIndex > 0 ? [verbose[viewIndex - 1].from, verbose[viewIndex - 1].to] : undefined;
 
@@ -90,9 +91,25 @@ function updateStatus(posInfo, atTip) {
     statusEl.className = "status-message";
     return;
   }
+
   if (posInfo.isCheckmate()) {
     const winner = posInfo.turn() === "w" ? "Schwarz" : "Weiß";
     statusEl.textContent = `Schachmatt. ${winner} gewinnt.`;
+    statusEl.className = "status-message game-over";
+  } else if (posInfo.isStalemate()) {
+    statusEl.textContent = "Patt. Die Partie ist remis.";
+    statusEl.className = "status-message game-over";
+  } else if (posInfo.isThreefoldRepetition()) {
+    statusEl.textContent = "Remis durch dreifache Stellungswiederholung.";
+    statusEl.className = "status-message game-over";
+  } else if (posInfo.isInsufficientMaterial()) {
+    statusEl.textContent = "Remis durch zu wenig Material.";
+    statusEl.className = "status-message game-over";
+  } else if (posInfo.isDrawByFiftyMoves()) {
+    statusEl.textContent = "Remis durch die 50-Züge-Regel.";
+    statusEl.className = "status-message game-over";
+  } else if (posInfo.isDraw()) {
+    statusEl.textContent = "Die Partie ist remis.";
     statusEl.className = "status-message game-over";
   } else if (posInfo.isCheck()) {
     statusEl.textContent = "Schach.";
