@@ -53,15 +53,22 @@ Stand: in Arbeit (Pull Request 1 umfasst Teil A bis C, Pull Request 2 den Taktik
 - Info-Seite mit Namensnennung Cburnett (CC BY-SA 3.0), Lizenzen von chess.js,
   Chessground und Lichess-Rätseln; die Lizenztexte werden aus den Dateien im
   Repository geladen.
+- Zentrale Speicherung `js/storage.js`: alle Daten unter einem Schlüssel
+  (`schach-training`) mit Versionsnummer, Migrationsfunktion (Kette von Version zu
+  Version), Begrenzung der Protokolle, Schutz vor unlesbaren Ständen (Kopie unter
+  `schach-training.defekt`), Meldung statt Absturz bei vollem oder gesperrtem Speicher.
+  `navigator.storage.persist()` wird bei jedem Start angefragt.
 
 **Getestet (emuliert):** `tests/e2e/overflow.cjs` (scrollWidth gleich Fensterbreite),
 `tests/e2e/zoom-drag.cjs` (Viewport ohne Sperre, Ziehen scrollt die Seite nicht,
 Wischen außerhalb des Bretts scrollt weiterhin), `tests/e2e/brett.cjs` (alle
 Phase-1-Szenarien als Regressionstest, 19 Prüfungen), `tests/e2e/navigation.cjs`
 (Leiste, Seitenwechsel, Info-Seite, alle Tippflächen mindestens 44 px, Leiste verdeckt
-nichts).
+nichts), `tests/unit/storage.test.mjs` (11 Logik-Tests mit `node --test "tests/unit/*.test.mjs"`:
+Migration, Export/Import, Fehlerfälle, Begrenzung, 14-Tage-Erinnerung),
+`tests/e2e/storage.cjs` (ein Schlüssel mit Version, persist() beim Start, Neuladen).
 
-**Offen:** Speicher, Daten-Export/Import, Installierbarkeit, Rätsel-Daten.
+**Offen:** Daten-Export/Import-Seite, Installierbarkeit, Rätsel-Daten.
 
 ## Phase 2 — Taktik-Training
 
