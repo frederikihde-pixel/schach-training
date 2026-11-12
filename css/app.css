@@ -450,3 +450,93 @@ section h2 {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
+
+.notice {
+  margin: 8px 16px 0;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.notice[hidden] {
+  display: none;
+}
+
+.notice p {
+  margin: 0 0 8px;
+}
+
+.notice p:last-child {
+  margin-bottom: 0;
+}
+
+.notice-warn {
+  border-color: var(--danger);
+}
+
+.notice-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 14px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.address {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.confirm {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.confirm[hidden] {
+  display: none;
+}
+
+.confirm p {
+  margin: 0 0 10px;
+}
+
+.btn-danger {
+  border-color: var(--danger);
+}
+
+.message {
+  min-height: 1.4em;
+  margin: 0 0 16px;
+}
+
+.message.error {
+  color: #d08a84;
+}

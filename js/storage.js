@@ -89,6 +89,17 @@ export function validate(data) {
   return data;
 }
 
+// Liest den Text einer Sicherungsdatei, ohne etwas zu verändern. Wirft DataError.
+export function parseImport(text, { now = new Date(), migrations = MIGRATIONS } = {}) {
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (err) {
+    throw new DataError("Die Datei ist keine gültige JSON-Datei.");
+  }
+  return validate(migrate(parsed, { now, migrations }));
+}
+
 export function trim(state) {
   const t = state.taktik;
   for (const key of Object.keys(CAPS)) {
@@ -187,14 +198,11 @@ export function createStore({ backend = browserBackend(), now = () => new Date()
       write();
       return JSON.stringify(state, null, 1);
     },
+    previewImport(text) {
+      return parseImport(text, { now: now(), migrations });
+    },
     importJson(text) {
-      let parsed;
-      try {
-        parsed = JSON.parse(text);
-      } catch (err) {
-        throw new DataError("Die Datei ist keine gültige JSON-Datei.");
-      }
-      state = validate(migrate(parsed, { now: now(), migrations }));
+      state = parseImport(text, { now: now(), migrations });
       write();
       return state;
     },

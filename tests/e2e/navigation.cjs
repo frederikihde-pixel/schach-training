@@ -1,7 +1,7 @@
 // Navigation, untere Leiste, Info-Seite und Mindestgröße der Tippflächen (44 px).
 const { startServer, launch, newPage, reporter } = require("./lib.cjs");
 
-const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/mehr,#/mehr/info").split(",");
+const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/mehr,#/mehr/daten,#/mehr/info").split(",");
 
 (async () => {
   const r = reporter("Navigation und Tippflächen");
@@ -35,7 +35,7 @@ const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/mehr,#/mehr/info").spl
   await page.waitForTimeout(400);
   const lic = await page.locator("details.license").nth(1).locator("pre").innerText();
   r.check("Lizenztext chess.js wird geladen", /BSD|Redistribution/.test(lic), lic.slice(0, 40));
-  await page.click(".back-link");
+  await page.click("#page-info .back-link");
   await page.waitForTimeout(150);
   r.check("Zurück führt zu Mehr", await page.evaluate(() => !document.getElementById("page-mehr").hidden));
   await page.goto(url + "index.html#/gibtesnicht");

@@ -58,6 +58,13 @@ Stand: in Arbeit (Pull Request 1 umfasst Teil A bis C, Pull Request 2 den Taktik
   Version), Begrenzung der Protokolle, Schutz vor unlesbaren Ständen (Kopie unter
   `schach-training.defekt`), Meldung statt Absturz bei vollem oder gesperrtem Speicher.
   `navigator.storage.persist()` wird bei jedem Start angefragt.
+- Seite "Mehr > Daten": Daten exportieren (JSON-Datei), importieren (mit Vorschau und
+  Rückfrage, bestehende Daten werden ersetzt), alle Daten löschen (mit Rückfrage),
+  Anzeige von Adresse, Speicherschutz und letztem Export, Hinweis "immer denselben
+  Link benutzen". Wo der Browser es kann, gibt es zusätzlich "Datei teilen".
+- Hinweisleiste oben: Erinnerung, wenn seit 14 Tagen kein Export war (nur wenn es
+  überhaupt Daten zu sichern gibt; "Später" blendet sie bis zum nächsten Start aus);
+  Warnung, wenn der Browser das Speichern nicht erlaubt.
 
 **Getestet (emuliert):** `tests/e2e/overflow.cjs` (scrollWidth gleich Fensterbreite),
 `tests/e2e/zoom-drag.cjs` (Viewport ohne Sperre, Ziehen scrollt die Seite nicht,
@@ -66,9 +73,11 @@ Phase-1-Szenarien als Regressionstest, 19 Prüfungen), `tests/e2e/navigation.cjs
 (Leiste, Seitenwechsel, Info-Seite, alle Tippflächen mindestens 44 px, Leiste verdeckt
 nichts), `tests/unit/storage.test.mjs` (11 Logik-Tests mit `node --test "tests/unit/*.test.mjs"`:
 Migration, Export/Import, Fehlerfälle, Begrenzung, 14-Tage-Erinnerung),
-`tests/e2e/storage.cjs` (ein Schlüssel mit Version, persist() beim Start, Neuladen).
+`tests/e2e/storage.cjs` (ein Schlüssel mit Version, persist() beim Start, Neuladen),
+`tests/e2e/daten.cjs` (Export, Löschen, Import ergibt denselben Stand; fehlerhafte
+Dateien; Erinnerung mit verschobener Uhr nach 15 Tagen).
 
-**Offen:** Daten-Export/Import-Seite, Installierbarkeit, Rätsel-Daten.
+**Offen:** Installierbarkeit, Rätsel-Daten.
 
 ## Phase 2 — Taktik-Training
 
