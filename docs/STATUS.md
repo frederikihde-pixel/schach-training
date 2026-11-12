@@ -104,6 +104,18 @@ Commit, Fehlercode bei kaputter Eingabe). Der echte Lauf auf GitHub ist noch nic
 
 **Offen:** echter Workflow-Lauf auf GitHub (Daten erzeugen), danach Phase 2 (Taktik-Trainer).
 
+**Nur emuliert, bitte auf dem echten Handy prüfen (Stand Pull Request 1):**
+- "Zum Home-Bildschirm" auf iPhone (Safari: Teilen, dann "Zum Home-Bildschirm") und auf
+  Android (Chrome: Menü, "App installieren"); Icon, Name und Start im Vollbild.
+- Pinch-Zoom auf der Seite geht; auf dem Brett verhindert Doppeltippen das Zoomen nicht
+  ungewollt Züge. Ziehen einer Figur scrollt die Seite nicht (in iOS-Safari besonders prüfen).
+- Untere Leiste sitzt über dem iPhone-Rand (Home-Balken) und verdeckt nichts.
+- Export per "Daten exportieren": iPhone-Safari öffnet oder lädt die Datei anders als
+  Desktop-Browser; "Datei teilen" nutzen, falls der Download nicht klappt. Import mit
+  einer Datei aus "Dateien" testen.
+- "Dauerhafter Speicher" (Daten-Seite): ob der Browser den Schutz gewährt.
+- App im Flugmodus starten (nach einmaligem Besuch online).
+
 ## Phase 2 — Taktik-Training
 
 Noch nicht begonnen.
