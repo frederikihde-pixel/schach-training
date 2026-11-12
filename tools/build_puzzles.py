@@ -17,10 +17,16 @@ Auswahl: Popularity >= 90, NbPlays >= 500, RatingDeviation <= 100. Je Wertungsba
 100 Punkten (600 bis 2699, dazu ein offenes Band ab 2700) bis zu 1000 Rätsel, möglichst
 gleichmäßig über die Themen verteilt. Bei gleicher Eingabe und gleichem --seed ist das
 Ergebnis immer identisch.
+
+Prüfset: 20 feste Rätsel für die "Standortbestimmung" (Wertung 850 bis 2050, über 20
+verschiedene Themen verteilt) landen in pruefset.json und fehlen in den Bandateien. Existiert
+pruefset.json schon, wird es unverändert übernommen, damit Ergebnisse über die Zeit
+vergleichbar bleiben (neu erzeugen mit --pruefset-neu).
 """
 import argparse
 import csv
 import datetime
+import hashlib
 import json
 import os
 import random
@@ -47,6 +53,18 @@ THEMES = {
     "knightEndgame", "queenEndgame", "queenRookEndgame",
 }
 MIX = "mix"  # Rätsel ohne eines der Themen oben
+
+PRUEFSET_FILE = "pruefset.json"
+PRUEFSET_SIZE = 20
+PRUEFSET_MIN = 850
+PRUEFSET_MAX = 2050
+# Ein Thema je Platz, von leicht nach schwer. Fehlt ein Thema im passenden Band, wird ein
+# anderes Thema aus demselben Band genommen.
+PRUEFSET_LADDER = [
+    "mateIn1", "hangingPiece", "fork", "pin", "backRankMate", "skewer", "mateIn2",
+    "discoveredAttack", "trappedPiece", "deflection", "endgame", "attraction", "sacrifice",
+    "quietMove", "clearance", "mateIn3", "interference", "opening", "xRayAttack", "zugzwang",
+]
 
 
 def band_of(rating):
@@ -138,6 +156,54 @@ def read_pools(stream, args, rng):
     return pools, stats
 
 
+def choose_pruefset(pools):
+    """Wählt 20 Rätsel: Wertung steigt von 850 auf 2050, jedes Rätsel hat ein anderes Hauptthema."""
+    chosen = {}
+    for i, theme in enumerate(PRUEFSET_LADDER):
+        target = round(PRUEFSET_MIN + i * (PRUEFSET_MAX - PRUEFSET_MIN) / (PRUEFSET_SIZE - 1))
+        band = band_of(target)
+        pick = None
+        for b in (band, band - 100, band + 100):
+            cands = [p for p in pools.get(b, {}).get(theme, []) if p[0] not in chosen]
+            if cands:
+                pick = min(cands, key=lambda p: (abs(p[3] - target), p[0]))
+                break
+        if pick is None:
+            cands = [p for pool in pools.get(band, {}).values() for p in pool if p[0] not in chosen]
+            if not cands:
+                sys.exit(f"Für das Prüfset fehlen Rätsel um Wertung {target}.")
+            pick = min(cands, key=lambda p: (abs(p[3] - target), p[0]))
+        chosen[pick[0]] = pick
+    return sorted(chosen.values(), key=lambda p: (p[3], p[0]))
+
+
+def pruefset_hash(puzzles):
+    return hashlib.sha1(",".join(p[0] for p in puzzles).encode("utf-8")).hexdigest()[:8]
+
+
+def load_pruefset(out):
+    """Liest ein vorhandenes Prüfset (oder None). Das Prüfset bleibt bewusst fest."""
+    path = os.path.join(out, PRUEFSET_FILE)
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    puzzles = [(r[0], r[1], r[2], r[3], list(r[4])) for r in data["raetsel"]]
+    if len(puzzles) != PRUEFSET_SIZE:
+        sys.exit(f"{path} enthält {len(puzzles)} statt {PRUEFSET_SIZE} Rätseln. Mit --pruefset-neu neu erzeugen.")
+    return puzzles
+
+
+def remove_from_pools(pools, ids):
+    for band in list(pools):
+        for tag in list(pools[band]):
+            pools[band][tag] = [p for p in pools[band][tag] if p[0] not in ids]
+            if not pools[band][tag]:
+                del pools[band][tag]
+        if not pools[band]:
+            del pools[band]
+
+
 def select_band(pools, cap, seed, band):
     """Wählt bis zu `cap` Rätsel: reihum ein Rätsel je Thema, seltene Themen zuerst."""
     rng = random.Random(f"{seed}-{band}")
@@ -180,7 +246,12 @@ def build(pools, args):
         cap = int(cap * 0.9)
 
 
-def write_outputs(selected, files, total, cap, stats, args):
+def pruefset_json(puzzles):
+    data = {"satz": pruefset_hash(puzzles), "felder": FIELDS, "raetsel": [list(p) for p in puzzles]}
+    return json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+
+def write_outputs(selected, files, total, cap, stats, args, pruefset):
     os.makedirs(args.out, exist_ok=True)
     for name in os.listdir(args.out):
         if name.startswith("band-") and name.endswith(".json"):
@@ -202,6 +273,9 @@ def write_outputs(selected, files, total, cap, stats, args):
             "ratingMax": puzzles[-1][3] if puzzles else None,
             "bytes": len(files[band]),
         })
+    pruefset_bytes = pruefset_json(pruefset)
+    with open(os.path.join(args.out, PRUEFSET_FILE), "wb") as f:
+        f.write(pruefset_bytes)
     index = {
         "version": 1,
         "erstellt": args.datum,
@@ -215,6 +289,14 @@ def write_outputs(selected, files, total, cap, stats, args):
             "ratingDeviation": args.max_deviation,
         },
         "maxProBand": cap,
+        "pruefset": {
+            "datei": PRUEFSET_FILE,
+            "satz": pruefset_hash(pruefset),
+            "anzahl": len(pruefset),
+            "ratingMin": pruefset[0][3],
+            "ratingMax": pruefset[-1][3],
+            "bytes": len(pruefset_bytes),
+        },
         "gesamtBytes": total,
         "gelesen": stats["gelesen"],
         "qualifiziert": stats["qualifiziert"],
@@ -240,6 +322,7 @@ Lichess-Rätsel-Datenbank.
 - Abgerufen und ausgewertet am: {datum}
 - Auswahl: Popularity >= 90, NbPlays >= 500, RatingDeviation <= 100, je Wertungsband bis zu
   1000 Rätsel, gleichmäßig über die Themen verteilt. Erzeugt mit `tools/build_puzzles.py`.
+- `pruefset.json`: 20 feste Rätsel für die Standortbestimmung; sie fehlen in den Bandateien.
 
 Der erste Zug in `zuege` ist der Zug des Gegners.
 """
@@ -257,6 +340,7 @@ def main(argv=None):
     p.add_argument("--min-plays", type=int, default=500)
     p.add_argument("--max-deviation", type=int, default=100)
     p.add_argument("--datum", default=datetime.date.today().isoformat())
+    p.add_argument("--pruefset-neu", action="store_true", help="vorhandenes pruefset.json nicht übernehmen")
     args = p.parse_args(argv)
 
     rng = random.Random(f"{args.seed}-lesen")
@@ -265,8 +349,14 @@ def main(argv=None):
     if not pools:
         sys.exit("Keine Rätsel haben die Filter bestanden.")
 
+    pruefset = None if args.pruefset_neu else load_pruefset(args.out)
+    reused = pruefset is not None
+    if pruefset is None:
+        pruefset = choose_pruefset(pools)
+    remove_from_pools(pools, {p[0] for p in pruefset})
+
     selected, files, total, cap = build(pools, args)
-    index = write_outputs(selected, files, total, cap, stats, args)
+    index = write_outputs(selected, files, total, cap, stats, args, pruefset)
 
     print(f"Zeilen gelesen:      {stats['gelesen']}")
     for key in ("unvollstaendig", "ungueltige_zahl", "zu_wenig_beliebt", "zu_wenig_gespielt", "zu_unsicher", "wertung_zu_niedrig", "unbrauchbar"):
@@ -277,6 +367,8 @@ def main(argv=None):
     print("Band   Anzahl  Bytes")
     for b in index["baender"]:
         print(f"{b['band']:>5}  {b['anzahl']:>6}  {b['bytes']:>7}")
+    ps = index["pruefset"]
+    print(f"Prüfset:             {ps['anzahl']} Rätsel, Wertung {ps['ratingMin']} bis {ps['ratingMax']}, Satz {ps['satz']} ({'übernommen' if reused else 'neu gewählt'})")
     print(f"Gesamtgröße:         {total} Bytes ({total / 1e6:.2f} MB)")
     print("Häufigste Themen:    " + ", ".join(f"{t['name']} {t['anzahl']}" for t in index["themen"][:8]))
     print("Seltenste Themen:    " + ", ".join(f"{t['name']} {t['anzahl']}" for t in index["themen"][-5:]))

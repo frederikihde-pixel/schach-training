@@ -102,7 +102,18 @@ gleiche Eingabe gleiches Ergebnis, Standardeingabe, Fehlerfälle). Die Shell-Abf
 Workflows wurde lokal mit einer künstlichen CSV nachgestellt (Bauen, Zusammenfassung,
 Commit, Fehlercode bei kaputter Eingabe). Der echte Lauf auf GitHub ist noch nicht erfolgt.
 
-**Offen:** echter Workflow-Lauf auf GitHub (Daten erzeugen), danach Phase 2 (Taktik-Trainer).
+**Echter Workflow-Lauf (12.11.2026):** erfolgreich. 6.193.530 Zeilen gelesen, 2.188.703
+bestanden die Filter, 22 Bänder mit je 1000 Rätseln, 49 Themen, 3,18 MB. Das Dateiformat
+der Lichess-Datei passte zum Skript.
+
+**Prüfset (Zusatz zur Standortbestimmung):** `tools/build_puzzles.py` wählt zusätzlich 20 feste
+Rätsel (Wertung 850 bis 2050, 20 verschiedene Hauptthemen von leicht nach schwer) und legt
+sie in `data/puzzles/pruefset.json` ab. Sie fehlen in den Bandateien (nicht mehr im normalen
+Training). Ein vorhandenes `pruefset.json` wird bei jedem Neubau unverändert übernommen, damit
+Ergebnisse vergleichbar bleiben (neu erzeugen nur mit `--pruefset-neu`). Das Prüfset ist noch
+**nicht** im Repository: dafür muss der Workflow einmal neu laufen.
+
+**Offen:** Workflow neu starten (Prüfset erzeugen), Phase 2 (Taktik-Trainer, Standortbestimmung).
 
 **Nur emuliert, bitte auf dem echten Handy prüfen (Stand Pull Request 1):**
 - "Zum Home-Bildschirm" auf iPhone (Safari: Teilen, dann "Zum Home-Bildschirm") und auf
