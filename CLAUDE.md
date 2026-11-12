@@ -46,7 +46,12 @@ eigene Lizenz (siehe `vendor/*/LICENSE`).
 - Neue App-Dateien in die `PRECACHE`-Liste in `sw.js` eintragen
   (`tests/unit/sw.test.mjs` prüft das).
 - Rätsel-Daten (`data/puzzles/`) entstehen mit `tools/build_puzzles.py`
-  (Lichess, CC0); der erste Zug in `zuege` ist der Gegnerzug.
+  (Lichess, CC0); der erste Zug in `zuege` ist der Gegnerzug. `pruefset.json`
+  (20 feste Rätsel für die Standortbestimmung) bleibt bei Neubauten unverändert.
+- Jedes Chessground-Brett braucht `keepBoundsFresh(...)` (`js/ui/board-util.js`),
+  sonst trifft ein Tipp nach einer Layout-Verschiebung das falsche Feld.
+- Rechenlogik (Elo, Leitner, Auswahl, Statistik) bleibt ohne DOM in eigenen
+  Modulen und wird mit `node --test` geprüft; Oberfläche in `js/pages/`.
 
 ## Arbeitsweise
 
