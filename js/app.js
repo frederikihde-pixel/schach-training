@@ -20,3 +20,11 @@ requestPersistence().then((result) => {
 initInfo();
 initDaten();
 startRouter();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).catch(() => {
+      /* ohne Service Worker läuft die App weiter, nur nicht offline */
+    });
+  });
+}

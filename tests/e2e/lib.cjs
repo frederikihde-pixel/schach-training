@@ -19,9 +19,11 @@ const MIME = {
 };
 
 function startServer(port = 0, overrides = {}) {
+  const hits = {};
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, "http://x");
     let rel = decodeURIComponent(url.pathname);
+    hits[rel] = (hits[rel] || 0) + 1;
     if (overrides[rel]) {
       const o = overrides[rel];
       res.writeHead(o.status || 200, { "Content-Type": o.type || "application/json" });
@@ -48,7 +50,7 @@ function startServer(port = 0, overrides = {}) {
   });
   return new Promise((resolve) => {
     server.listen(port, "127.0.0.1", () => {
-      resolve({ server, url: `http://127.0.0.1:${server.address().port}/` });
+      resolve({ server, hits, overrides, url: `http://127.0.0.1:${server.address().port}/` });
     });
   });
 }

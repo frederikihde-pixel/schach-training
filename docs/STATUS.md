@@ -66,7 +66,13 @@ Stand: in Arbeit (Pull Request 1 umfasst Teil A bis C, Pull Request 2 den Taktik
   überhaupt Daten zu sichern gibt; "Später" blendet sie bis zum nächsten Start aus);
   Warnung, wenn der Browser das Speichern nicht erlaubt.
 
-**Getestet (emuliert):** `tests/e2e/overflow.cjs` (scrollWidth gleich Fensterbreite),
+- Installierbar ("Zum Home-Bildschirm"): `manifest.webmanifest`, schlichte Icons ohne
+  Emojis (Bauer auf dunklem Grund; erzeugt mit `tools/make_icons.py`), `sw.js` mit
+  Netzwerk-zuerst (online immer die neueste Version, Cache nur als Rückfall offline),
+  Cache-Name mit Versionsnummer, alte Caches werden beim Aktivieren gelöscht, das
+  Grundgerüst wird vorab zwischengespeichert.
+
+**Getestet (emuliert):** alle Tests starten mit `tests/run-all.sh`. `tests/e2e/overflow.cjs` (scrollWidth gleich Fensterbreite),
 `tests/e2e/zoom-drag.cjs` (Viewport ohne Sperre, Ziehen scrollt die Seite nicht,
 Wischen außerhalb des Bretts scrollt weiterhin), `tests/e2e/brett.cjs` (alle
 Phase-1-Szenarien als Regressionstest, 19 Prüfungen), `tests/e2e/navigation.cjs`
@@ -75,9 +81,12 @@ nichts), `tests/unit/storage.test.mjs` (11 Logik-Tests mit `node --test "tests/u
 Migration, Export/Import, Fehlerfälle, Begrenzung, 14-Tage-Erinnerung),
 `tests/e2e/storage.cjs` (ein Schlüssel mit Version, persist() beim Start, Neuladen),
 `tests/e2e/daten.cjs` (Export, Löschen, Import ergibt denselben Stand; fehlerhafte
-Dateien; Erinnerung mit verschobener Uhr nach 15 Tagen).
+Dateien; Erinnerung mit verschobener Uhr nach 15 Tagen), `tests/e2e/pwa.cjs`
+(Manifest, Icons, Service Worker aktiv, Chromium-Installierbarkeitsprüfung, Netzwerk
+zuerst, App lädt offline, neue Cache-Version räumt auf), `tests/unit/sw.test.mjs`
+(Vorab-Liste vollständig).
 
-**Offen:** Installierbarkeit, Rätsel-Daten.
+**Offen:** Rätsel-Daten (Skript und Workflow).
 
 ## Phase 2 — Taktik-Training
 
