@@ -64,12 +64,24 @@ export function createPuzzleStore({ fetchJson = defaultFetchJson, base = BASE } 
     return lists.flat().filter((p) => p.rating >= low && p.rating <= high);
   }
 
-  // Lädt Bänder im Hintergrund, damit sie offline bereitstehen. Fehler sind hier egal.
-  function prefetch(list) {
-    for (const b of list) loadBand(b).catch(() => {});
+  // Holt Dateien im Hintergrund ab, damit der Service Worker sie für den Offline-Betrieb
+  // zwischenspeichert. Läuft die Seite noch nicht unter dem Service Worker, wird beim nächsten
+  // Aufruf erneut geholt. Fehler sind hier egal.
+  const warmed = new Set();
+  function warm(urls) {
+    if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+    const controlled = typeof navigator !== "undefined" && navigator.serviceWorker && navigator.serviceWorker.controller ? "#sw" : "";
+    for (const url of urls) {
+      const key = url + controlled;
+      if (warmed.has(key)) continue;
+      warmed.add(key);
+      fetch(url).then((res) => res.arrayBuffer()).catch(() => {});
+    }
   }
+  const warmBands = (list) => warm(list.map((b) => `${base}band-${bandOf(b)}.json`));
+  const warmPruefset = () => warm([`${base}pruefset.json`]);
 
-  return { loadIndex, loadBand, loadPruefset, inRange, prefetch };
+  return { loadIndex, loadBand, loadPruefset, inRange, warmBands, warmPruefset };
 }
 
 export const puzzleStore = createPuzzleStore();

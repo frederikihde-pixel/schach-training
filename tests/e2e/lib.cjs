@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { chromium, devices } = require("playwright");
 
-const ROOT = path.resolve(__dirname, "../..");
+const ROOT = process.env.APP_ROOT ? path.resolve(process.env.APP_ROOT) : path.resolve(__dirname, "../..");
 const MIME = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -17,6 +17,22 @@ const MIME = {
   ".png": "image/png",
   ".md": "text/markdown; charset=utf-8",
 };
+
+// Solange data/puzzles/pruefset.json noch nicht gebaut ist (der Workflow erzeugt es), liefern die
+// Tests ein gleichwertiges Prüfset aus den vorhandenen Bandateien: 20 Rätsel von 850 bis 2050.
+function fallbackPruefset() {
+  const picked = [];
+  const used = new Set();
+  for (let i = 0; i < 20; i++) {
+    const target = Math.round(850 + (i * 1200) / 19);
+    const band = Math.floor(target / 100) * 100;
+    const list = JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles/band-${band}.json`), "utf8")).raetsel;
+    const best = list.filter((p) => !used.has(p[0])).sort((a, b) => Math.abs(a[3] - target) - Math.abs(b[3] - target))[0];
+    used.add(best[0]);
+    picked.push(best);
+  }
+  return JSON.stringify({ satz: "testsatz1", felder: ["id", "fen", "zuege", "rating", "themen"], raetsel: picked });
+}
 
 function startServer(port = 0, overrides = {}) {
   const hits = {};
@@ -32,6 +48,10 @@ function startServer(port = 0, overrides = {}) {
     }
     if (rel.endsWith("/")) rel += "index.html";
     const file = path.join(ROOT, rel);
+    if (rel === "/data/puzzles/pruefset.json" && !fs.existsSync(file)) {
+      res.writeHead(200, { "Content-Type": "application/json" }).end(fallbackPruefset());
+      return;
+    }
     if (!file.startsWith(ROOT)) {
       res.writeHead(403).end();
       return;

@@ -30,6 +30,13 @@
         <button id="hinweis-export-spaeter" type="button">Später</button>
       </div>
     </div>
+    <div id="hinweis-standort" class="notice" role="status" hidden>
+      <p>Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie in der Statistik.</p>
+      <div class="notice-actions">
+        <a class="btn-link" href="#/taktik/statistik">Zur Statistik</a>
+        <button id="hinweis-standort-spaeter" type="button">Später</button>
+      </div>
+    </div>
     <div id="hinweis-speicher" class="notice notice-warn" role="status" hidden>
       <p id="hinweis-speicher-text"></p>
     </div>
@@ -173,7 +180,45 @@
             <a href="#/taktik/statistik" aria-current="page">Statistik</a>
           </nav>
           <h2 class="page-title">Statistik</h2>
-          <p class="muted">Die Statistik folgt.</p>
+
+          <div class="block">
+            <h3>Taktikstärke</h3>
+            <p id="stat-staerke" class="strength"></p>
+            <div id="stat-diagramm" class="chart"></div>
+            <p id="stat-diagramm-hinweis" class="muted"></p>
+          </div>
+
+          <div class="block">
+            <h3>Sitzungen pro Woche</h3>
+            <ul id="stat-wochen" class="week-list"></ul>
+          </div>
+
+          <div class="block">
+            <h3>Schwächste Themen</h3>
+            <p id="stat-schwach-leer" class="muted" hidden></p>
+            <ul id="stat-schwach" class="weak-list"></ul>
+            <p id="stat-schwach-meldung" class="message" role="status"></p>
+          </div>
+
+          <div class="block">
+            <h3>Themen</h3>
+            <p id="stat-themen-leer" class="muted" hidden>Noch keine Rätsel gespielt.</p>
+            <ul id="stat-themen" class="stat-list"></ul>
+          </div>
+
+          <div id="stat-standort" class="block">
+            <h3>Standortbestimmung</h3>
+            <p>
+              20 feste Rätsel von leicht bis schwer, ohne Hinweise und ohne Zeitvorgabe. Das Ergebnis wird mit
+              Datum gespeichert, damit du es später mit einer Wiederholung vergleichen kannst. Deine
+              Taktikstärke ändert sich dadurch nicht. Plane etwa 15 bis 25 Minuten ein.
+            </p>
+            <p id="stat-standort-meldung" class="muted"></p>
+            <div class="stack"><button id="btn-standort" type="button">Standortbestimmung starten</button></div>
+            <h4 class="subhead">Frühere Ergebnisse</h4>
+            <p id="stat-standort-leer" class="muted">Noch keine Ergebnisse.</p>
+            <ul id="stat-standort-liste" class="plain-list"></ul>
+          </div>
         </div>
       </div>
 

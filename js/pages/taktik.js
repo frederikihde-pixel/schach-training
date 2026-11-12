@@ -21,6 +21,7 @@ let running = false;
 let loopToken = 0;
 let waitForNext = null; // Auflösen, wenn "Weiter" getippt wird
 let autoRun = false; // Standortbestimmung wurde von der Statistik-Seite gestartet
+let pendingTheme = null; // "Dieses Thema üben" von der Statistik-Seite
 
 const VIEWS = ["taktik-start", "taktik-lauf", "taktik-zusammenfassung"];
 function showView(id) {
@@ -69,10 +70,15 @@ function renderStart() {
   const last = t.standort[t.standort.length - 1];
   $("taktik-standort-info").textContent = last ? `Letzte Standortbestimmung: ${formatDate(last.datum)}.` : "";
 
-  if (t.eingestuft && !aktiv) {
-    const s = t.staerke;
-    puzzleStore.prefetch(bandsFor(s - 150, s + 250));
-  }
+  warmForOffline();
+}
+
+// Bänder rund um die eigene Stärke und das Prüfset vorab laden, damit sie offline bereitstehen.
+function warmForOffline() {
+  const t = taktik();
+  if (!t.eingestuft || t.staerke === null) return;
+  puzzleStore.warmBands(bandsFor(t.staerke - 150, t.staerke + 250));
+  puzzleStore.warmPruefset();
 }
 
 function totalOf(a) {
@@ -176,6 +182,12 @@ export async function startStandortbestimmung() {
     };
   });
   autoRun = true;
+  location.hash = "#/taktik";
+}
+
+// Wird von der Statistik-Seite aufgerufen: eine Sitzung nur mit diesem Thema starten.
+export function practiceTheme(tag) {
+  pendingTheme = tag;
   location.hash = "#/taktik";
 }
 
@@ -392,6 +404,12 @@ export function onShowTaktik() {
   if (running) return;
   showView("taktik-start");
   renderStart();
+  if (pendingTheme) {
+    const tag = pendingTheme;
+    pendingTheme = null;
+    $("sel-thema").value = tag;
+    if (!taktik().aktiv && taktik().eingestuft) startSitzung();
+  }
 }
 
 export function initTaktik() {
@@ -417,6 +435,7 @@ export function initTaktik() {
     showView("taktik-start");
     renderStart();
   });
+  document.addEventListener("sw-ready", warmForOffline);
   window.addEventListener("hashchange", () => {
     if (running && !/^#\/taktik\/?$/.test(location.hash)) abortRun();
   });
