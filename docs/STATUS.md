@@ -110,8 +110,7 @@ der Lichess-Datei passte zum Skript.
 Rätsel (Wertung 850 bis 2050, 20 verschiedene Hauptthemen von leicht nach schwer) und legt
 sie in `data/puzzles/pruefset.json` ab. Sie fehlen in den Bandateien (nicht mehr im normalen
 Training). Ein vorhandenes `pruefset.json` wird bei jedem Neubau unverändert übernommen, damit
-Ergebnisse vergleichbar bleiben (neu erzeugen nur mit `--pruefset-neu`). Das Prüfset ist noch
-**nicht** im Repository: dafür muss der Workflow einmal neu laufen.
+Ergebnisse vergleichbar bleiben (neu erzeugen nur mit `--pruefset-neu`).
 
 **Offen:** nichts aus diesem Teil; das Prüfset und der Taktik-Trainer stehen unter Phase 2.
 
@@ -142,7 +141,7 @@ Ergebnisse vergleichbar bleiben (neu erzeugen nur mit `--pruefset-neu`). Das Pr�
 
 ## Phase 2 — Taktik-Training
 
-Stand: Pull Request 3 (Taktik-Trainer) ist in Arbeit beziehungsweise zur Prüfung.
+Stand: Pull Request 3 (Taktik-Trainer, Statistik, Standortbestimmung, Prüfset-Daten) ist gemergt.
 
 **Fertig:**
 - Rätsel laden (`js/puzzles.js`): Bandateien werden erst geladen, wenn sie gebraucht werden, und
@@ -200,12 +199,15 @@ Stand: Pull Request 3 (Taktik-Trainer) ist in Arbeit beziehungsweise zur Prüfun
   vollständige Standortbestimmung (10 von 20), Erinnerung nach 28 Tagen (nicht nach 27).
 - `tests/e2e/taktik-offline.cjs`: nach einem Besuch online laufen Sitzung und Standortbestimmung
   ohne Netzwerk; fehlt ein Band, kommt eine verständliche Meldung.
-- Solange `data/puzzles/pruefset.json` noch nicht gebaut ist, liefern die Tests ein gleichwertiges
-  Prüfset aus den Bandateien (`tests/e2e/lib.cjs`).
+- Fehlt `data/puzzles/pruefset.json`, liefern die Tests ein gleichwertiges Prüfset aus den
+  Bandateien (`tests/e2e/lib.cjs`); mit der echten Datei laufen sie unverändert.
+
+**Echter Workflow-Lauf mit Prüfset (12.11.2026):** erfolgreich. `data/puzzles/pruefset.json` liegt
+im Repository: 20 Rätsel, Wertung 848 bis 2051, Satz `d5b8cbda`, keines davon in den Bandateien
+(22 Bänder mit je 1000 Rätseln, 3,18 MB). Damit ist die Standortbestimmung verfügbar.
 
 **Offen:**
-- Workflow ein zweites Mal starten, damit `data/puzzles/pruefset.json` entsteht (ohne die Datei
-  ist die Standortbestimmung nicht verfügbar; der Knopf zeigt dann eine Meldung).
+- Test auf dem echten Handy (Liste unter "Nur emuliert").
 
 **Bekannte Mängel / Entscheidungen:**
 - Das Prüfset ist fest: bei späteren Neubauten bleibt es unverändert (`--pruefset-neu` ändert es;
