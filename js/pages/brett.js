@@ -1,5 +1,7 @@
 import { Chess } from "../../vendor/chess.js/chess.js";
 import { Chessground } from "../../vendor/chessground/chessground.min.js";
+import { askPromotion } from "../ui/promotion.js";
+import { toColor, computeDests, keepBoundsFresh } from "../ui/board-util.js";
 
 const game = new Chess();
 let startFen = game.fen();
@@ -19,30 +21,6 @@ const fenInput = document.getElementById("fen-input");
 const btnFenLoad = document.getElementById("btn-fen-load");
 const btnFenCopy = document.getElementById("btn-fen-copy");
 const fenErrorEl = document.getElementById("fen-error");
-
-const promotionOverlay = document.getElementById("promotion-overlay");
-const promotionChoices = document.getElementById("promotion-choices");
-
-const PROMOTION_PIECES = [
-  { code: "q", role: "queen", label: "Dame" },
-  { code: "r", role: "rook", label: "Turm" },
-  { code: "b", role: "bishop", label: "Läufer" },
-  { code: "n", role: "knight", label: "Springer" },
-];
-
-function toColor(turn) {
-  return turn === "w" ? "white" : "black";
-}
-
-function computeDests(chess) {
-  const dests = new Map();
-  for (const move of chess.moves({ verbose: true })) {
-    const list = dests.get(move.from) || [];
-    if (!list.includes(move.to)) list.push(move.to);
-    dests.set(move.from, list);
-  }
-  return dests;
-}
 
 function getHistory() {
   const verbose = game.history({ verbose: true });
@@ -159,24 +137,6 @@ function renderMoveList(verbose, tip) {
   if (tip === 0) moveListEl.innerHTML = "";
 }
 
-function askPromotion(color, onChoose) {
-  promotionChoices.innerHTML = "";
-  for (const piece of PROMOTION_PIECES) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "promo-btn";
-    btn.innerHTML =
-      `<span class="cg-wrap promo-piece"><piece class="${piece.role} ${color}"></piece></span>` +
-      `<span class="promo-label">${piece.label}</span>`;
-    btn.addEventListener("click", () => {
-      promotionOverlay.hidden = true;
-      onChoose(piece.code);
-    });
-    promotionChoices.appendChild(btn);
-  }
-  promotionOverlay.hidden = false;
-}
-
 function onAfterMove(orig, dest) {
   const candidates = game.moves({ verbose: true }).filter((m) => m.from === orig && m.to === dest);
 
@@ -232,6 +192,8 @@ const cg = Chessground(boardEl, {
   selectable: { enabled: true },
   premovable: { enabled: false },
 });
+
+keepBoundsFresh(boardEl, () => cg);
 
 btnBack.addEventListener("click", () => {
   viewIndex = Math.max(0, viewIndex - 1);

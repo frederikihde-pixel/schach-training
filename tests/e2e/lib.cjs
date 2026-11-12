@@ -133,3 +133,49 @@ function reporter(title) {
 }
 
 module.exports = { ROOT, startServer, launch, newContext, newPage, squareCenter, tapMove, dragMove, reporter };
+
+// ---- Taktik-Helfer ----
+
+// Liest das gerade laufende Rätsel aus dem Speicher der App.
+async function currentPuzzle(page) {
+  return page.evaluate(async () => {
+    const { store } = await import("./js/storage.js");
+    const a = store.get().taktik.aktiv;
+    return a ? { puzzle: a.plan[a.index].puzzle, art: a.plan[a.index].art, index: a.index, typ: a.typ } : null;
+  });
+}
+
+async function waitForSide(page) {
+  await page.waitForFunction(() => /am Zug/.test(document.getElementById("lauf-seite").textContent), null, { timeout: 8000 });
+  await page.waitForTimeout(350);
+  return (await page.textContent("#lauf-seite")).startsWith("Weiß") ? "white" : "black";
+}
+
+async function playUci(page, uci, orientation, board = "#taktik-board") {
+  await tapMove(page, uci.slice(0, 2), uci.slice(2, 4), orientation, board);
+  if (uci[4]) {
+    const index = { q: 0, r: 1, b: 2, n: 3 }[uci[4]];
+    await page.waitForSelector("#promotion-overlay:not([hidden])", { timeout: 3000 });
+    await page.locator(".promo-btn").nth(index).click();
+    await page.waitForTimeout(250);
+  }
+}
+
+// Löst das aktuelle Rätsel mit der gespeicherten Zugfolge. `wrongAt`: ab diesem Zug (Index in zuege,
+// 1 = erster Zug des Spielers) wird absichtlich ein falscher legaler Zug gespielt.
+async function solveCurrent(page, { wrongMove = null } = {}) {
+  const cur = await currentPuzzle(page);
+  const orientation = await waitForSide(page);
+  const moves = cur.puzzle.zuege.split(" ");
+  if (wrongMove) {
+    await playUci(page, wrongMove, orientation);
+    return { cur, orientation };
+  }
+  for (let i = 1; i < moves.length; i += 2) {
+    await playUci(page, moves[i], orientation);
+    await page.waitForTimeout(i === moves.length - 1 ? 300 : 900);
+  }
+  return { cur, orientation };
+}
+
+Object.assign(module.exports, { currentPuzzle, waitForSide, playUci, solveCurrent });

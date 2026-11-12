@@ -34,7 +34,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   await download.saveAs(file);
   const exported = JSON.parse(fs.readFileSync(file, "utf8"));
   r.check("Export lädt eine JSON-Datei mit Datum im Namen", /^schach-training-2026-11-12\.json$/.test(download.suggestedFilename()), download.suggestedFilename());
-  r.check("Exportdatei hat Version und Daten", exported.version === 1 && exported.taktik.staerke === 1432);
+  r.check("Exportdatei hat Version und Daten", exported.version === 2 && exported.taktik.staerke === 1432);
   const afterExport = await getState();
 
   // Löschen

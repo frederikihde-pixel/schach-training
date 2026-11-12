@@ -4,11 +4,11 @@
 
 export const APP_ID = "schach-training";
 export const STORAGE_KEY = "schach-training";
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 export const EXPORT_REMINDER_DAYS = 14;
 
 // Begrenzungen, damit die Daten klein bleiben (localStorage hat etwa 5 MB).
-export const CAPS = { versuche: 500, verlauf: 500, sitzungen: 200 };
+export const CAPS = { versuche: 500, verlauf: 500, sitzungen: 200, standort: 100 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -22,12 +22,14 @@ export function defaults(now = new Date()) {
     taktik: {
       staerke: null, // geschätzte Taktikstärke, null bis zur Einstufung
       eingestuft: false,
+      anzahl: 0, // Zahl der gewerteten Rätsel (bestimmt den K-Wert)
       versuche: [], // letzte Einzelversuche
       themen: {}, // Zähler je Thema
       karten: {}, // Wiederholungs-Karten (Leitner) je Rätsel-Id
       gesehen: {}, // bereits gespielte Rätsel-Ids
       sitzungen: [], // abgeschlossene Sitzungen
       verlauf: [], // Verlauf der geschätzten Stärke
+      standort: [], // Ergebnisse der Standortbestimmung (mit Datum)
       aktiv: null, // laufende Sitzung
     },
   };
@@ -44,6 +46,15 @@ export const MIGRATIONS = {
       version: 1,
       einstellungen: { ...base.einstellungen, ...(data.einstellungen || {}) },
       taktik: { ...base.taktik, ...(data.taktik || {}) },
+    };
+  },
+  // Version 2: Zähler für den K-Wert und Ergebnisse der Standortbestimmung.
+  1(data) {
+    const t = data.taktik || {};
+    return {
+      ...data,
+      version: 2,
+      taktik: { ...t, anzahl: t.anzahl ?? (Array.isArray(t.versuche) ? t.versuche.length : 0), standort: t.standort ?? [] },
     };
   },
 };
@@ -79,7 +90,8 @@ export function validate(data) {
   const t = data.taktik;
   if (!t || typeof t !== "object") fail("In der Datei fehlen die Taktik-Daten.");
   if (t.staerke !== null && typeof t.staerke !== "number") fail("Die Taktikstärke ist ungültig.");
-  for (const key of ["versuche", "sitzungen", "verlauf"]) {
+  if (typeof t.anzahl !== "number") fail('Taktik-Daten: "anzahl" ist ungültig.');
+  for (const key of ["versuche", "sitzungen", "verlauf", "standort"]) {
     if (!Array.isArray(t[key])) fail(`Taktik-Daten: "${key}" ist ungültig.`);
   }
   for (const key of ["themen", "karten", "gesehen"]) {
@@ -114,6 +126,17 @@ export function exportReminderDue(state, now = new Date()) {
   if (!hatDaten) return false;
   const reference = Date.parse(state.letzterExport || state.erstelltAm);
   return now.getTime() - reference >= EXPORT_REMINDER_DAYS * DAY_MS;
+}
+
+export const STANDORT_REMINDER_DAYS = 28;
+
+// Ruhige Erinnerung an die Standortbestimmung: vier Wochen nach dem letzten Ergebnis.
+// Wer noch keine gemacht hat, wird nicht erinnert.
+export function standortReminderDue(state, now = new Date()) {
+  const list = state.taktik.standort;
+  if (!list.length) return false;
+  const last = Date.parse(list[list.length - 1].datum);
+  return now.getTime() - last >= STANDORT_REMINDER_DAYS * DAY_MS;
 }
 
 function memoryBackend() {
@@ -213,6 +236,9 @@ export function createStore({ backend = browserBackend(), now = () => new Date()
     },
     reminderDue() {
       return exportReminderDue(this.get(), now());
+    },
+    standortReminderDue() {
+      return standortReminderDue(this.get(), now());
     },
   };
 }

@@ -22,7 +22,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     return { keys, stored: JSON.parse(localStorage.getItem("schach-training")) };
   });
   r.check("genau ein Schlüssel in localStorage", mod.keys.join() === "schach-training", mod.keys.join());
-  r.check("Schlüssel enthält Versionsnummer", mod.stored.version === 1 && mod.stored.app === "schach-training");
+  r.check("Schlüssel enthält Versionsnummer", mod.stored.version === 2 && mod.stored.app === "schach-training");
   await page.reload();
   await page.waitForTimeout(400);
   const again = await page.evaluate(async () => (await import("./js/storage.js")).store.get().taktik.staerke);
