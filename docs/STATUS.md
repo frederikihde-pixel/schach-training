@@ -46,13 +46,22 @@ Stand: in Arbeit (Pull Request 1 umfasst Teil A bis C, Pull Request 2 den Taktik
   Doppeltipp-Zoom auf dem Brett per `touch-action: manipulation` verhindert.
 - Browsertests liegen jetzt im Repository unter `tests/e2e/` (Playwright,
   Start mit `node tests/e2e/<datei>.cjs`).
+- App-Hülle: Hash-Router (`#/brett`, `#/taktik`, `#/mehr`, `#/mehr/info`), feste untere
+  Leiste mit "Brett" und "Taktik" (56 px hoch, berücksichtigt den iPhone-Rand), Knopf
+  "Mehr" oben rechts. Der Brett-Code liegt unverändert in `js/pages/brett.js`; die
+  Partie bleibt beim Seitenwechsel erhalten. Die Taktik-Seite ist noch ein Platzhalter.
+- Info-Seite mit Namensnennung Cburnett (CC BY-SA 3.0), Lizenzen von chess.js,
+  Chessground und Lichess-Rätseln; die Lizenztexte werden aus den Dateien im
+  Repository geladen.
 
 **Getestet (emuliert):** `tests/e2e/overflow.cjs` (scrollWidth gleich Fensterbreite),
 `tests/e2e/zoom-drag.cjs` (Viewport ohne Sperre, Ziehen scrollt die Seite nicht,
-Wischen außerhalb des Bretts scrollt weiterhin).
+Wischen außerhalb des Bretts scrollt weiterhin), `tests/e2e/brett.cjs` (alle
+Phase-1-Szenarien als Regressionstest, 19 Prüfungen), `tests/e2e/navigation.cjs`
+(Leiste, Seitenwechsel, Info-Seite, alle Tippflächen mindestens 44 px, Leiste verdeckt
+nichts).
 
-**Offen:** Navigation und Info-Seite, Speicher, Daten-Export/Import, Installierbarkeit,
-Rätsel-Daten.
+**Offen:** Speicher, Daten-Export/Import, Installierbarkeit, Rätsel-Daten.
 
 ## Phase 2 — Taktik-Training
 

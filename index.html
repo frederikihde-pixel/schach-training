@@ -12,50 +12,144 @@
   <body>
     <header class="app-header">
       <h1>Schach-Training</h1>
+      <a id="link-mehr" class="header-link" href="#/mehr">Mehr</a>
     </header>
 
-    <main>
-      <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+    <main id="app">
+      <!-- Seite: Brett (Phase 1) -->
+      <div id="page-brett" class="page">
+        <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
 
-      <div class="board-row">
-        <div class="board-wrap">
-          <div id="board"></div>
+        <div class="board-row">
+          <div class="board-wrap">
+            <div id="board"></div>
+          </div>
+        </div>
+
+        <p id="view-hint" class="view-hint" hidden>Du betrachtest eine frühere Stellung.</p>
+
+        <div class="controls">
+          <button id="btn-back" type="button">Zurück</button>
+          <button id="btn-forward" type="button">Vor</button>
+          <button id="btn-flip" type="button">Brett drehen</button>
+          <button id="btn-reset" type="button">Neustart</button>
+        </div>
+
+        <section class="fen-section">
+          <h2>Stellung (FEN)</h2>
+          <input
+            id="fen-input"
+            class="fen-input"
+            type="text"
+            inputmode="text"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            aria-label="FEN-Stellung"
+          />
+          <div class="fen-buttons">
+            <button id="btn-fen-load" type="button">Laden</button>
+            <button id="btn-fen-copy" type="button">Kopieren</button>
+          </div>
+          <p id="fen-error" class="fen-error" hidden></p>
+        </section>
+
+        <section class="history-section">
+          <h2>Zugliste</h2>
+          <div id="move-list" class="move-list"></div>
+        </section>
+      </div>
+
+      <!-- Seite: Taktik (wird in Phase 2 gefüllt) -->
+      <div id="page-taktik" class="page" hidden>
+        <div class="page-inner">
+          <h2 class="page-title">Taktik</h2>
+          <p class="muted">Der Taktik-Trainer ist noch in Arbeit.</p>
         </div>
       </div>
 
-      <p id="view-hint" class="view-hint" hidden>Du betrachtest eine frühere Stellung.</p>
-
-      <div class="controls">
-        <button id="btn-back" type="button">Zurück</button>
-        <button id="btn-forward" type="button">Vor</button>
-        <button id="btn-flip" type="button">Brett drehen</button>
-        <button id="btn-reset" type="button">Neustart</button>
+      <!-- Seite: Mehr -->
+      <div id="page-mehr" class="page" hidden>
+        <div class="page-inner">
+          <h2 class="page-title">Mehr</h2>
+          <nav class="link-list" aria-label="Mehr">
+            <a href="#/mehr/info">Info und Lizenzen</a>
+          </nav>
+        </div>
       </div>
 
-      <section class="fen-section">
-        <h2>Stellung (FEN)</h2>
-        <input
-          id="fen-input"
-          class="fen-input"
-          type="text"
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-          aria-label="FEN-Stellung"
-        />
-        <div class="fen-buttons">
-          <button id="btn-fen-load" type="button">Laden</button>
-          <button id="btn-fen-copy" type="button">Kopieren</button>
-        </div>
-        <p id="fen-error" class="fen-error" hidden></p>
-      </section>
+      <!-- Seite: Info -->
+      <div id="page-info" class="page" hidden>
+        <div class="page-inner">
+          <p class="back-row"><a class="back-link" href="#/mehr">Zurück</a></p>
+          <h2 class="page-title">Info und Lizenzen</h2>
 
-      <section class="history-section">
-        <h2>Zugliste</h2>
-        <div id="move-list" class="move-list"></div>
-      </section>
+          <div class="block">
+            <h3>Über diese App</h3>
+            <p>
+              Schach-Training ist eine kleine Trainings-App für Freunde. Sie läuft vollständig im
+              Browser. Es gibt keinen Server, alle Daten bleiben auf diesem Gerät. Der Quellcode steht
+              unter der GNU General Public License, Version 3 (GPL-3.0).
+            </p>
+            <nav class="link-list" aria-label="Quellcode">
+              <a href="https://github.com/frederikihde-pixel/schach-training" rel="noopener">Quellcode auf GitHub</a>
+            </nav>
+          </div>
+
+          <div class="block">
+            <h3>Figurenset</h3>
+            <p>
+              Die Schachfiguren stammen vom Cburnett-Figurenset von Colin M. L. Burnett und stehen unter
+              der Lizenz Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 3.0
+              (CC BY-SA 3.0). Sie werden über die Brett-Bibliothek Chessground eingebunden.
+            </p>
+            <nav class="link-list" aria-label="Figurenset">
+              <a href="https://commons.wikimedia.org/wiki/User:Cburnett" rel="noopener">Urheber: Cburnett (Wikimedia Commons)</a>
+              <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" rel="noopener">Lizenz CC BY-SA 3.0</a>
+            </nav>
+          </div>
+
+          <div class="block">
+            <h3>Verwendete Bibliotheken und Daten</h3>
+            <ul class="plain-list">
+              <li>
+                <strong>chess.js 1.4.0</strong> (Schachregeln), Copyright Jeff Hlywa, Lizenz BSD-2-Clause.
+              </li>
+              <li>
+                <strong>Chessground 9.2.1</strong> (Brett-Anzeige), Lichess, Lizenz GPL-3.0.
+              </li>
+              <li>
+                <strong>Lichess-Rätsel-Datenbank</strong> (für den Taktik-Trainer), Lizenz CC0.
+              </li>
+            </ul>
+            <nav class="link-list" aria-label="Daten">
+              <a href="https://database.lichess.org/#puzzles" rel="noopener">Lichess-Rätsel-Datenbank</a>
+            </nav>
+          </div>
+
+          <div class="block">
+            <h3>Lizenztexte</h3>
+            <details class="license" data-src="LICENSE">
+              <summary>Schach-Training (GPL-3.0)</summary>
+              <pre class="license-text">Wird geladen ...</pre>
+            </details>
+            <details class="license" data-src="vendor/chess.js/LICENSE">
+              <summary>chess.js (BSD-2-Clause)</summary>
+              <pre class="license-text">Wird geladen ...</pre>
+            </details>
+            <details class="license" data-src="vendor/chessground/LICENSE">
+              <summary>Chessground (GPL-3.0)</summary>
+              <pre class="license-text">Wird geladen ...</pre>
+            </details>
+          </div>
+        </div>
+      </div>
     </main>
+
+    <nav class="tabbar" aria-label="Hauptnavigation">
+      <a id="tab-brett" href="#/brett">Brett</a>
+      <a id="tab-taktik" href="#/taktik">Taktik</a>
+    </nav>
 
     <div id="promotion-overlay" class="promotion-overlay" hidden>
       <div class="promotion-box">
