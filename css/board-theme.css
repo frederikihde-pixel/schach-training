@@ -42,3 +42,16 @@ cg-board square.check {
 .cg-wrap coords coord {
   color: #9aa0ab;
 }
+
+/* Buchstaben unter dem Brett: Chessground verschiebt sie um 24 px nach rechts und
+   lässt sie damit über den Rand ragen. Hier bleiben sie innerhalb der Feldreihe. */
+.cg-wrap coords.files {
+  left: 0;
+  width: 100%;
+  bottom: 1px;
+}
+
+.cg-wrap coords.files coord {
+  text-align: right;
+  padding-right: 3px;
+}

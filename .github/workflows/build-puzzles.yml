@@ -1,0 +1,48 @@
+# Baut die Rätsel-Daten (data/puzzles) aus der Lichess-Datenbank (CC0).
+# Manuell starten: Reiter "Actions" -> "Build puzzles" -> "Run workflow".
+# Der Lauf lädt die Datei auf dem GitHub-Server, entpackt sie, startet tools/build_puzzles.py
+# und committet das Ergebnis in den Branch, der beim Start ausgewählt wurde.
+name: Build puzzles
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Repository holen
+        uses: actions/checkout@v4
+
+      - name: zstd bereitstellen
+        run: command -v zstd || sudo apt-get install -y zstd
+
+      - name: Rätsel herunterladen, entpacken und bauen
+        run: |
+          set -o pipefail
+          curl -fL --retry 3 https://database.lichess.org/lichess_db_puzzle.csv.zst \
+            | zstd -dc \
+            | python3 tools/build_puzzles.py - \
+            | tee build.log
+          {
+            echo '### Rätsel gebaut'
+            echo '```'
+            cat build.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Ergebnis committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/puzzles
+          if git diff --cached --quiet; then
+            echo "Keine Änderungen an den Rätsel-Daten."
+          else
+            git commit -m "Rätsel-Daten aus der Lichess-Datenbank erzeugt"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

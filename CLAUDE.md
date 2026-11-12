@@ -37,6 +37,16 @@ eigene Lizenz (siehe `vendor/*/LICENSE`).
 - `chess.js` liefert die Schachregeln und den Spielzustand.
 - `chessground` zeigt das Brett an und nimmt Eingaben entgegen; es kennt
   selbst keine Schachregeln.
+- Seiten laufen über Hash-Routen (`#/brett`, `#/taktik`, `#/mehr/...`), siehe
+  `js/router.js`; eine Seite pro `<div class="page">` in `index.html`.
+- Alle gespeicherten Daten gehen ausschließlich über `js/storage.js` (ein
+  Schlüssel mit Versionsnummer und Migration). Kein direktes `localStorage`
+  anderswo. Neue Felder: Standardwerte in `defaults()` ergänzen, bei Formatänderung
+  `SCHEMA_VERSION` erhöhen und eine Migration schreiben.
+- Neue App-Dateien in die `PRECACHE`-Liste in `sw.js` eintragen
+  (`tests/unit/sw.test.mjs` prüft das).
+- Rätsel-Daten (`data/puzzles/`) entstehen mit `tools/build_puzzles.py`
+  (Lichess, CC0); der erste Zug in `zuege` ist der Gegnerzug.
 
 ## Arbeitsweise
 
@@ -44,5 +54,6 @@ eigene Lizenz (siehe `vendor/*/LICENSE`).
 - Ein Abschnitt nach dem anderen umsetzen, nach jedem Abschnitt committen.
 - `docs/STATUS.md` nach jedem Abschnitt aktualisieren: fertig, getestet,
   offen, bekannte Mängel.
-- Änderungen an der Bedienung nach Möglichkeit mit Touch-Emulation bei
-  390 px Breite testen.
+- Änderungen an der Bedienung mit Touch-Emulation bei 390 px Breite testen.
+  Alle Tests: `tests/run-all.sh` (Logik, Python, Browser). Jede Seite darf bei
+  390 px nicht seitlich überlaufen (`tests/e2e/overflow.cjs`).
