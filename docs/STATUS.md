@@ -72,6 +72,18 @@ Stand: in Arbeit (Pull Request 1 umfasst Teil A bis C, Pull Request 2 den Taktik
   Cache-Name mit Versionsnummer, alte Caches werden beim Aktivieren gelöscht, das
   Grundgerüst wird vorab zwischengespeichert.
 
+- Rätsel-Daten vorbereitet: `tools/build_puzzles.py` (nur Python-Standardbibliothek) liest
+  die entpackte Lichess-CSV (Datei oder Standardeingabe), filtert (Popularity >= 90,
+  NbPlays >= 500, RatingDeviation <= 100) und schreibt `data/puzzles/band-600.json` bis
+  `band-2700.json` (je bis zu 1000 Rätsel, gleichmäßig über die Themen, 2700 ist offen nach
+  oben), `index.json` und `LICENSE.md` (CC0, Quelle, Datum). Größe wird auf 5 MB
+  begrenzt (verkleinert sich selbst). Der erste Zug in `zuege` ist der Gegnerzug.
+- Der direkte Download der Lichess-Datei war in dieser Umgebung gesperrt (Netzwerk
+  antwortet 403). Deshalb baut `.github/workflows/build-puzzles.yml` die Daten auf dem
+  GitHub-Server (manuell startbar, `contents: write`, committet in den gewählten Branch).
+  **Die echten Rätsel-Daten sind noch nicht im Repository**, sie entstehen erst durch den
+  ersten Workflow-Lauf.
+
 **Getestet (emuliert):** alle Tests starten mit `tests/run-all.sh`. `tests/e2e/overflow.cjs` (scrollWidth gleich Fensterbreite),
 `tests/e2e/zoom-drag.cjs` (Viewport ohne Sperre, Ziehen scrollt die Seite nicht,
 Wischen außerhalb des Bretts scrollt weiterhin), `tests/e2e/brett.cjs` (alle
@@ -84,9 +96,13 @@ Migration, Export/Import, Fehlerfälle, Begrenzung, 14-Tage-Erinnerung),
 Dateien; Erinnerung mit verschobener Uhr nach 15 Tagen), `tests/e2e/pwa.cjs`
 (Manifest, Icons, Service Worker aktiv, Chromium-Installierbarkeitsprüfung, Netzwerk
 zuerst, App lädt offline, neue Cache-Version räumt auf), `tests/unit/sw.test.mjs`
-(Vorab-Liste vollständig).
+(Vorab-Liste vollständig), `tests/python/test_build_puzzles.py` (12 Tests mit künstlicher
+CSV: Filter und Grenzwerte, Bänder, höchstens 1000 je Band, Größe, Themenverteilung,
+gleiche Eingabe gleiches Ergebnis, Standardeingabe, Fehlerfälle). Die Shell-Abfolge des
+Workflows wurde lokal mit einer künstlichen CSV nachgestellt (Bauen, Zusammenfassung,
+Commit, Fehlercode bei kaputter Eingabe). Der echte Lauf auf GitHub ist noch nicht erfolgt.
 
-**Offen:** Rätsel-Daten (Skript und Workflow).
+**Offen:** echter Workflow-Lauf auf GitHub (Daten erzeugen), danach Phase 2 (Taktik-Trainer).
 
 ## Phase 2 — Taktik-Training
 
