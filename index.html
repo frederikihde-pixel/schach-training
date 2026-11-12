@@ -30,6 +30,13 @@
         <button id="hinweis-export-spaeter" type="button">Später</button>
       </div>
     </div>
+    <div id="hinweis-standort" class="notice" role="status" hidden>
+      <p>Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie in der Statistik.</p>
+      <div class="notice-actions">
+        <a class="btn-link" href="#/taktik/statistik">Zur Statistik</a>
+        <button id="hinweis-standort-spaeter" type="button">Später</button>
+      </div>
+    </div>
     <div id="hinweis-speicher" class="notice notice-warn" role="status" hidden>
       <p id="hinweis-speicher-text"></p>
     </div>
@@ -41,7 +48,7 @@
 
         <div class="board-row">
           <div class="board-wrap">
-            <div id="board"></div>
+            <div id="board" class="board"></div>
           </div>
         </div>
 
@@ -79,11 +86,139 @@
         </section>
       </div>
 
-      <!-- Seite: Taktik (wird in Phase 2 gefüllt) -->
+      <!-- Seite: Taktik (Üben) -->
       <div id="page-taktik" class="page" hidden>
-        <div class="page-inner">
+        <div id="taktik-start" class="page-inner">
+          <nav class="subnav" aria-label="Taktik">
+            <a href="#/taktik" aria-current="page">Üben</a>
+            <a href="#/taktik/statistik">Statistik</a>
+          </nav>
           <h2 class="page-title">Taktik</h2>
-          <p class="muted">Der Taktik-Trainer ist noch in Arbeit.</p>
+          <p id="taktik-staerke" class="strength"></p>
+          <p id="taktik-info" class="muted"></p>
+
+          <div id="taktik-einstufung" class="block" hidden>
+            <p>
+              Zum Einstieg schätzt die App deine Taktikstärke mit 10 Rätseln ein. Danach passen sich die Rätsel
+              an dich an. Es gibt keine Zeitvorgabe und keine Hinweise.
+            </p>
+            <div class="stack"><button id="btn-einstufung" type="button">Einstufung starten</button></div>
+          </div>
+
+          <div id="taktik-training" class="block" hidden>
+            <div class="field">
+              <label for="sel-groesse">Rätsel pro Sitzung</label>
+              <select id="sel-groesse">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="sel-thema">Thema</label>
+              <select id="sel-thema"></select>
+            </div>
+            <div class="stack"><button id="btn-sitzung" type="button">Sitzung starten</button></div>
+          </div>
+
+          <div id="taktik-fortsetzen" class="block" hidden>
+            <p id="taktik-fortsetzen-text"></p>
+            <div class="stack">
+              <button id="btn-fortsetzen" type="button">Fortsetzen</button>
+              <button id="btn-verwerfen" type="button">Verwerfen</button>
+            </div>
+          </div>
+
+          <p id="taktik-standort-info" class="muted"></p>
+          <p id="taktik-meldung" class="message" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="taktik-lauf" hidden>
+          <div class="run-head">
+            <span id="lauf-fortschritt"></span>
+            <span id="lauf-art" class="muted"></span>
+          </div>
+          <p id="lauf-seite" class="side-line"></p>
+          <div class="board-row">
+            <div class="board-wrap">
+              <div id="taktik-board" class="board"></div>
+            </div>
+          </div>
+          <div class="page-inner">
+            <p id="lauf-meldung" class="run-message" role="status" aria-live="polite"></p>
+            <div class="stack">
+              <button id="btn-weiter" type="button" hidden>Weiter</button>
+            </div>
+            <div class="stack run-end">
+              <button id="btn-beenden" type="button" class="btn-quiet">Sitzung beenden</button>
+            </div>
+            <div id="beenden-bestaetigung" class="confirm" hidden>
+              <p id="beenden-text"></p>
+              <div class="stack">
+                <button id="btn-beenden-ja" type="button">Beenden</button>
+                <button id="btn-beenden-nein" type="button">Weiter üben</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="taktik-zusammenfassung" class="page-inner" hidden>
+          <h2 id="zus-titel" class="page-title"></h2>
+          <dl id="zus-fakten" class="facts"></dl>
+          <div class="stack">
+            <button id="btn-zus-zurueck" type="button">Zurück zur Taktik</button>
+            <a class="btn-link-quiet" href="#/taktik/statistik">Zur Statistik</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seite: Statistik -->
+      <div id="page-statistik" class="page" hidden>
+        <div class="page-inner">
+          <nav class="subnav" aria-label="Taktik">
+            <a href="#/taktik">Üben</a>
+            <a href="#/taktik/statistik" aria-current="page">Statistik</a>
+          </nav>
+          <h2 class="page-title">Statistik</h2>
+
+          <div class="block">
+            <h3>Taktikstärke</h3>
+            <p id="stat-staerke" class="strength"></p>
+            <div id="stat-diagramm" class="chart"></div>
+            <p id="stat-diagramm-hinweis" class="muted"></p>
+          </div>
+
+          <div class="block">
+            <h3>Sitzungen pro Woche</h3>
+            <ul id="stat-wochen" class="week-list"></ul>
+          </div>
+
+          <div class="block">
+            <h3>Schwächste Themen</h3>
+            <p id="stat-schwach-leer" class="muted" hidden></p>
+            <ul id="stat-schwach" class="weak-list"></ul>
+            <p id="stat-schwach-meldung" class="message" role="status"></p>
+          </div>
+
+          <div class="block">
+            <h3>Themen</h3>
+            <p id="stat-themen-leer" class="muted" hidden>Noch keine Rätsel gespielt.</p>
+            <ul id="stat-themen" class="stat-list"></ul>
+          </div>
+
+          <div id="stat-standort" class="block">
+            <h3>Standortbestimmung</h3>
+            <p>
+              20 feste Rätsel von leicht bis schwer, ohne Hinweise und ohne Zeitvorgabe. Das Ergebnis wird mit
+              Datum gespeichert, damit du es später mit einer Wiederholung vergleichen kannst. Deine
+              Taktikstärke ändert sich dadurch nicht. Plane etwa 15 bis 25 Minuten ein.
+            </p>
+            <p id="stat-standort-meldung" class="muted"></p>
+            <div class="stack"><button id="btn-standort" type="button">Standortbestimmung starten</button></div>
+            <h4 class="subhead">Frühere Ergebnisse</h4>
+            <p id="stat-standort-leer" class="muted">Noch keine Ergebnisse.</p>
+            <ul id="stat-standort-liste" class="plain-list"></ul>
+          </div>
         </div>
       </div>
 

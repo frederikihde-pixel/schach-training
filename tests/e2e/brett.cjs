@@ -97,6 +97,14 @@ const { startServer, launch, newPage, tapMove, dragMove, reporter } = require(".
     await p.click("#btn-reset");
     r.check("Neustart", (await fenOf(p)).startsWith("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w"), await fenOf(p));
   }
+  // Nach "Schach." verschiebt sich das Brett (Hinweis erscheint darüber): Züge müssen trotzdem treffen.
+  {
+    const p = await fresh();
+    await playAll(p, [["e2", "e4"], ["f7", "f6"], ["d1", "h5"]]);
+    r.check("Schach-Hinweis erscheint", (await status(p)) === "Schach.");
+    await playAll(p, [["g7", "g6"], ["h5", "g6"]]);
+    r.check("Zug nach verschobenem Brett trifft das richtige Feld", (await fenOf(p)).startsWith("rnbqkbnr/ppppp2p/5pQ1/8/4P3/8/PPPP1PPP/RNB1KBNR b"), await fenOf(p));
+  }
   // Seitenwechsel behält die Partie und das Brett bleibt bedienbar
   {
     const p = await fresh("#/taktik");

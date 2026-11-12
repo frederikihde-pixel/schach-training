@@ -245,7 +245,7 @@ details.license summary {
   overflow-x: clip;
 }
 
-.board-wrap #board {
+.board-wrap .board {
   width: 100%;
   aspect-ratio: 1 / 1;
   touch-action: manipulation;
@@ -539,4 +539,212 @@ section h2 {
 
 .message.error {
   color: #d08a84;
+}
+
+.subnav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.subnav a,
+.btn-link-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.subnav a {
+  flex: 1;
+}
+
+.subnav a[aria-current="page"] {
+  color: var(--text);
+  background: var(--surface-2);
+  border-color: var(--accent);
+}
+
+.btn-link-quiet {
+  color: var(--text);
+}
+
+.strength {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.field label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+select {
+  min-height: 44px;
+  padding: 8px 10px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.run-head {
+  display: flex;
+  justify-content: space-between;
+  min-height: 2em;
+  padding: 10px 16px 0;
+  font-size: 0.95rem;
+}
+
+.side-line {
+  min-height: 1.6em;
+  margin: 4px 16px 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.run-message {
+  min-height: 1.4em;
+  margin: 12px 0 8px;
+  color: var(--text);
+}
+
+.run-end {
+  margin-top: 16px;
+}
+
+.btn-quiet {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.facts {
+  margin: 0 0 16px;
+}
+
+.facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.facts dt {
+  color: var(--text-muted);
+}
+
+.facts dd {
+  margin: 0;
+  text-align: right;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.subhead {
+  margin: 16px 0 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chart-label {
+  fill: var(--text-muted);
+  font-size: 10px;
+}
+
+.chart-line {
+  stroke: #8fb0d6;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.chart-dot {
+  fill: #8fb0d6;
+}
+
+.week-list,
+.weak-list,
+.stat-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: 10.5em 1fr 2em;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  font-size: 0.9rem;
+}
+
+.week-label {
+  color: var(--text-muted);
+}
+
+.week-bar {
+  display: block;
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.week-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.week-count {
+  text-align: right;
+}
+
+.weak-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
 }

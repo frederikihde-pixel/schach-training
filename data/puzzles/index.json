@@ -1,0 +1,407 @@
+{
+ "version": 1,
+ "erstellt": "2026-11-12",
+ "quelle": "https://database.lichess.org/#puzzles",
+ "lizenz": "CC0 1.0",
+ "felder": [
+  "id",
+  "fen",
+  "zuege",
+  "rating",
+  "themen"
+ ],
+ "hinweis": "Der erste Zug in 'zuege' ist der Zug des Gegners und wird automatisch gespielt.",
+ "filter": {
+  "popularity": 90,
+  "nbPlays": 500,
+  "ratingDeviation": 100
+ },
+ "maxProBand": 1000,
+ "pruefset": {
+  "datei": "pruefset.json",
+  "satz": "d5b8cbda",
+  "anzahl": 20,
+  "ratingMin": 848,
+  "ratingMax": 2051,
+  "bytes": 2847
+ },
+ "gesamtBytes": 3184458,
+ "gelesen": 6193530,
+ "qualifiziert": 2188703,
+ "baender": [
+  {
+   "band": 600,
+   "datei": "band-600.json",
+   "anzahl": 1000,
+   "ratingMin": 600,
+   "ratingMax": 699,
+   "bytes": 129846
+  },
+  {
+   "band": 700,
+   "datei": "band-700.json",
+   "anzahl": 1000,
+   "ratingMin": 700,
+   "ratingMax": 799,
+   "bytes": 130183
+  },
+  {
+   "band": 800,
+   "datei": "band-800.json",
+   "anzahl": 1000,
+   "ratingMin": 800,
+   "ratingMax": 899,
+   "bytes": 132164
+  },
+  {
+   "band": 900,
+   "datei": "band-900.json",
+   "anzahl": 1000,
+   "ratingMin": 900,
+   "ratingMax": 999,
+   "bytes": 133098
+  },
+  {
+   "band": 1000,
+   "datei": "band-1000.json",
+   "anzahl": 1000,
+   "ratingMin": 1000,
+   "ratingMax": 1099,
+   "bytes": 135538
+  },
+  {
+   "band": 1100,
+   "datei": "band-1100.json",
+   "anzahl": 1000,
+   "ratingMin": 1100,
+   "ratingMax": 1199,
+   "bytes": 138452
+  },
+  {
+   "band": 1200,
+   "datei": "band-1200.json",
+   "anzahl": 1000,
+   "ratingMin": 1200,
+   "ratingMax": 1299,
+   "bytes": 139528
+  },
+  {
+   "band": 1300,
+   "datei": "band-1300.json",
+   "anzahl": 1000,
+   "ratingMin": 1300,
+   "ratingMax": 1399,
+   "bytes": 140500
+  },
+  {
+   "band": 1400,
+   "datei": "band-1400.json",
+   "anzahl": 1000,
+   "ratingMin": 1400,
+   "ratingMax": 1499,
+   "bytes": 142405
+  },
+  {
+   "band": 1500,
+   "datei": "band-1500.json",
+   "anzahl": 1000,
+   "ratingMin": 1500,
+   "ratingMax": 1599,
+   "bytes": 143165
+  },
+  {
+   "band": 1600,
+   "datei": "band-1600.json",
+   "anzahl": 1000,
+   "ratingMin": 1600,
+   "ratingMax": 1699,
+   "bytes": 144861
+  },
+  {
+   "band": 1700,
+   "datei": "band-1700.json",
+   "anzahl": 1000,
+   "ratingMin": 1700,
+   "ratingMax": 1799,
+   "bytes": 145035
+  },
+  {
+   "band": 1800,
+   "datei": "band-1800.json",
+   "anzahl": 1000,
+   "ratingMin": 1800,
+   "ratingMax": 1899,
+   "bytes": 147682
+  },
+  {
+   "band": 1900,
+   "datei": "band-1900.json",
+   "anzahl": 1000,
+   "ratingMin": 1900,
+   "ratingMax": 1999,
+   "bytes": 147921
+  },
+  {
+   "band": 2000,
+   "datei": "band-2000.json",
+   "anzahl": 1000,
+   "ratingMin": 2000,
+   "ratingMax": 2099,
+   "bytes": 147910
+  },
+  {
+   "band": 2100,
+   "datei": "band-2100.json",
+   "anzahl": 1000,
+   "ratingMin": 2100,
+   "ratingMax": 2199,
+   "bytes": 150405
+  },
+  {
+   "band": 2200,
+   "datei": "band-2200.json",
+   "anzahl": 1000,
+   "ratingMin": 2200,
+   "ratingMax": 2299,
+   "bytes": 153564
+  },
+  {
+   "band": 2300,
+   "datei": "band-2300.json",
+   "anzahl": 1000,
+   "ratingMin": 2300,
+   "ratingMax": 2399,
+   "bytes": 152929
+  },
+  {
+   "band": 2400,
+   "datei": "band-2400.json",
+   "anzahl": 1000,
+   "ratingMin": 2400,
+   "ratingMax": 2499,
+   "bytes": 155083
+  },
+  {
+   "band": 2500,
+   "datei": "band-2500.json",
+   "anzahl": 1000,
+   "ratingMin": 2500,
+   "ratingMax": 2599,
+   "bytes": 154093
+  },
+  {
+   "band": 2600,
+   "datei": "band-2600.json",
+   "anzahl": 1000,
+   "ratingMin": 2600,
+   "ratingMax": 2699,
+   "bytes": 157901
+  },
+  {
+   "band": 2700,
+   "datei": "band-2700.json",
+   "anzahl": 1000,
+   "ratingMin": 2700,
+   "ratingMax": 3059,
+   "bytes": 162195
+  }
+ ],
+ "themen": [
+  {
+   "name": "endgame",
+   "anzahl": 11497
+  },
+  {
+   "name": "middlegame",
+   "anzahl": 9035
+  },
+  {
+   "name": "sacrifice",
+   "anzahl": 4224
+  },
+  {
+   "name": "advancedPawn",
+   "anzahl": 3014
+  },
+  {
+   "name": "mateIn2",
+   "anzahl": 2943
+  },
+  {
+   "name": "kingsideAttack",
+   "anzahl": 2264
+  },
+  {
+   "name": "fork",
+   "anzahl": 2243
+  },
+  {
+   "name": "attraction",
+   "anzahl": 2086
+  },
+  {
+   "name": "defensiveMove",
+   "anzahl": 2077
+  },
+  {
+   "name": "mateIn1",
+   "anzahl": 1936
+  },
+  {
+   "name": "quietMove",
+   "anzahl": 1828
+  },
+  {
+   "name": "mateIn3",
+   "anzahl": 1742
+  },
+  {
+   "name": "exposedKing",
+   "anzahl": 1700
+  },
+  {
+   "name": "promotion",
+   "anzahl": 1688
+  },
+  {
+   "name": "deflection",
+   "anzahl": 1684
+  },
+  {
+   "name": "pin",
+   "anzahl": 1681
+  },
+  {
+   "name": "discoveredAttack",
+   "anzahl": 1568
+  },
+  {
+   "name": "pawnEndgame",
+   "anzahl": 1476
+  },
+  {
+   "name": "opening",
+   "anzahl": 1468
+  },
+  {
+   "name": "rookEndgame",
+   "anzahl": 1232
+  },
+  {
+   "name": "hangingPiece",
+   "anzahl": 918
+  },
+  {
+   "name": "mateIn4",
+   "anzahl": 898
+  },
+  {
+   "name": "queensideAttack",
+   "anzahl": 876
+  },
+  {
+   "name": "skewer",
+   "anzahl": 876
+  },
+  {
+   "name": "clearance",
+   "anzahl": 855
+  },
+  {
+   "name": "backRankMate",
+   "anzahl": 851
+  },
+  {
+   "name": "zugzwang",
+   "anzahl": 768
+  },
+  {
+   "name": "doubleCheck",
+   "anzahl": 763
+  },
+  {
+   "name": "bishopEndgame",
+   "anzahl": 737
+  },
+  {
+   "name": "intermezzo",
+   "anzahl": 674
+  },
+  {
+   "name": "queenEndgame",
+   "anzahl": 667
+  },
+  {
+   "name": "knightEndgame",
+   "anzahl": 649
+  },
+  {
+   "name": "queenRookEndgame",
+   "anzahl": 606
+  },
+  {
+   "name": "attackingF2F7",
+   "anzahl": 602
+  },
+  {
+   "name": "xRayAttack",
+   "anzahl": 581
+  },
+  {
+   "name": "capturingDefender",
+   "anzahl": 550
+  },
+  {
+   "name": "trappedPiece",
+   "anzahl": 550
+  },
+  {
+   "name": "mateIn5",
+   "anzahl": 546
+  },
+  {
+   "name": "interference",
+   "anzahl": 525
+  },
+  {
+   "name": "hookMate",
+   "anzahl": 435
+  },
+  {
+   "name": "arabianMate",
+   "anzahl": 433
+  },
+  {
+   "name": "dovetailMate",
+   "anzahl": 398
+  },
+  {
+   "name": "enPassant",
+   "anzahl": 395
+  },
+  {
+   "name": "anastasiaMate",
+   "anzahl": 393
+  },
+  {
+   "name": "smotheredMate",
+   "anzahl": 362
+  },
+  {
+   "name": "underPromotion",
+   "anzahl": 358
+  },
+  {
+   "name": "bodenMate",
+   "anzahl": 330
+  },
+  {
+   "name": "castling",
+   "anzahl": 311
+  },
+  {
+   "name": "doubleBishopMate",
+   "anzahl": 261
+  }
+ ]
+}

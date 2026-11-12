@@ -187,6 +187,58 @@ class BuildPuzzlesTest(unittest.TestCase):
         self.assertNotEqual(res.returncode, 0)
         self.assertIn("fehlen Spalten", res.stderr)
 
+    def load_pruefset(self, out=None):
+        with open(os.path.join(out or self.out, "pruefset.json"), encoding="utf-8") as f:
+            return json.load(f)
+
+    def test_pruefset_20_raetsel_ueber_800_bis_2000(self):
+        ps = self.load_pruefset()
+        self.assertEqual(len(ps["raetsel"]), 20)
+        ratings = [r[3] for r in ps["raetsel"]]
+        self.assertEqual(ratings, sorted(ratings))
+        self.assertTrue(all(800 <= r < 2100 for r in ratings), ratings)
+        self.assertLess(ratings[0], 950)
+        self.assertGreater(ratings[-1], 1950)
+        ids = [r[0] for r in ps["raetsel"]]
+        self.assertEqual(len(set(ids)), 20)
+        themes = {t for r in ps["raetsel"] for t in r[4]}
+        self.assertGreaterEqual(len(themes), 12, themes)
+        for r in ps["raetsel"]:
+            self.assertEqual(r[2], self.info[r[0]][2])
+        self.assertEqual(ps["felder"], ["id", "fen", "zuege", "rating", "themen"])
+        self.assertRegex(ps["satz"], r"^[0-9a-f]{8}$")
+
+    def test_pruefset_fehlt_im_trainingsvorrat(self):
+        ids = {r[0] for r in self.load_pruefset()["raetsel"]}
+        for b in self.index["baender"]:
+            in_band = {p[0] for p in self.load(b["band"])["raetsel"]}
+            self.assertFalse(ids & in_band, b["band"])
+
+    def test_pruefset_im_index(self):
+        info = self.index["pruefset"]
+        ps = self.load_pruefset()
+        self.assertEqual(info["datei"], "pruefset.json")
+        self.assertEqual(info["anzahl"], 20)
+        self.assertEqual(info["satz"], ps["satz"])
+        self.assertEqual(info["bytes"], os.path.getsize(os.path.join(self.out, "pruefset.json")))
+
+    def test_pruefset_bleibt_beim_neubau_fest(self):
+        out = os.path.join(self.tmp.name, "out_fest")
+        self.assertEqual(run([self.csv, "--out", out, "--datum", "2026-11-12"]).returncode, 0)
+        first = self.load_pruefset(out)
+        # anderer Startwert und andere Eingabe: das Prüfset darf sich nicht ändern
+        rows, _ = make_rows(60000, seed=99)
+        other = os.path.join(self.tmp.name, "other.csv")
+        write_csv(other, rows)
+        res = run([other, "--out", out, "--seed", "x", "--datum", "2026-12-01"])
+        self.assertEqual(res.returncode, 0, res.stderr)
+        self.assertIn("übernommen", res.stdout)
+        self.assertEqual(self.load_pruefset(out), first)
+        # mit --pruefset-neu wird neu gewählt
+        res = run([other, "--out", out, "--seed", "x", "--pruefset-neu", "--datum", "2026-12-01"])
+        self.assertIn("neu gewählt", res.stdout)
+        self.assertNotEqual(self.load_pruefset(out)["satz"], first["satz"])
+
     def test_ausgabe_nennt_zusammenfassung(self):
         self.assertIn("Zeilen gelesen", self.stdout)
         self.assertIn("Gesamtgröße", self.stdout)

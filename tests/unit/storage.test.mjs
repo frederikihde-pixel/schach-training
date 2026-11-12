@@ -2,7 +2,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  createStore, defaults, migrate, validate, trim, exportReminderDue,
+  createStore, defaults, migrate, validate, trim, exportReminderDue, standortReminderDue,
   DataError, STORAGE_KEY, SCHEMA_VERSION, CAPS,
 } from "../../js/storage.js";
 
@@ -38,10 +38,27 @@ test("update speichert unter genau einem Schlüssel und übersteht ein neues Lad
 
 test("Migration: Stand ohne Version (0) wird auf 1 gebracht und ergänzt", () => {
   const m = migrate({ taktik: { staerke: 1500 } }, { now: t0 });
-  assert.equal(m.version, 1);
+  assert.equal(m.version, SCHEMA_VERSION);
   assert.equal(m.taktik.staerke, 1500);
   assert.deepEqual(m.taktik.versuche, []);
   validate(m);
+});
+
+test("Migration 1 auf 2: alte Sicherungsdatei bekommt neue Felder, nichts geht verloren", () => {
+  const alt = {
+    app: "schach-training", version: 1, erstelltAm: t0.toISOString(), letzterExport: null, einstellungen: {},
+    taktik: { staerke: 1400, eingestuft: true, versuche: [{ id: "a" }, { id: "b" }], themen: { fork: { n: 1, ok: 1, ms: 1 } }, karten: {}, gesehen: { a: 1 }, sitzungen: [], verlauf: [], aktiv: null },
+  };
+  const m = migrate(structuredClone(alt), { now: t0 });
+  assert.equal(m.version, 2);
+  assert.deepEqual(m.taktik.standort, []);
+  assert.equal(m.taktik.anzahl, 2);
+  assert.equal(m.taktik.staerke, 1400);
+  assert.deepEqual(m.taktik.themen, alt.taktik.themen);
+  validate(m);
+  const s = createStore({ backend: backend(), now: () => t0 });
+  s.importJson(JSON.stringify(alt));
+  assert.equal(s.get().version, 2);
 });
 
 test("Migration: Kette über mehrere Versionen und Ablehnung neuerer Versionen", () => {
@@ -125,4 +142,14 @@ test("Export-Erinnerung nach 14 Tagen, nur wenn es etwas zu sichern gibt", () =>
   d.letzterExport = later.toISOString();
   assert.equal(exportReminderDue(d, new Date(later.getTime() + 5 * day)), false);
   assert.equal(exportReminderDue(d, new Date(later.getTime() + 14 * day)), true);
+});
+
+test("Erinnerung an die Standortbestimmung: nach 28 Tagen, nur wenn schon eine gemacht wurde", () => {
+  const d = defaults(t0);
+  assert.equal(standortReminderDue(d, new Date(t0.getTime() + 90 * day)), false, "ohne Ergebnis keine Erinnerung");
+  d.taktik.standort.push({ datum: t0.toISOString(), geloest: 12, von: 20, msSchnitt: 30000 });
+  assert.equal(standortReminderDue(d, new Date(t0.getTime() + 27 * day)), false);
+  assert.equal(standortReminderDue(d, new Date(t0.getTime() + 28 * day)), true);
+  d.taktik.standort.push({ datum: new Date(t0.getTime() + 30 * day).toISOString(), geloest: 14, von: 20, msSchnitt: 28000 });
+  assert.equal(standortReminderDue(d, new Date(t0.getTime() + 40 * day)), false, "zählt ab dem letzten Ergebnis");
 });

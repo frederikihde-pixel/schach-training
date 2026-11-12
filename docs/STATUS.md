@@ -37,7 +37,7 @@ Szenarien liefern die erwartete Stellung bzw. Meldung.
 
 ## Vorarbeiten für Phase 2 (Mängel, Speichern, Installierbarkeit, Rätsel-Daten)
 
-Stand: in Arbeit (Pull Request 1 umfasst Teil A bis C, Pull Request 2 den Taktik-Trainer).
+Stand: erledigt und gemergt (Pull Request 2). Die Rätsel-Daten wurden mit dem Workflow erzeugt.
 
 **Fertig:**
 - Seitenüberlauf behoben: Seite ist bei 390 px genau 390 px breit (Ursache war
@@ -102,9 +102,20 @@ gleiche Eingabe gleiches Ergebnis, Standardeingabe, Fehlerfälle). Die Shell-Abf
 Workflows wurde lokal mit einer künstlichen CSV nachgestellt (Bauen, Zusammenfassung,
 Commit, Fehlercode bei kaputter Eingabe). Der echte Lauf auf GitHub ist noch nicht erfolgt.
 
-**Offen:** echter Workflow-Lauf auf GitHub (Daten erzeugen), danach Phase 2 (Taktik-Trainer).
+**Echter Workflow-Lauf (12.11.2026):** erfolgreich. 6.193.530 Zeilen gelesen, 2.188.703
+bestanden die Filter, 22 Bänder mit je 1000 Rätseln, 49 Themen, 3,18 MB. Das Dateiformat
+der Lichess-Datei passte zum Skript.
 
-**Nur emuliert, bitte auf dem echten Handy prüfen (Stand Pull Request 1):**
+**Prüfset (Zusatz zur Standortbestimmung):** `tools/build_puzzles.py` wählt zusätzlich 20 feste
+Rätsel (Wertung 850 bis 2050, 20 verschiedene Hauptthemen von leicht nach schwer) und legt
+sie in `data/puzzles/pruefset.json` ab. Sie fehlen in den Bandateien (nicht mehr im normalen
+Training). Ein vorhandenes `pruefset.json` wird bei jedem Neubau unverändert übernommen, damit
+Ergebnisse vergleichbar bleiben (neu erzeugen nur mit `--pruefset-neu`). Das Prüfset ist noch
+**nicht** im Repository: dafür muss der Workflow einmal neu laufen.
+
+**Offen:** nichts aus diesem Teil; das Prüfset und der Taktik-Trainer stehen unter Phase 2.
+
+**Nur emuliert, bitte auf dem echten Handy prüfen (Vorarbeiten):**
 - "Zum Home-Bildschirm" auf iPhone (Safari: Teilen, dann "Zum Home-Bildschirm") und auf
   Android (Chrome: Menü, "App installieren"); Icon, Name und Start im Vollbild.
 - Pinch-Zoom auf der Seite geht; auf dem Brett verhindert Doppeltippen das Zoomen nicht
@@ -116,9 +127,92 @@ Commit, Fehlercode bei kaputter Eingabe). Der echte Lauf auf GitHub ist noch nic
 - "Dauerhafter Speicher" (Daten-Seite): ob der Browser den Schutz gewährt.
 - App im Flugmodus starten (nach einmaligem Besuch online).
 
+**Nur emuliert, bitte auf dem echten Handy prüfen (Taktik, Pull Request 3):**
+- Rätsel mit dem Finger lösen: Tippen-Tippen und Ziehen auf dem Taktik-Brett, auch kleine
+  Felder (Treffgenauigkeit), Umwandlung per Auswahlfenster.
+- Nach "Schach." oder anderen Hinweisen über dem Brett: der nächste Tipp trifft das richtige Feld.
+- Die Seite scrollt beim Ziehen einer Figur nicht (iOS-Safari und Android-Chrome).
+- Brett und Texte bei Zoom und bei gedrehtem Gerät (Hochformat ist das Ziel).
+- Standortbestimmung am Stück (15 bis 25 Minuten): Bildschirm geht nicht aus, Fortsetzen nach
+  Wechsel in eine andere App.
+- Zeitmessung fühlt sich richtig an (läuft nur bei sichtbarer App).
+- Flugmodus: erst online eine Sitzung starten, dann im Flugmodus weiterüben.
+- Diagramm in der Statistik gut lesbar auf dem kleinen Bildschirm.
+- Ob die Erinnerung nach 4 Wochen ruhig genug wirkt (Text steht in `index.html`).
+
 ## Phase 2 — Taktik-Training
 
-Noch nicht begonnen.
+Stand: Pull Request 3 (Taktik-Trainer) ist in Arbeit beziehungsweise zur Prüfung.
+
+**Fertig:**
+- Rätsel laden (`js/puzzles.js`): Bandateien werden erst geladen, wenn sie gebraucht werden, und
+  im Speicher gehalten. Rund um die eigene Stärke (minus 150 bis plus 250) und das Prüfset
+  werden die Dateien im Hintergrund abgeholt, damit der Service Worker sie für offline ablegt.
+- Rätsel lösen (`js/puzzle-runner.js`): Stellung nach dem Gegnerzug (erster Zug in `zuege`, wird
+  automatisch gespielt), Brett aus Sicht des Spielers, darüber "Weiß am Zug" oder "Schwarz am Zug".
+  Richtiger Zug: die Gegnerantwort kommt automatisch. Falscher Zug: wird kurz gezeigt,
+  zurückgenommen, zählt als Fehler und beendet das Rätsel als nicht gelöst. Jeder Zug, der sofort
+  Matt setzt, gilt als richtig. Keine Hinweise. Zeitmessung pausiert, wenn die App im Hintergrund
+  ist (einzelne Zeiten werden bei 120 Sekunden gedeckelt).
+- Nach einem Fehler: die richtige Zugfolge wird Zug für Zug gezeigt (etwa 1 Sekunde je Zug),
+  danach spielt der Spieler sie einmal selbst nach (falsche Züge springen zurück und zählen nicht;
+  nach dem zweiten Fehlversuch zeigt ein Pfeil den richtigen Zug), dann "Weiter".
+- Einstufung (`js/rating.js`): beim ersten Start 10 adaptive Rätsel ab Wertung 1000 (Schritte
+  400, 300, 200, 150, dann 100: richtig = schwerer, falsch = leichter). Danach einfaches Elo mit
+  K = 40 (erste 30 Rätsel), 24 (bis 100), 16 (danach); Rätsel für die Sitzungen liegen im Bereich
+  Stärke minus 50 bis plus 150. Die Taktikstärke wird nur als ruhige Zahl angezeigt.
+- Wiederholung nach Leitner (`js/leitner.js`): nicht gelöste Rätsel kommen nach 1, 3, 7, 21 Tagen
+  wieder (nach Kalendertag); richtig = nächste Stufe, falsch = zurück auf Stufe 1, richtig auf
+  Stufe 4 = erledigt. Wiederholungen ändern die Taktikstärke nicht. Die Karten enthalten das
+  ganze Rätsel, Wiederholungen gehen deshalb auch nach einem Neubau der Daten und offline.
+- Sitzung (`js/session.js`): standardmäßig 10 Rätsel (wählbar 5, 10, 20), etwa 30 Prozent fällige
+  Wiederholungen, Rest neu, davon die Hälfte aus den schwächsten Themen; fehlen Fällige, werden
+  neue aufgefüllt. Anzeige "Rätsel 4 von 10" (keine Serien, keine Auszeichnungen). Ende: ruhige
+  Zusammenfassung (gelöst, Fehler, durchschnittliche Zeit, schwächstes Thema der Sitzung). Eine
+  unterbrochene Sitzung kann fortgesetzt oder verworfen werden. Themenfilter bei jeder Sitzung.
+- Statistik (`#/taktik/statistik`): Taktikstärke, Liniendiagramm des Verlaufs (einfaches SVG, ein
+  Punkt je Sitzung), Sitzungen pro Woche (8 Wochen), je Thema Trefferquote und durchschnittliche
+  Zeit (ab 5 Versuchen, sonst "zu wenig Daten"), die 3 schwächsten Themen mit dem Knopf "Dieses
+  Thema üben".
+- Standortbestimmung (Zusatz): 20 feste Prüfrätsel (Wertung 850 bis 2050, 20 verschiedene
+  Hauptthemen), ohne Hinweise, ohne Lösung und ohne Nachspielen. Ergebnis (gelöst von 20,
+  durchschnittliche Zeit) wird mit Datum gespeichert und als einfache Liste angezeigt. Sie ändert
+  Taktikstärke, Statistik und Wiederholungen nicht. Die Prüfrätsel fehlen im normalen
+  Trainingsvorrat. Ruhige Erinnerung nach 4 Wochen (Hinweisleiste mit "Zur Statistik" und
+  "Später"); wer noch keine gemacht hat, wird nicht erinnert.
+- Speicherformat Version 2 (`taktik.anzahl`, `taktik.standort`), alte Sicherungsdateien
+  (Version 1) werden beim Import und beim Laden umgestellt.
+- Fehler aus Phase 1 behoben: Nach dem Hinweis "Schach." verschob sich das Brett auf der Seite,
+  und Chessground traf mit dem gemerkten alten Standort das falsche Feld. Jetzt wird der Standort
+  vor jeder Berührung neu gelesen (`keepBoundsFresh`), mit Regressionstest.
+
+**Getestet (emuliert, 390 px, Touch-Emulation, echte Rätsel-Daten):** `tests/run-all.sh`
+(Stand 12.11.2026: 41 Logik-Tests, 16 Python-Tests, 180 Browser-Prüfungen, alle bestanden;
+`QUICK=1 tests/run-all.sh` überspringt die langen Sitzungstests, Gesamtdauer sonst etwa 15 Minuten)
+- `tests/unit/logic.test.mjs`: Elo, Einstufung mit simulierten Spielern (Stärke 700 bis 2400,
+  Abweichung höchstens 100), Leitner, Statistik, Sitzungsplanung, Rätsel laden, Taktik-Zustand.
+- `tests/e2e/taktik.cjs`: Rätsel richtig lösen, falsch lösen und nachspielen, Matt-in-1-Alternative
+  (zweiter Mattzug aus den echten Daten), komplette Einstufung mit simulierten Antworten bei Stärke
+  900, 1500, 2100 (Schätzung 909, 1490, 2090).
+- `tests/e2e/taktik-session.cjs`: Fälligkeit mit künstlich verschobenem Datum, Sitzung mit 3
+  Wiederholungen und 7 neuen Rätseln, Stufen steigen und fallen, Zusammenfassung, Fortsetzen.
+- `tests/e2e/statistik.cjs`: Statistik mit Beispieldaten, leere Statistik, "Dieses Thema üben",
+  vollständige Standortbestimmung (10 von 20), Erinnerung nach 28 Tagen (nicht nach 27).
+- `tests/e2e/taktik-offline.cjs`: nach einem Besuch online laufen Sitzung und Standortbestimmung
+  ohne Netzwerk; fehlt ein Band, kommt eine verständliche Meldung.
+- Solange `data/puzzles/pruefset.json` noch nicht gebaut ist, liefern die Tests ein gleichwertiges
+  Prüfset aus den Bandateien (`tests/e2e/lib.cjs`).
+
+**Offen:**
+- Workflow ein zweites Mal starten, damit `data/puzzles/pruefset.json` entsteht (ohne die Datei
+  ist die Standortbestimmung nicht verfügbar; der Knopf zeigt dann eine Meldung).
+
+**Bekannte Mängel / Entscheidungen:**
+- Das Prüfset ist fest: bei späteren Neubauten bleibt es unverändert (`--pruefset-neu` ändert es;
+  dann wird in der Liste "anderer Prüfsatz" vermerkt).
+- Rätsel mit sehr langer Zugfolge (bis 10 Züge) kosten Zeit; die Zeitmessung deckelt bei 120 s.
+- Die Einstufung kann man nicht überspringen.
+- Beim ersten Start braucht die Taktik-Seite einmal eine Internetverbindung, um die Bänder zu holen.
 
 ## Phase 3 — Eigene Partien analysieren
 

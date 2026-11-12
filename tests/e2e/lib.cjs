@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { chromium, devices } = require("playwright");
 
-const ROOT = path.resolve(__dirname, "../..");
+const ROOT = process.env.APP_ROOT ? path.resolve(process.env.APP_ROOT) : path.resolve(__dirname, "../..");
 const MIME = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -17,6 +17,22 @@ const MIME = {
   ".png": "image/png",
   ".md": "text/markdown; charset=utf-8",
 };
+
+// Solange data/puzzles/pruefset.json noch nicht gebaut ist (der Workflow erzeugt es), liefern die
+// Tests ein gleichwertiges Prüfset aus den vorhandenen Bandateien: 20 Rätsel von 850 bis 2050.
+function fallbackPruefset() {
+  const picked = [];
+  const used = new Set();
+  for (let i = 0; i < 20; i++) {
+    const target = Math.round(850 + (i * 1200) / 19);
+    const band = Math.floor(target / 100) * 100;
+    const list = JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles/band-${band}.json`), "utf8")).raetsel;
+    const best = list.filter((p) => !used.has(p[0])).sort((a, b) => Math.abs(a[3] - target) - Math.abs(b[3] - target))[0];
+    used.add(best[0]);
+    picked.push(best);
+  }
+  return JSON.stringify({ satz: "testsatz1", felder: ["id", "fen", "zuege", "rating", "themen"], raetsel: picked });
+}
 
 function startServer(port = 0, overrides = {}) {
   const hits = {};
@@ -32,6 +48,10 @@ function startServer(port = 0, overrides = {}) {
     }
     if (rel.endsWith("/")) rel += "index.html";
     const file = path.join(ROOT, rel);
+    if (rel === "/data/puzzles/pruefset.json" && !fs.existsSync(file)) {
+      res.writeHead(200, { "Content-Type": "application/json" }).end(fallbackPruefset());
+      return;
+    }
     if (!file.startsWith(ROOT)) {
       res.writeHead(403).end();
       return;
@@ -133,3 +153,49 @@ function reporter(title) {
 }
 
 module.exports = { ROOT, startServer, launch, newContext, newPage, squareCenter, tapMove, dragMove, reporter };
+
+// ---- Taktik-Helfer ----
+
+// Liest das gerade laufende Rätsel aus dem Speicher der App.
+async function currentPuzzle(page) {
+  return page.evaluate(async () => {
+    const { store } = await import("./js/storage.js");
+    const a = store.get().taktik.aktiv;
+    return a ? { puzzle: a.plan[a.index].puzzle, art: a.plan[a.index].art, index: a.index, typ: a.typ } : null;
+  });
+}
+
+async function waitForSide(page) {
+  await page.waitForFunction(() => /am Zug/.test(document.getElementById("lauf-seite").textContent), null, { timeout: 8000 });
+  await page.waitForTimeout(350);
+  return (await page.textContent("#lauf-seite")).startsWith("Weiß") ? "white" : "black";
+}
+
+async function playUci(page, uci, orientation, board = "#taktik-board") {
+  await tapMove(page, uci.slice(0, 2), uci.slice(2, 4), orientation, board);
+  if (uci[4]) {
+    const index = { q: 0, r: 1, b: 2, n: 3 }[uci[4]];
+    await page.waitForSelector("#promotion-overlay:not([hidden])", { timeout: 3000 });
+    await page.locator(".promo-btn").nth(index).click();
+    await page.waitForTimeout(250);
+  }
+}
+
+// Löst das aktuelle Rätsel mit der gespeicherten Zugfolge. `wrongAt`: ab diesem Zug (Index in zuege,
+// 1 = erster Zug des Spielers) wird absichtlich ein falscher legaler Zug gespielt.
+async function solveCurrent(page, { wrongMove = null } = {}) {
+  const cur = await currentPuzzle(page);
+  const orientation = await waitForSide(page);
+  const moves = cur.puzzle.zuege.split(" ");
+  if (wrongMove) {
+    await playUci(page, wrongMove, orientation);
+    return { cur, orientation };
+  }
+  for (let i = 1; i < moves.length; i += 2) {
+    await playUci(page, moves[i], orientation);
+    await page.waitForTimeout(i === moves.length - 1 ? 300 : 900);
+  }
+  return { cur, orientation };
+}
+
+Object.assign(module.exports, { currentPuzzle, waitForSide, playUci, solveCurrent });

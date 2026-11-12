@@ -6,6 +6,7 @@ import { store, DataError, EXPORT_REMINDER_DAYS } from "../storage.js";
 const $ = (id) => document.getElementById(id);
 let pendingImportText = null;
 let reminderSnoozed = false;
+let standortSnoozed = false;
 
 function message(text, isError = false) {
   const el = $("daten-meldung");
@@ -27,6 +28,8 @@ export function renderHinweise() {
       `Die letzte Datensicherung ist mindestens ${EXPORT_REMINDER_DAYS} Tage her. ` +
       "Sichere deine Daten und benutze immer denselben Link zur App, denn die Daten gelten pro Adresse.";
   }
+
+  $("hinweis-standort").hidden = !(store.standortReminderDue() && !standortSnoozed);
 
   const st = store.status;
   let warn = "";
@@ -82,6 +85,10 @@ export function onShowDaten() {
 export function initDaten() {
   $("hinweis-export-spaeter").addEventListener("click", () => {
     reminderSnoozed = true;
+    renderHinweise();
+  });
+  $("hinweis-standort-spaeter").addEventListener("click", () => {
+    standortSnoozed = true;
     renderHinweise();
   });
   document.addEventListener("persistence-checked", () => {
