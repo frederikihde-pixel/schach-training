@@ -187,6 +187,8 @@ Stand: Pull Request 3 (Taktik-Trainer) ist in Arbeit beziehungsweise zur Prüfun
   vor jeder Berührung neu gelesen (`keepBoundsFresh`), mit Regressionstest.
 
 **Getestet (emuliert, 390 px, Touch-Emulation, echte Rätsel-Daten):** `tests/run-all.sh`
+(Stand 12.11.2026: 41 Logik-Tests, 16 Python-Tests, 180 Browser-Prüfungen, alle bestanden;
+`QUICK=1 tests/run-all.sh` überspringt die langen Sitzungstests, Gesamtdauer sonst etwa 15 Minuten)
 - `tests/unit/logic.test.mjs`: Elo, Einstufung mit simulierten Spielern (Stärke 700 bis 2400,
   Abweichung höchstens 100), Leitner, Statistik, Sitzungsplanung, Rätsel laden, Taktik-Zustand.
 - `tests/e2e/taktik.cjs`: Rätsel richtig lösen, falsch lösen und nachspielen, Matt-in-1-Alternative
