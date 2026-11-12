@@ -35,6 +35,25 @@ Szenarien liefern die erwartete Stellung bzw. Meldung.
 - Zugliste zeigt noch keine Nebenlinien/Varianten, nur die gespielte
   Hauptlinie (reicht für Phase 1).
 
+## Vorarbeiten für Phase 2 (Mängel, Speichern, Installierbarkeit, Rätsel-Daten)
+
+Stand: in Arbeit (Pull Request 1 umfasst Teil A bis C, Pull Request 2 den Taktik-Trainer).
+
+**Fertig:**
+- Seitenüberlauf behoben: Seite ist bei 390 px genau 390 px breit (Ursache war
+  die Buchstabenzeile unter dem Brett, die Chessground um 24 px versetzt).
+- Zoom wieder erlaubt (kein `user-scalable=no`, kein `maximum-scale`);
+  Doppeltipp-Zoom auf dem Brett per `touch-action: manipulation` verhindert.
+- Browsertests liegen jetzt im Repository unter `tests/e2e/` (Playwright,
+  Start mit `node tests/e2e/<datei>.cjs`).
+
+**Getestet (emuliert):** `tests/e2e/overflow.cjs` (scrollWidth gleich Fensterbreite),
+`tests/e2e/zoom-drag.cjs` (Viewport ohne Sperre, Ziehen scrollt die Seite nicht,
+Wischen außerhalb des Bretts scrollt weiterhin).
+
+**Offen:** Navigation und Info-Seite, Speicher, Daten-Export/Import, Installierbarkeit,
+Rätsel-Daten.
+
 ## Phase 2 — Taktik-Training
 
 Noch nicht begonnen.

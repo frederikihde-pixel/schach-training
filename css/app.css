@@ -85,12 +85,13 @@ main {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  overflow-x: clip;
 }
 
 .board-wrap #board {
   width: 100%;
   aspect-ratio: 1 / 1;
-  touch-action: none;
+  touch-action: manipulation;
 }
 
 .view-hint {
