@@ -17,7 +17,15 @@
   "ratingDeviation": 100
  },
  "maxProBand": 1000,
- "gesamtBytes": 3183122,
+ "pruefset": {
+  "datei": "pruefset.json",
+  "satz": "d5b8cbda",
+  "anzahl": 20,
+  "ratingMin": 848,
+  "ratingMax": 2051,
+  "bytes": 2847
+ },
+ "gesamtBytes": 3184458,
  "gelesen": 6193530,
  "qualifiziert": 2188703,
  "baender": [
@@ -43,7 +51,7 @@
    "anzahl": 1000,
    "ratingMin": 800,
    "ratingMax": 899,
-   "bytes": 132162
+   "bytes": 132164
   },
   {
    "band": 900,
@@ -51,7 +59,7 @@
    "anzahl": 1000,
    "ratingMin": 900,
    "ratingMax": 999,
-   "bytes": 132879
+   "bytes": 133098
   },
   {
    "band": 1000,
@@ -59,7 +67,7 @@
    "anzahl": 1000,
    "ratingMin": 1000,
    "ratingMax": 1099,
-   "bytes": 135184
+   "bytes": 135538
   },
   {
    "band": 1100,
@@ -67,7 +75,7 @@
    "anzahl": 1000,
    "ratingMin": 1100,
    "ratingMax": 1199,
-   "bytes": 137163
+   "bytes": 138452
   },
   {
    "band": 1200,
@@ -75,7 +83,7 @@
    "anzahl": 1000,
    "ratingMin": 1200,
    "ratingMax": 1299,
-   "bytes": 139727
+   "bytes": 139528
   },
   {
    "band": 1300,
@@ -83,7 +91,7 @@
    "anzahl": 1000,
    "ratingMin": 1300,
    "ratingMax": 1399,
-   "bytes": 139706
+   "bytes": 140500
   },
   {
    "band": 1400,
@@ -91,7 +99,7 @@
    "anzahl": 1000,
    "ratingMin": 1400,
    "ratingMax": 1499,
-   "bytes": 142139
+   "bytes": 142405
   },
   {
    "band": 1500,
@@ -99,7 +107,7 @@
    "anzahl": 1000,
    "ratingMin": 1500,
    "ratingMax": 1599,
-   "bytes": 143423
+   "bytes": 143165
   },
   {
    "band": 1600,
@@ -107,7 +115,7 @@
    "anzahl": 1000,
    "ratingMin": 1600,
    "ratingMax": 1699,
-   "bytes": 144789
+   "bytes": 144861
   },
   {
    "band": 1700,
@@ -115,7 +123,7 @@
    "anzahl": 1000,
    "ratingMin": 1700,
    "ratingMax": 1799,
-   "bytes": 144931
+   "bytes": 145035
   },
   {
    "band": 1800,
@@ -123,7 +131,7 @@
    "anzahl": 1000,
    "ratingMin": 1800,
    "ratingMax": 1899,
-   "bytes": 147322
+   "bytes": 147682
   },
   {
    "band": 1900,
@@ -131,7 +139,7 @@
    "anzahl": 1000,
    "ratingMin": 1900,
    "ratingMax": 1999,
-   "bytes": 147888
+   "bytes": 147921
   },
   {
    "band": 2000,
@@ -139,7 +147,7 @@
    "anzahl": 1000,
    "ratingMin": 2000,
    "ratingMax": 2099,
-   "bytes": 149610
+   "bytes": 147910
   },
   {
    "band": 2100,
@@ -201,151 +209,151 @@
  "themen": [
   {
    "name": "endgame",
-   "anzahl": 11476
+   "anzahl": 11497
   },
   {
    "name": "middlegame",
-   "anzahl": 9049
+   "anzahl": 9035
   },
   {
    "name": "sacrifice",
-   "anzahl": 4266
+   "anzahl": 4224
   },
   {
    "name": "advancedPawn",
-   "anzahl": 3033
+   "anzahl": 3014
   },
   {
    "name": "mateIn2",
-   "anzahl": 2914
+   "anzahl": 2943
   },
   {
    "name": "kingsideAttack",
-   "anzahl": 2253
+   "anzahl": 2264
   },
   {
    "name": "fork",
-   "anzahl": 2232
+   "anzahl": 2243
   },
   {
    "name": "attraction",
-   "anzahl": 2115
+   "anzahl": 2086
   },
   {
    "name": "defensiveMove",
-   "anzahl": 2048
+   "anzahl": 2077
   },
   {
    "name": "mateIn1",
-   "anzahl": 1931
+   "anzahl": 1936
   },
   {
    "name": "quietMove",
-   "anzahl": 1759
+   "anzahl": 1828
   },
   {
    "name": "mateIn3",
-   "anzahl": 1758
-  },
-  {
-   "name": "pin",
-   "anzahl": 1721
+   "anzahl": 1742
   },
   {
    "name": "exposedKing",
-   "anzahl": 1703
-  },
-  {
-   "name": "deflection",
-   "anzahl": 1689
+   "anzahl": 1700
   },
   {
    "name": "promotion",
-   "anzahl": 1679
+   "anzahl": 1688
+  },
+  {
+   "name": "deflection",
+   "anzahl": 1684
+  },
+  {
+   "name": "pin",
+   "anzahl": 1681
   },
   {
    "name": "discoveredAttack",
-   "anzahl": 1606
-  },
-  {
-   "name": "opening",
-   "anzahl": 1475
+   "anzahl": 1568
   },
   {
    "name": "pawnEndgame",
-   "anzahl": 1449
+   "anzahl": 1476
+  },
+  {
+   "name": "opening",
+   "anzahl": 1468
   },
   {
    "name": "rookEndgame",
-   "anzahl": 1267
+   "anzahl": 1232
   },
   {
    "name": "hangingPiece",
-   "anzahl": 902
+   "anzahl": 918
   },
   {
    "name": "mateIn4",
-   "anzahl": 897
+   "anzahl": 898
   },
   {
    "name": "queensideAttack",
-   "anzahl": 886
+   "anzahl": 876
   },
   {
    "name": "skewer",
-   "anzahl": 886
+   "anzahl": 876
   },
   {
    "name": "clearance",
-   "anzahl": 870
+   "anzahl": 855
   },
   {
    "name": "backRankMate",
-   "anzahl": 852
+   "anzahl": 851
   },
   {
    "name": "zugzwang",
-   "anzahl": 775
+   "anzahl": 768
   },
   {
    "name": "doubleCheck",
-   "anzahl": 771
+   "anzahl": 763
   },
   {
    "name": "bishopEndgame",
-   "anzahl": 718
-  },
-  {
-   "name": "queenEndgame",
-   "anzahl": 670
+   "anzahl": 737
   },
   {
    "name": "intermezzo",
-   "anzahl": 660
+   "anzahl": 674
+  },
+  {
+   "name": "queenEndgame",
+   "anzahl": 667
   },
   {
    "name": "knightEndgame",
-   "anzahl": 637
+   "anzahl": 649
   },
   {
    "name": "queenRookEndgame",
-   "anzahl": 607
+   "anzahl": 606
   },
   {
    "name": "attackingF2F7",
-   "anzahl": 601
+   "anzahl": 602
   },
   {
    "name": "xRayAttack",
-   "anzahl": 585
+   "anzahl": 581
   },
   {
    "name": "capturingDefender",
-   "anzahl": 556
+   "anzahl": 550
   },
   {
    "name": "trappedPiece",
-   "anzahl": 555
+   "anzahl": 550
   },
   {
    "name": "mateIn5",
@@ -361,19 +369,19 @@
   },
   {
    "name": "arabianMate",
-   "anzahl": 430
+   "anzahl": 433
   },
   {
    "name": "dovetailMate",
-   "anzahl": 396
+   "anzahl": 398
   },
   {
    "name": "enPassant",
-   "anzahl": 396
+   "anzahl": 395
   },
   {
    "name": "anastasiaMate",
-   "anzahl": 387
+   "anzahl": 393
   },
   {
    "name": "smotheredMate",
@@ -389,7 +397,7 @@
   },
   {
    "name": "castling",
-   "anzahl": 312
+   "anzahl": 311
   },
   {
    "name": "doubleBishopMate",
