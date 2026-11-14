@@ -25,7 +25,7 @@ Abschnitt aktualisiert. Stand: 14.11.2026.
 | Phase 1: Brett | fertig, gemergt, emuliert getestet |
 | Vorarbeiten: Mängel, Speichern, installierbar, Rätsel-Daten | fertig, gemergt |
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
-| Brett-Designs und Einführung | in Arbeit (Pull Request 4) |
+| Brett-Designs, Einführung, leere Zustände | fertig, Pull Request 4 (offen), emuliert getestet |
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
@@ -48,8 +48,8 @@ Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emul
 Zug zurück und vor, Drehen, FEN laden, Zug nach "Schach." (`tests/e2e/brett.cjs`).
 
 **Bekannte Mängel:**
-- Schwarze Figuren sind auf dem dunklen Brett schlecht zu erkennen (Kontrast nur 1,3 bis
-  1,6 zu 1). Wird in Pull Request 4 durch auswählbare Brett-Designs gelöst.
+- Schwarze Figuren waren auf dem dunklen Brett schlecht zu erkennen (Kontrast nur 1,3 bis
+  1,6 zu 1). Gelöst in Pull Request 4 durch auswählbare Brett-Designs (siehe dort).
 - Die Zugliste zeigt nur die gespielte Hauptlinie, keine Varianten.
 
 ## Vorarbeiten (Mängel, Speichern, Installierbarkeit, Rätsel-Daten)
@@ -102,7 +102,7 @@ alle bestanden: Rätsel richtig und falsch lösen, Matt-in-1-Alternative, Einstu
 simulierten Spielern (Stärke 900, 1500, 2100 ergibt 909, 1490, 2090), Wiederholungsplanung mit
 verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinnerung nach 28 Tagen.
 
-## Brett-Designs und Einführung (Pull Request 4, in Arbeit)
+## Brett-Designs, Einführung, leere Zustände (Pull Request 4)
 
 **Fertig bisher:**
 - Speicherformat Version 3: `einstellungen.brettDesign` und `einstellungen.einfuehrungGesehen`.
@@ -178,7 +178,7 @@ verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinner
   darunter steht der Knopf "Sitzung starten".
 - Getestet: `tests/e2e/leer.cjs` (16 Prüfungen).
 
-**Offen:** Gesamttest, Pull Request.
+**Offen:** Test auf dem echten Handy (Liste unten).
 
 ## Phase 3 — Eigene Partien analysieren
 
@@ -206,3 +206,15 @@ Allgemein und Taktik:
   Wechsel in eine andere App.
 - Flugmodus: erst online eine Sitzung starten, dann offline weiterüben.
 - Diagramm in der Statistik lesbar; Erinnerung nach 4 Wochen wirkt ruhig genug.
+
+Brett-Designs und Einführung (Pull Request 4):
+- Lesbarkeit der Figuren **draußen bei Sonnenlicht** und bei niedriger Helligkeit, in allen drei
+  Designs. Besonders: schwarze Dame und Turm, weiße Figuren auf hellen Feldern (Klassisch, Grün),
+  schwarze Figuren auf dunklen Feldern (Dunkel). Welches Design nimmst du am liebsten?
+- Wirkt "Klassisch" (hell) auf dem Handy neben der dunklen Oberfläche zu hell?
+- Koordinaten (kleine Buchstaben und Zahlen am Brettrand) lesbar.
+- Markierungen (Zielpunkte, letzter Zug, Schach) gut zu sehen, auch beim Ziehen mit dem Finger.
+- Die Karten unter Mehr > Darstellung lassen sich sicher antippen; die kleinen Vorschauen sind
+  verständlich.
+- **Wischen in der Einführung** (iOS-Safari und Android-Chrome): rastet die Seite sauber ein,
+  funktioniert "Weiter" und "Überspringen" mit dem Daumen, sind die Texte gut lesbar.
