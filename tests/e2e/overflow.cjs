@@ -1,7 +1,7 @@
 // Prüft: kein seitliches Überlaufen (scrollWidth == Fensterbreite) auf allen Seiten.
 const { startServer, launch, newPage, reporter } = require("./lib.cjs");
 
-const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/mehr,#/mehr/daten,#/mehr/info").split(",");
+const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/mehr,#/mehr/darstellung,#/mehr/daten,#/mehr/info").split(",");
 
 (async () => {
   const r = reporter("Seitenüberlauf");

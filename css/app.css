@@ -433,9 +433,19 @@ section h2 {
 
 .promo-piece {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   display: block;
+  border-radius: 6px;
+}
+
+/* Figuren auf der Feldfarbe, auf der ihre Farbe am besten zu erkennen ist */
+.promo-piece.white {
+  background: var(--feld-dunkel, #8b5e3c);
+}
+
+.promo-piece.black {
+  background: var(--feld-hell, #f0e6d2);
 }
 
 .promo-piece piece {
@@ -747,4 +757,67 @@ select {
   gap: 2px;
   padding: 10px 0;
   border-bottom: 1px solid var(--border);
+}
+
+.design-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.design-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 132px;
+  padding: 10px;
+  text-align: left;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+}
+
+.design-card[aria-pressed="true"] {
+  border-color: var(--focus);
+  background: var(--surface-2);
+}
+
+.design-preview {
+  flex: 0 0 112px;
+  width: 112px;
+  height: 112px;
+  pointer-events: none;
+}
+
+.design-preview > div {
+  width: 100%;
+  height: 100%;
+}
+
+/* Kleine Vorschau: dünnerer Rahmen, sonst füllt er das winzige Feld aus */
+.design-preview cg-board square.check {
+  box-shadow: inset 0 0 0 1.5px var(--mk-zeichen);
+}
+
+.design-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.design-text strong {
+  font-size: 1.05rem;
+}
+
+.design-text .muted {
+  font-size: 0.85rem;
+}
+
+.design-status {
+  font-size: 0.85rem;
+  color: var(--text);
 }

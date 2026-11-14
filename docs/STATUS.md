@@ -122,7 +122,21 @@ verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinner
   gewähltes Feld) mit 3:1 gegen das normale Feld geht dagegen nirgends, ohne die Figuren darauf
   unleserlich zu machen; dort gelten die niedrigeren Werte oben.
 
-**Offen:** Aussehen der Bretter, Seite "Darstellung", Einführung, leere Zustände, Screenshots.
+- Drei Designs: Klassisch (Standard für neue Nutzer), Dunkel (verbessert, mittelhelle Felder in
+  Blaugrau) und Grün (Creme gegen gedämpftes Grün: vertraut, ruhig, wenig Blendung, schwarze Figuren
+  mindestens 5,7:1). Nur das Brett ändert sich, die App-Oberfläche bleibt dunkel.
+- Mehr > Darstellung (`#/mehr/darstellung`): drei Karten mit echter Vorschau (Figuren beider Farben
+  auf beiden Feldfarben, letzter Zug, gewähltes Feld, Zielpunkte, Schlagring, Schach). Die Wahl wirkt
+  sofort auf Brett, Taktik und Standortbestimmung und wird gespeichert (`js/design.js`).
+- Die Figuren der Umwandlungsauswahl liegen auf der Feldfarbe des Designs mit dem besten Kontrast
+  (weiße auf dem dunklen, schwarze auf dem hellen Feld).
+- Kleiner Fehler im Brett behoben: Nach "Neustart" oder FEN laden blieb das zuvor gewählte Feld
+  markiert.
+- Getestet: `tests/e2e/design.cjs` (21 Prüfungen: Standard, sofortiger Wechsel auf allen Brettern,
+  Speichern nach Neuladen, Migration, Vorschau, Umwandlung).
+
+**Offen:** Screenshots ansehen und Schwächen berichten, Service-Worker-Version, Einführung,
+leere Zustände.
 
 ## Phase 3 — Eigene Partien analysieren
 
