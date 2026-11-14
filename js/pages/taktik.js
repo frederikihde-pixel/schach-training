@@ -22,6 +22,7 @@ let loopToken = 0;
 let waitForNext = null; // Auflösen, wenn "Weiter" getippt wird
 let autoRun = false; // Standortbestimmung wurde von der Statistik-Seite gestartet
 let pendingTheme = null; // "Dieses Thema üben" von der Statistik-Seite
+let pendingStart = null; // "einstufung" oder "sitzung", von der Statistik-Seite angestoßen
 
 const VIEWS = ["taktik-start", "taktik-lauf", "taktik-zusammenfassung"];
 function showView(id) {
@@ -50,7 +51,13 @@ function renderStart() {
 
   $("taktik-staerke").textContent = t.eingestuft && t.staerke !== null ? `Taktikstärke: ${Math.round(t.staerke)}` : "Noch nicht eingestuft";
   const due = dueCards(t.karten, today()).length;
-  $("taktik-info").textContent = t.eingestuft ? `Fällige Wiederholungen: ${due}` : "";
+  let info = "";
+  if (t.eingestuft) {
+    info = Object.keys(t.karten).length
+      ? `Fällige Wiederholungen: ${due}`
+      : "Noch keine Wiederholungen. Rätsel, die du nicht löst, kommen nach 1, 3, 7 und 21 Tagen wieder.";
+  }
+  $("taktik-info").textContent = info;
 
   $("taktik-fortsetzen").hidden = !aktiv;
   $("taktik-einstufung").hidden = !!aktiv || t.eingestuft;
@@ -182,6 +189,12 @@ export async function startStandortbestimmung() {
     };
   });
   autoRun = true;
+  location.hash = "#/taktik";
+}
+
+// Wird von der Statistik-Seite aufgerufen (leerer Zustand): Einstufung oder Sitzung starten.
+export function startFromStatistik(kind) {
+  pendingStart = kind;
   location.hash = "#/taktik";
 }
 
@@ -404,6 +417,15 @@ export function onShowTaktik() {
   if (running) return;
   showView("taktik-start");
   renderStart();
+  if (pendingStart) {
+    const kind = pendingStart;
+    pendingStart = null;
+    if (!taktik().aktiv) {
+      if (kind === "einstufung" && !taktik().eingestuft) startEinstufung();
+      else if (kind === "sitzung" && taktik().eingestuft) startSitzung();
+    }
+    return;
+  }
   if (pendingTheme) {
     const tag = pendingTheme;
     pendingTheme = null;

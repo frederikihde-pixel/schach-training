@@ -171,7 +171,14 @@ verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinner
   automatische Einführung). Alle anderen Browsertests starten mit "Einführung schon gesehen"
   (`tests/e2e/lib.cjs`, `seed: false` schaltet das für neue Nutzer aus).
 
-**Offen:** leere Zustände.
+- Leere Zustände: Die Statistik ohne Daten zeigt einen erklärenden Satz und einen Knopf
+  ("Einstufung starten" vor der Einstufung, danach "Sitzung starten"; läuft eine Sitzung, "Zur
+  Sitzung") statt leerer Diagramme. Auf der Seite Üben erklärt ein Satz die Wiederholungen
+  ("Noch keine Wiederholungen. Rätsel, die du nicht löst, kommen nach 1, 3, 7 und 21 Tagen wieder."),
+  darunter steht der Knopf "Sitzung starten".
+- Getestet: `tests/e2e/leer.cjs` (16 Prüfungen).
+
+**Offen:** Gesamttest, Pull Request.
 
 ## Phase 3 — Eigene Partien analysieren
 

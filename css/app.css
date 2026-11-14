@@ -918,3 +918,15 @@ select {
 body.intro-open {
   overflow: hidden;
 }
+
+.empty-state {
+  margin: 0 0 20px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.empty-state p {
+  margin: 0 0 12px;
+}
