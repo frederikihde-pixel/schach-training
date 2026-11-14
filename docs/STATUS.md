@@ -160,7 +160,18 @@ verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinner
 - Die Vorschau in "Darstellung" ist klein (112 px); Figuren sind dort nur zu erahnen, die Farben
   und Markierungen aber gut zu beurteilen.
 
-**Offen:** Einführung, leere Zustände.
+- Einführung (`js/pages/einfuehrung.js`): Vollbild-Fenster mit 6 kurzen Seiten (Was die App kann; So
+  fängst du an; So löst du ein Rätsel; Fehler sind das Training; Fortschritt messen; Daten, Gerät und
+  ein ehrlicher Hinweis). Wischen (natives Einrasten) oder "Weiter" und "Zurück", immer
+  "Überspringen", "Seite 2 von 6", keine Effekte, keine Emojis. Sie erscheint beim ersten Start
+  automatisch (nur neue Nutzer) und ist unter Mehr > Einführung jederzeit wieder aufrufbar.
+  "Überspringen" und "Fertig" zählen als gesehen (`einstellungen.einfuehrungGesehen`).
+- Getestet: `tests/e2e/einfuehrung.cjs` (44 Prüfungen: nur beim ersten Start, überspringen, wieder
+  öffnen, Weiter, Wischen per Touch, Inhalt, keine Emojis, Tippflächen, bisherige Nutzer ohne
+  automatische Einführung). Alle anderen Browsertests starten mit "Einführung schon gesehen"
+  (`tests/e2e/lib.cjs`, `seed: false` schaltet das für neue Nutzer aus).
+
+**Offen:** leere Zustände.
 
 ## Phase 3 — Eigene Partien analysieren
 

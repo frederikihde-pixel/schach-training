@@ -106,7 +106,7 @@ const COLORS = {
 
   // ---- Migration: bisheriger Stand (Version 2) behält Dunkel, neuer Nutzer bekommt Klassisch ----
   const v2 = { app: "schach-training", version: 2, erstelltAm: "2026-11-01T10:00:00.000Z", letzterExport: null, einstellungen: {}, taktik: { staerke: 1450, eingestuft: true, anzahl: 12, versuche: [{ id: "a" }], themen: {}, karten: {}, gesehen: {}, sitzungen: [], verlauf: [], standort: [], aktiv: null } };
-  const old = await newPage(browser);
+  const old = await newPage(browser, { seed: false });
   await old.page.addInitScript((state) => { if (!localStorage.getItem("schach-training")) localStorage.setItem("schach-training", JSON.stringify(state)); }, v2);
   await old.page.goto(url + "index.html#/brett");
   await old.page.waitForTimeout(500);

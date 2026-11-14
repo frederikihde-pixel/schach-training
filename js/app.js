@@ -6,6 +6,7 @@ import { initTaktik, onShowTaktik } from "./pages/taktik.js";
 import { initStatistik, onShowStatistik } from "./pages/statistik.js";
 import { onShowDarstellung } from "./pages/darstellung.js";
 import { initDesign } from "./design.js";
+import { initEinfuehrung } from "./pages/einfuehrung.js";
 import { store, requestPersistence } from "./storage.js";
 
 addRoute("brett", { page: "page-brett", tab: "brett", title: "Brett" });
@@ -29,6 +30,7 @@ initDaten();
 initTaktik();
 initStatistik();
 startRouter();
+initEinfuehrung();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
