@@ -102,6 +102,28 @@ alle bestanden: Rätsel richtig und falsch lösen, Matt-in-1-Alternative, Einstu
 simulierten Spielern (Stärke 900, 1500, 2100 ergibt 909, 1490, 2090), Wiederholungsplanung mit
 verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinnerung nach 28 Tagen.
 
+## Brett-Designs und Einführung (Pull Request 4, in Arbeit)
+
+**Fertig bisher:**
+- Speicherformat Version 3: `einstellungen.brettDesign` und `einstellungen.einfuehrungGesehen`.
+  Neue Nutzer: Design Klassisch, Einführung noch nicht gesehen. Bisherige Stände (Version 2 und
+  älter, auch importierte Dateien): Design Dunkel, Einführung gilt als gesehen (bleibt unter
+  "Mehr" erreichbar). Wer bisher nur das Brett benutzt und nie etwas gespeichert hat, zählt als neu.
+- `js/board-designs.js`: eine Quelle für Feldfarben und Markierungen der drei Designs (Klassisch,
+  Dunkel, Grün).
+- `tests/unit/kontrast.test.mjs` berechnet den Kontrast aller Designs und gibt alle Werte aus.
+  Dunkel: schwarze und weiße Figuren auf beiden Feldfarben mindestens 3:1 (gemessen schwarz 6,74
+  und 3,34, weiß 3,11 und 6,28), Zielpunkte, Ringe, Schach-Rahmen und Koordinaten mindestens 3:1.
+  Markierte Felder (letzter Zug, gewähltes Feld, Schach) heben sich um mindestens 1,3:1 ab,
+  und Figuren bleiben darauf mindestens 3:1 erkennbar. Klassisch und Grün: Zielpunkte, Ringe und
+  Schach-Rahmen mindestens 3:1 (sehr dunkle Markierungen), Flächen mindestens 1,2:1.
+- Korrektur zu meiner früheren Aussage: 3:1 auf beiden Feldfarben ist bei braun/creme und
+  grün/creme doch möglich, aber nur mit sehr dunklen Markierungen. Eine Fläche (letzter Zug,
+  gewähltes Feld) mit 3:1 gegen das normale Feld geht dagegen nirgends, ohne die Figuren darauf
+  unleserlich zu machen; dort gelten die niedrigeren Werte oben.
+
+**Offen:** Aussehen der Bretter, Seite "Darstellung", Einführung, leere Zustände, Screenshots.
+
 ## Phase 3 — Eigene Partien analysieren
 
 Noch nicht begonnen (siehe "Nächste Schritte").

@@ -50,7 +50,7 @@ test("Migration 1 auf 2: alte Sicherungsdatei bekommt neue Felder, nichts geht v
     taktik: { staerke: 1400, eingestuft: true, versuche: [{ id: "a" }, { id: "b" }], themen: { fork: { n: 1, ok: 1, ms: 1 } }, karten: {}, gesehen: { a: 1 }, sitzungen: [], verlauf: [], aktiv: null },
   };
   const m = migrate(structuredClone(alt), { now: t0 });
-  assert.equal(m.version, 2);
+  assert.equal(m.version, SCHEMA_VERSION);
   assert.deepEqual(m.taktik.standort, []);
   assert.equal(m.taktik.anzahl, 2);
   assert.equal(m.taktik.staerke, 1400);
@@ -58,7 +58,54 @@ test("Migration 1 auf 2: alte Sicherungsdatei bekommt neue Felder, nichts geht v
   validate(m);
   const s = createStore({ backend: backend(), now: () => t0 });
   s.importJson(JSON.stringify(alt));
-  assert.equal(s.get().version, 2);
+  assert.equal(s.get().version, SCHEMA_VERSION);
+});
+
+test("Migration 2 auf 3: bisheriger Stand behält Dunkel, Einführung gilt als gesehen", () => {
+  const v2 = defaults(t0);
+  v2.version = 2;
+  v2.einstellungen = {};
+  v2.taktik.staerke = 1450;
+  const m = migrate(structuredClone(v2), { now: t0 });
+  assert.equal(m.version, 3);
+  assert.equal(m.einstellungen.brettDesign, "dunkel");
+  assert.equal(m.einstellungen.einfuehrungGesehen, true);
+  assert.equal(m.taktik.staerke, 1450);
+  validate(m);
+});
+
+test("Migration 2 auf 3: schon gewählte Werte bleiben erhalten", () => {
+  const v2 = defaults(t0);
+  v2.version = 2;
+  v2.einstellungen = { brettDesign: "gruen", einfuehrungGesehen: false };
+  const m = migrate(structuredClone(v2), { now: t0 });
+  assert.deepEqual(m.einstellungen, { brettDesign: "gruen", einfuehrungGesehen: false });
+});
+
+test("Neue Nutzer: Design Klassisch, Einführung noch nicht gesehen", () => {
+  const d = createStore({ backend: backend(), now: () => t0 }).get();
+  assert.equal(d.version, SCHEMA_VERSION);
+  assert.deepEqual(d.einstellungen, { brettDesign: "klassisch", einfuehrungGesehen: false });
+});
+
+test("Alte Sicherungsdatei (Version 2) lässt sich importieren und bekommt Dunkel", () => {
+  const s = createStore({ backend: backend(), now: () => t0 });
+  const alt = defaults(t0);
+  alt.version = 2;
+  alt.einstellungen = {};
+  s.importJson(JSON.stringify(alt));
+  assert.equal(s.get().einstellungen.brettDesign, "dunkel");
+  assert.equal(s.get().einstellungen.einfuehrungGesehen, true);
+});
+
+test("Gespeicherter Stand der Version 2 wird beim Laden umgestellt", () => {
+  const alt = defaults(t0);
+  alt.version = 2;
+  alt.einstellungen = {};
+  const b = backend({ [STORAGE_KEY]: JSON.stringify(alt) });
+  const d = createStore({ backend: b, now: () => t0 }).get();
+  assert.equal(d.version, 3);
+  assert.equal(d.einstellungen.brettDesign, "dunkel");
 });
 
 test("Migration: Kette über mehrere Versionen und Ablehnung neuerer Versionen", () => {

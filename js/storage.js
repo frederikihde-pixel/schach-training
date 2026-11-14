@@ -4,7 +4,7 @@
 
 export const APP_ID = "schach-training";
 export const STORAGE_KEY = "schach-training";
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 export const EXPORT_REMINDER_DAYS = 14;
 
 // Begrenzungen, damit die Daten klein bleiben (localStorage hat etwa 5 MB).
@@ -18,7 +18,10 @@ export function defaults(now = new Date()) {
     version: SCHEMA_VERSION,
     erstelltAm: now.toISOString(),
     letzterExport: null,
-    einstellungen: {},
+    einstellungen: {
+      brettDesign: "klassisch", // neue Nutzer: Klassisch; bisherige behalten Dunkel (Migration)
+      einfuehrungGesehen: false,
+    },
     taktik: {
       staerke: null, // geschätzte Taktikstärke, null bis zur Einstufung
       eingestuft: false,
@@ -55,6 +58,16 @@ export const MIGRATIONS = {
       ...data,
       version: 2,
       taktik: { ...t, anzahl: t.anzahl ?? (Array.isArray(t.versuche) ? t.versuche.length : 0), standort: t.standort ?? [] },
+    };
+  },
+  // Version 3: Brett-Design und Einführung. Wer schon einen Stand hat, behält das dunkle Design und
+  // bekommt die Einführung nicht automatisch (sie bleibt unter "Mehr" erreichbar).
+  2(data) {
+    const e = data.einstellungen || {};
+    return {
+      ...data,
+      version: 3,
+      einstellungen: { ...e, brettDesign: e.brettDesign ?? "dunkel", einfuehrungGesehen: e.einfuehrungGesehen ?? true },
     };
   },
 };
@@ -98,6 +111,8 @@ export function validate(data) {
     if (t[key] === null || typeof t[key] !== "object" || Array.isArray(t[key])) fail(`Taktik-Daten: "${key}" ist ungültig.`);
   }
   if (data.einstellungen === null || typeof data.einstellungen !== "object") fail("Die Einstellungen sind ungültig.");
+  if (typeof data.einstellungen.brettDesign !== "string") fail("Das Brett-Design ist ungültig.");
+  if (typeof data.einstellungen.einfuehrungGesehen !== "boolean") fail('Die Angabe zur Einführung ist ungültig.');
   return data;
 }
 

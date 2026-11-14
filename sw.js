@@ -18,6 +18,7 @@ const PRECACHE = [
   "./js/app.js",
   "./js/router.js",
   "./js/storage.js",
+  "./js/board-designs.js",
   "./js/pages/brett.js",
   "./js/pages/daten.js",
   "./js/pages/mehr.js",
