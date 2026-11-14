@@ -135,8 +135,32 @@ verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinner
 - Getestet: `tests/e2e/design.cjs` (21 Prüfungen: Standard, sofortiger Wechsel auf allen Brettern,
   Speichern nach Neuladen, Migration, Vorschau, Umwandlung).
 
-**Offen:** Screenshots ansehen und Schwächen berichten, Service-Worker-Version, Einführung,
-leere Zustände.
+- Screenshots aller Designs (Startstellung; Stellung mit Schach, letztem Zug, gewähltem Feld,
+  Zielpunkten und Schlagring) liegen unter `tests/screenshots/` (erzeugt mit
+  `node tests/e2e/screenshots.cjs`).
+- Service Worker: `CACHE_VERSION` ist jetzt 2, alte Caches werden beim Aktivieren gelöscht.
+- Koordinaten (Buchstaben und Zahlen) liegen jetzt über den Figuren; vorher verdeckten die
+  Figurensockel die Buchstaben der ersten Reihe.
+
+**Schwächen, die ich auf den Screenshots sehe (ehrlich):**
+- Dunkel: Die schwächsten Paare sind die schwarze Figur auf dem dunklen Feld (3,3:1) und die weiße
+  Figur auf dem hellen Feld (3,1:1). Das ist die Grenze, bei der das Schachbrettmuster noch klar
+  erkennbar bleibt; die Figuren sind auf den Bildern gut zu erkennen, draußen ungeprüft.
+- Dunkel: Die Markierungen sind kräftige Farbflächen (Bernstein, Türkis, Rot). Das war nötig, damit
+  die Figuren darauf lesbar bleiben (mindestens 3:1) und die Fläche sich vom Feld abhebt. Es wirkt
+  weniger zurückhaltend als vorher.
+- Klassisch und Grün: Die Füllung weißer Figuren auf den hellen Feldern ist nur etwa 1,2:1 hell
+  gegen Creme; sie wird vom schwarzen Rand getragen. Auf den Bildern gut sichtbar, bei starkem
+  Sonnenlicht zu prüfen.
+- Letzter Zug bei Klassisch und Grün: Das gleiche Gelb sieht auf Creme heller aus als auf Braun
+  oder Grün; die beiden Felder gehören trotzdem erkennbar zusammen.
+- Koordinaten: Auf braunen und grünen Feldern stehen dunkle Zeichen mit hellem Rand (rund 3:1),
+  die kleinen Buchstaben sind lesbar, aber keine Stärke. Einen einzelnen Farbwert mit 3:1 auf
+  hellem und dunklem Feld gibt es dort nicht.
+- Die Vorschau in "Darstellung" ist klein (112 px); Figuren sind dort nur zu erahnen, die Farben
+  und Markierungen aber gut zu beurteilen.
+
+**Offen:** Einführung, leere Zustände.
 
 ## Phase 3 — Eigene Partien analysieren
 

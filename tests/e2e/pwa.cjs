@@ -52,6 +52,7 @@ function pngSize(buf) {
     return { names, keys };
   });
   r.check("Cache-Name mit Versionsnummer", cacheInfo.names.length === 1 && /^schach-training-v\d+$/.test(cacheInfo.names[0]), cacheInfo.names.join());
+  r.check("Cache-Version ist 2 oder höher (neues Brett-Aussehen kommt bei allen an)", Number(cacheInfo.names[0].replace(/\D+/g, "")) >= 2, cacheInfo.names.join());
   r.check("Grundgerüst ist vorab gecacht", ["/index.html", "/js/app.js", "/css/app.css", "/vendor/chess.js/chess.js", "/vendor/chessground/chessground.min.js", "/icons/icon-192.png"].every((p) => cacheInfo.keys.includes(p)));
 
   // Netzwerk zuerst: online kommt die neueste Version, auch wenn eine ältere im Cache liegt
@@ -90,11 +91,13 @@ function pngSize(buf) {
     await caches.open("schach-training-v0");
     await caches.open("andere-app-v1");
   });
-  overrides["/sw.js"] = { type: "text/javascript", body: swSource.replace("const CACHE_VERSION = 1;", "const CACHE_VERSION = 2;") };
+  const current = Number(swSource.match(/const CACHE_VERSION = (\d+);/)[1]);
+  const next = current + 1;
+  overrides["/sw.js"] = { type: "text/javascript", body: swSource.replace(/const CACHE_VERSION = \d+;/, `const CACHE_VERSION = ${next};`) };
   await page.evaluate(async () => { const reg = await navigator.serviceWorker.ready; await reg.update(); });
   await page.waitForTimeout(1500);
   const names = (await page.evaluate(() => caches.keys())).sort();
-  r.check("Neue Version: alte eigene Caches gelöscht, fremder bleibt", names.join() === "andere-app-v1,schach-training-v2", names.join());
+  r.check("Neue Version: alte eigene Caches gelöscht, fremder bleibt", names.join() === `andere-app-v1,schach-training-v${next}`, names.join());
   delete overrides["/sw.js"];
 
   r.check("keine Skriptfehler", page.__errors.filter((e) => !/Failed to load resource: net::ERR_INTERNET_DISCONNECTED/.test(e)).length === 0, page.__errors.join("; "));

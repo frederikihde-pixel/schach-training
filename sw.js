@@ -4,7 +4,7 @@
 // beim Aktivieren gelöscht). Neue Dateien in PRECACHE eintragen; tests/unit/sw.test.mjs
 // prüft, dass die Liste vollständig ist.
 
-const CACHE_VERSION = 1;
+const CACHE_VERSION = 2;
 const CACHE_PREFIX = "schach-training-";
 const CACHE_NAME = `${CACHE_PREFIX}v${CACHE_VERSION}`;
 

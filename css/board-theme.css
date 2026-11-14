@@ -41,6 +41,7 @@ cg-board square.check {
 
 .cg-wrap coords {
   opacity: 1;
+  z-index: 3; /* Buchstaben und Zahlen liegen über den Figuren, sonst verdecken die Sockel sie */
 }
 
 .cg-wrap coords coord {
