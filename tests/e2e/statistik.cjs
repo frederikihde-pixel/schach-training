@@ -66,7 +66,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     await page.goto(url + "index.html#/taktik/statistik");
     await page.waitForTimeout(500);
     const text = await page.innerText("#page-statistik");
-    r.check("Ohne Daten: 'Noch nicht eingestuft', kein Diagramm, Hinweise statt Fehler", /Noch nicht eingestuft/.test(text) && /nach der zweiten Sitzung/.test(text) && /Noch zu wenig Daten/.test(text) && /Noch keine Ergebnisse/.test(text));
+    r.check("Ohne Daten: erklärender Satz und Knopf statt einer leeren Seite", /Die Statistik füllt sich/.test(text) && /Einstufung starten/.test(text) && /Noch keine Ergebnisse/.test(text), text.replace(/\s+/g, " ").slice(0, 200));
     r.check("keine Skriptfehler (leere Statistik)", page.__errors.length === 0, page.__errors.join("; "));
   }
 

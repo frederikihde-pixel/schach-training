@@ -181,29 +181,38 @@
           </nav>
           <h2 class="page-title">Statistik</h2>
 
-          <div class="block">
-            <h3>Taktikstärke</h3>
-            <p id="stat-staerke" class="strength"></p>
-            <div id="stat-diagramm" class="chart"></div>
-            <p id="stat-diagramm-hinweis" class="muted"></p>
+          <div id="stat-leer" class="empty-state" hidden>
+            <p id="stat-leer-text"></p>
+            <div class="stack"><button id="btn-stat-leer" type="button"></button></div>
           </div>
 
-          <div class="block">
-            <h3>Sitzungen pro Woche</h3>
-            <ul id="stat-wochen" class="week-list"></ul>
-          </div>
+          <div id="stat-inhalt">
 
-          <div class="block">
-            <h3>Schwächste Themen</h3>
-            <p id="stat-schwach-leer" class="muted" hidden></p>
-            <ul id="stat-schwach" class="weak-list"></ul>
-            <p id="stat-schwach-meldung" class="message" role="status"></p>
-          </div>
+            <div class="block">
+              <h3>Taktikstärke</h3>
+              <p id="stat-staerke" class="strength"></p>
+              <div id="stat-diagramm" class="chart"></div>
+              <p id="stat-diagramm-hinweis" class="muted"></p>
+            </div>
 
-          <div class="block">
-            <h3>Themen</h3>
-            <p id="stat-themen-leer" class="muted" hidden>Noch keine Rätsel gespielt.</p>
-            <ul id="stat-themen" class="stat-list"></ul>
+            <div class="block">
+              <h3>Sitzungen pro Woche</h3>
+              <ul id="stat-wochen" class="week-list"></ul>
+            </div>
+
+            <div class="block">
+              <h3>Schwächste Themen</h3>
+              <p id="stat-schwach-leer" class="muted" hidden></p>
+              <ul id="stat-schwach" class="weak-list"></ul>
+              <p id="stat-schwach-meldung" class="message" role="status"></p>
+            </div>
+
+            <div class="block">
+              <h3>Themen</h3>
+              <p id="stat-themen-leer" class="muted" hidden>Noch keine Rätsel gespielt.</p>
+              <ul id="stat-themen" class="stat-list"></ul>
+            </div>
+
           </div>
 
           <div id="stat-standort" class="block">
@@ -227,9 +236,24 @@
         <div class="page-inner">
           <h2 class="page-title">Mehr</h2>
           <nav class="link-list" aria-label="Mehr">
+            <button id="btn-einfuehrung" type="button">Einführung</button>
+            <a href="#/mehr/darstellung">Darstellung</a>
             <a href="#/mehr/daten">Daten sichern und wiederherstellen</a>
             <a href="#/mehr/info">Info und Lizenzen</a>
           </nav>
+        </div>
+      </div>
+
+      <!-- Seite: Darstellung -->
+      <div id="page-darstellung" class="page" hidden>
+        <div class="page-inner">
+          <p class="back-row"><a class="back-link" href="#/mehr">Zurück</a></p>
+          <h2 class="page-title">Darstellung</h2>
+          <p class="muted">
+            So sieht das Brett aus. Die App selbst bleibt dunkel. Die Wahl gilt für alle Bretter (Brett, Taktik,
+            Standortbestimmung).
+          </p>
+          <div id="design-liste" class="design-list" role="group" aria-label="Brett-Design"></div>
         </div>
       </div>
 
@@ -371,6 +395,73 @@
       <a id="tab-brett" href="#/brett">Brett</a>
       <a id="tab-taktik" href="#/taktik">Taktik</a>
     </nav>
+
+    <div id="intro" class="intro" role="dialog" aria-modal="true" aria-labelledby="intro-titel" hidden>
+      <div class="intro-top">
+        <span id="intro-seite" class="muted" aria-live="polite"></span>
+        <button id="intro-ueberspringen" type="button" class="btn-quiet">Überspringen</button>
+      </div>
+      <div id="intro-slides" class="intro-slides">
+        <section class="intro-slide" aria-label="Seite 1">
+          <h2 id="intro-titel">Was die App kann</h2>
+          <ul class="intro-list">
+            <li><strong>Brett:</strong> frei spielen, beide Seiten ziehen und Stellungen prüfen.</li>
+            <li><strong>Taktik:</strong> Rätsel lösen, die sich an dich anpassen.</li>
+            <li><strong>Standortbestimmung:</strong> 20 feste Rätsel, die zeigen, wo du stehst.</li>
+            <li><strong>Statistik:</strong> dein Verlauf und deine schwächsten Themen.</li>
+            <li><strong>Daten sichern:</strong> alles bleibt auf deinem Gerät, du kannst es exportieren.</li>
+          </ul>
+        </section>
+        <section class="intro-slide" aria-label="Seite 2">
+          <h2>So fängst du an</h2>
+          <p>Beginne mit der Einstufung. Das sind 10 Rätsel. Danach passt die App die Schwierigkeit an dich an.</p>
+          <p>
+            Übe lieber ein- bis zweimal am Tag kurz als einmal lange. Kurze, regelmäßige Sitzungen bleiben besser
+            im Kopf.
+          </p>
+        </section>
+        <section class="intro-slide" aria-label="Seite 3">
+          <h2>So löst du ein Rätsel</h2>
+          <p>
+            Denke die ganze Zugfolge zu Ende, bevor du ziehst: dein Zug, die Antwort des Gegners, dein nächster
+            Zug. Erst dann ziehe.
+          </p>
+          <p>Es gibt keine Hinweise und keine Zeitvorgabe. Schnelles Raten hilft dir nicht.</p>
+        </section>
+        <section class="intro-slide" aria-label="Seite 4">
+          <h2>Fehler sind das Training</h2>
+          <p>Nach einem Fehler zeigt dir die App die Lösung. Danach spielst du die Zugfolge selbst nach.</p>
+          <p>
+            Rätsel, die du nicht gelöst hast, kommen nach 1, 3, 7 und 21 Tagen wieder. So prägen sich die Muster
+            ein. Fehler sind der eigentliche Gewinn.
+          </p>
+        </section>
+        <section class="intro-slide" aria-label="Seite 5">
+          <h2>Fortschritt messen</h2>
+          <p>
+            Wiederhole die Standortbestimmung nach 4 Wochen. Nur sie zeigt echten Fortschritt, denn es sind immer
+            dieselben 20 Rätsel.
+          </p>
+          <p>Die Taktikstärke in der Statistik ist nur eine Schätzung. Sie schwankt und ist kein Urteil.</p>
+        </section>
+        <section class="intro-slide" aria-label="Seite 6">
+          <h2>Daten, Gerät und ein ehrlicher Hinweis</h2>
+          <ul class="intro-list">
+            <li>Exportiere deine Daten regelmäßig (Mehr, Daten sichern).</li>
+            <li>Benutze immer denselben Link. Die Daten gelten pro Adresse.</li>
+            <li>Füge die App zum Home-Bildschirm hinzu, dann startet sie wie eine normale App.</li>
+          </ul>
+          <p class="intro-note">
+            Diese App trainiert Taktik und Wiederholung. Für echte Fortschritte gehören auch Partien mit langer
+            Bedenkzeit dazu und die Analyse dieser Partien.
+          </p>
+        </section>
+      </div>
+      <div class="intro-nav">
+        <button id="intro-zurueck" type="button">Zurück</button>
+        <button id="intro-weiter" type="button" class="intro-primary">Weiter</button>
+      </div>
+    </div>
 
     <div id="promotion-overlay" class="promotion-overlay" hidden>
       <div class="promotion-box">
