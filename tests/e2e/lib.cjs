@@ -83,8 +83,20 @@ async function newContext(browser, extra = {}) {
   return browser.newContext({ ...devices["iPhone 12"], viewport: { width: 390, height: 844 }, ...extra });
 }
 
+// Standardmäßig startet jede Seite so, als hätte der Nutzer die Einführung schon gesehen (sie würde sonst
+// über der App liegen). `seed: false` startet wie ein ganz neuer Nutzer ohne gespeicherten Stand.
 async function newPage(browser, extra = {}) {
-  const context = await newContext(browser, extra);
+  const { seed = true, ...contextOptions } = extra;
+  const context = await newContext(browser, contextOptions);
+  if (seed) {
+    await context.addInitScript(() => {
+      try {
+        if (!localStorage.getItem("schach-training")) localStorage.setItem("schach-training", JSON.stringify({ einstellungen: { einfuehrungGesehen: true } }));
+      } catch (e) {
+        /* kein Speicher verfügbar */
+      }
+    });
+  }
   const page = await context.newPage();
   page.__errors = [];
   page.on("pageerror", (e) => page.__errors.push("pageerror: " + e));

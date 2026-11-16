@@ -1,7 +1,7 @@
 // Navigation, untere Leiste, Info-Seite und Mindestgröße der Tippflächen (44 px).
 const { startServer, launch, newPage, reporter } = require("./lib.cjs");
 
-const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/mehr,#/mehr/daten,#/mehr/info").split(",");
+const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/mehr,#/mehr/darstellung,#/mehr/daten,#/mehr/info").split(",");
 
 (async () => {
   const r = reporter("Navigation und Tippflächen");

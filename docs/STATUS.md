@@ -1,222 +1,190 @@
 # Status
 
 Diese Datei wird zu Beginn jeder Sitzung zuerst gelesen und nach jedem
-Abschnitt aktualisiert.
+Abschnitt aktualisiert. Stand: 14.11.2026.
+
+## Nächste Schritte
+
+1. **Auf dem echten Handy prüfen** (Liste ganz unten). Das ist die einzige offene Aufgabe
+   aus den fertigen Phasen.
+2. **Computergegner auf dem Brett:** gegen den Computer spielen, Stärke wählbar. Idee: eine
+   Schach-Engine als WebAssembly (zum Beispiel Stockfish, GPL-3 passt zur Lizenz), sie läuft
+   komplett im Browser, ohne Server. Vorher klären: Größe der Datei (einige MB) und
+   Offline-Cache, Stärkestufen, Bedenkzeit.
+3. **Phase 3, eigene Partien analysieren mit Chess.com:** Partien nach Benutzername holen
+   (öffentliche, nur lesende Chess.com-Schnittstelle ohne Konto; alternativ eine PGN-Datei
+   importieren), mit der Engine analysieren, Fehler als Rätsel in die Wiederholung übernehmen.
+   Vorher klären: Der Benutzername verlässt das Gerät nur für die Abfrage; wie viele Partien
+   werden gespeichert (Speichergrenze etwa 5 MB).
+4. Danach Phase 4 (Eröffnung und Endspiel) und Phase 5 (Tagesplan).
+
+## Stand auf einen Blick
+
+| Teil | Stand |
+| --- | --- |
+| Phase 1: Brett | fertig, gemergt, emuliert getestet |
+| Vorarbeiten: Mängel, Speichern, installierbar, Rätsel-Daten | fertig, gemergt |
+| Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
+| Brett-Designs, Einführung, leere Zustände | fertig, Pull Request 4 (offen), emuliert getestet |
+| Phase 3 bis 5 | nicht begonnen |
+
+Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
+`QUICK=1` überspringt die langen Sitzungstests, sonst etwa 15 Minuten). Stand 14.11.2026: 56 Logik-Tests
+(davon 10 Kontrast-Tests), 16 Python-Tests und 264 Browser-Prüfungen, alle bestanden.
+Screenshots der Designs: `node tests/e2e/screenshots.cjs` (schreibt nach `tests/screenshots/`).
 
 ## Phase 1 — Ein Brett, auf dem ich beide Seiten spielen kann
 
 **Fertig:**
-- Grundlagen angelegt: CLAUDE.md, LICENSE (GPL-3.0), diese Datei.
-- chess.js 1.4.0 und chessground 9.2.1 vendort (vendor/), Cburnett-
-  Figurenset (CC-BY-SA-3.0).
-- Grundgerüst: index.html, dunkles Brett-Theme, Chessground zeigt die
-  Startstellung bei 390 px Breite an.
-- Zugausführung: Tippen-Tippen und Ziehen, erlaubte Züge markieren,
-  Schach hervorheben, letzten Zug markieren, Umwandlungsauswahl,
-  Rochade, en passant. Seite scrollt beim Ziehen nicht.
-- Steuerung: Zug zurück/vor (auch per Klick in der Zugliste), Brett
-  drehen, Neustart, FEN laden (mit Fehlermeldung) und ausgeben
-  (mit Kopieren-Knopf).
-- Spielende-Erkennung: Matt, Patt, dreifache Stellungswiederholung,
-  50-Züge-Regel, zu wenig Material — jeweils mit klarem Hinweistext.
+- chess.js 1.4.0 und chessground 9.2.1 liegen im Repository (`vendor/`), Cburnett-Figurenset
+  (CC-BY-SA-3.0). Das Repository steht unter GPL-3.0.
+- Tippen-Tippen und Ziehen, erlaubte Züge, Schach, letzter Zug, Umwandlungsauswahl, Rochade,
+  en passant. Die Seite scrollt beim Ziehen nicht.
+- Zug zurück und vor (auch per Klick in der Zugliste), Brett drehen, Neustart, FEN laden und
+  ausgeben, Spielende (Matt, Patt, dreifache Wiederholung, 50-Züge-Regel, zu wenig Material).
+- Fehler behoben: Nach dem Hinweis "Schach." verschob sich das Brett auf der Seite, und
+  Chessground traf mit dem gemerkten Standort das falsche Feld. Der Standort wird jetzt vor
+  jeder Berührung neu gelesen (`keepBoundsFresh`).
 
-**Getestet:** Browsertests mit Touch-Emulation bei 390 px Breite
-(Playwright, iPhone-Profil) für: Rochade kurz und lang, en passant,
-Bauernumwandlung (Auswahl + Ergebnis), Narrenmatt, eine Patt-Stellung,
-Zug zurück/vor, Brett drehen, FEN laden (gültig und ungültig). Alle
-Szenarien liefern die erwartete Stellung bzw. Meldung.
-
-**Offen:**
-- Keine bekannten offenen Punkte für Phase 1.
+**Getestet (emuliert):** Rochade kurz und lang, en passant, Umwandlung, Narrenmatt, Patt,
+Zug zurück und vor, Drehen, FEN laden, Zug nach "Schach." (`tests/e2e/brett.cjs`).
 
 **Bekannte Mängel:**
-- Kontrast schwarzer Figuren auf dunklen Feldern ist bewusst dezent
-  gehalten (ruhiger Stil); bei Bedarf später die Feldfarben aufhellen.
-- Zugliste zeigt noch keine Nebenlinien/Varianten, nur die gespielte
-  Hauptlinie (reicht für Phase 1).
+- Schwarze Figuren waren auf dem dunklen Brett schlecht zu erkennen (Kontrast nur 1,3 bis
+  1,6 zu 1). Gelöst in Pull Request 4 durch auswählbare Brett-Designs (siehe dort).
+- Die Zugliste zeigt nur die gespielte Hauptlinie, keine Varianten.
 
-## Vorarbeiten für Phase 2 (Mängel, Speichern, Installierbarkeit, Rätsel-Daten)
-
-Stand: erledigt und gemergt (Pull Request 2). Die Rätsel-Daten wurden mit dem Workflow erzeugt.
+## Vorarbeiten (Mängel, Speichern, Installierbarkeit, Rätsel-Daten)
 
 **Fertig:**
-- Seitenüberlauf behoben: Seite ist bei 390 px genau 390 px breit (Ursache war
-  die Buchstabenzeile unter dem Brett, die Chessground um 24 px versetzt).
-- Zoom wieder erlaubt (kein `user-scalable=no`, kein `maximum-scale`);
-  Doppeltipp-Zoom auf dem Brett per `touch-action: manipulation` verhindert.
-- Browsertests liegen jetzt im Repository unter `tests/e2e/` (Playwright,
-  Start mit `node tests/e2e/<datei>.cjs`).
-- App-Hülle: Hash-Router (`#/brett`, `#/taktik`, `#/mehr`, `#/mehr/info`), feste untere
-  Leiste mit "Brett" und "Taktik" (56 px hoch, berücksichtigt den iPhone-Rand), Knopf
-  "Mehr" oben rechts. Der Brett-Code liegt unverändert in `js/pages/brett.js`; die
-  Partie bleibt beim Seitenwechsel erhalten. Die Taktik-Seite ist noch ein Platzhalter.
-- Info-Seite mit Namensnennung Cburnett (CC BY-SA 3.0), Lizenzen von chess.js,
-  Chessground und Lichess-Rätseln; die Lizenztexte werden aus den Dateien im
-  Repository geladen.
-- Zentrale Speicherung `js/storage.js`: alle Daten unter einem Schlüssel
-  (`schach-training`) mit Versionsnummer, Migrationsfunktion (Kette von Version zu
-  Version), Begrenzung der Protokolle, Schutz vor unlesbaren Ständen (Kopie unter
-  `schach-training.defekt`), Meldung statt Absturz bei vollem oder gesperrtem Speicher.
-  `navigator.storage.persist()` wird bei jedem Start angefragt.
-- Seite "Mehr > Daten": Daten exportieren (JSON-Datei), importieren (mit Vorschau und
-  Rückfrage, bestehende Daten werden ersetzt), alle Daten löschen (mit Rückfrage),
-  Anzeige von Adresse, Speicherschutz und letztem Export, Hinweis "immer denselben
-  Link benutzen". Wo der Browser es kann, gibt es zusätzlich "Datei teilen".
-- Hinweisleiste oben: Erinnerung, wenn seit 14 Tagen kein Export war (nur wenn es
-  überhaupt Daten zu sichern gibt; "Später" blendet sie bis zum nächsten Start aus);
-  Warnung, wenn der Browser das Speichern nicht erlaubt.
-
-- Installierbar ("Zum Home-Bildschirm"): `manifest.webmanifest`, schlichte Icons ohne
-  Emojis (Bauer auf dunklem Grund; erzeugt mit `tools/make_icons.py`), `sw.js` mit
-  Netzwerk-zuerst (online immer die neueste Version, Cache nur als Rückfall offline),
-  Cache-Name mit Versionsnummer, alte Caches werden beim Aktivieren gelöscht, das
-  Grundgerüst wird vorab zwischengespeichert.
-
-- Rätsel-Daten vorbereitet: `tools/build_puzzles.py` (nur Python-Standardbibliothek) liest
-  die entpackte Lichess-CSV (Datei oder Standardeingabe), filtert (Popularity >= 90,
-  NbPlays >= 500, RatingDeviation <= 100) und schreibt `data/puzzles/band-600.json` bis
-  `band-2700.json` (je bis zu 1000 Rätsel, gleichmäßig über die Themen, 2700 ist offen nach
-  oben), `index.json` und `LICENSE.md` (CC0, Quelle, Datum). Größe wird auf 5 MB
-  begrenzt (verkleinert sich selbst). Der erste Zug in `zuege` ist der Gegnerzug.
-- Der direkte Download der Lichess-Datei war in dieser Umgebung gesperrt (Netzwerk
-  antwortet 403). Deshalb baut `.github/workflows/build-puzzles.yml` die Daten auf dem
-  GitHub-Server (manuell startbar, `contents: write`, committet in den gewählten Branch).
-  **Die echten Rätsel-Daten sind noch nicht im Repository**, sie entstehen erst durch den
-  ersten Workflow-Lauf.
-
-**Getestet (emuliert):** alle Tests starten mit `tests/run-all.sh`. `tests/e2e/overflow.cjs` (scrollWidth gleich Fensterbreite),
-`tests/e2e/zoom-drag.cjs` (Viewport ohne Sperre, Ziehen scrollt die Seite nicht,
-Wischen außerhalb des Bretts scrollt weiterhin), `tests/e2e/brett.cjs` (alle
-Phase-1-Szenarien als Regressionstest, 19 Prüfungen), `tests/e2e/navigation.cjs`
-(Leiste, Seitenwechsel, Info-Seite, alle Tippflächen mindestens 44 px, Leiste verdeckt
-nichts), `tests/unit/storage.test.mjs` (11 Logik-Tests mit `node --test "tests/unit/*.test.mjs"`:
-Migration, Export/Import, Fehlerfälle, Begrenzung, 14-Tage-Erinnerung),
-`tests/e2e/storage.cjs` (ein Schlüssel mit Version, persist() beim Start, Neuladen),
-`tests/e2e/daten.cjs` (Export, Löschen, Import ergibt denselben Stand; fehlerhafte
-Dateien; Erinnerung mit verschobener Uhr nach 15 Tagen), `tests/e2e/pwa.cjs`
-(Manifest, Icons, Service Worker aktiv, Chromium-Installierbarkeitsprüfung, Netzwerk
-zuerst, App lädt offline, neue Cache-Version räumt auf), `tests/unit/sw.test.mjs`
-(Vorab-Liste vollständig), `tests/python/test_build_puzzles.py` (12 Tests mit künstlicher
-CSV: Filter und Grenzwerte, Bänder, höchstens 1000 je Band, Größe, Themenverteilung,
-gleiche Eingabe gleiches Ergebnis, Standardeingabe, Fehlerfälle). Die Shell-Abfolge des
-Workflows wurde lokal mit einer künstlichen CSV nachgestellt (Bauen, Zusammenfassung,
-Commit, Fehlercode bei kaputter Eingabe). Der echte Lauf auf GitHub ist noch nicht erfolgt.
-
-**Echter Workflow-Lauf (12.11.2026):** erfolgreich. 6.193.530 Zeilen gelesen, 2.188.703
-bestanden die Filter, 22 Bänder mit je 1000 Rätseln, 49 Themen, 3,18 MB. Das Dateiformat
-der Lichess-Datei passte zum Skript.
-
-**Prüfset (Zusatz zur Standortbestimmung):** `tools/build_puzzles.py` wählt zusätzlich 20 feste
-Rätsel (Wertung 850 bis 2050, 20 verschiedene Hauptthemen von leicht nach schwer) und legt
-sie in `data/puzzles/pruefset.json` ab. Sie fehlen in den Bandateien (nicht mehr im normalen
-Training). Ein vorhandenes `pruefset.json` wird bei jedem Neubau unverändert übernommen, damit
-Ergebnisse vergleichbar bleiben (neu erzeugen nur mit `--pruefset-neu`). Das Prüfset ist noch
-**nicht** im Repository: dafür muss der Workflow einmal neu laufen.
-
-**Offen:** nichts aus diesem Teil; das Prüfset und der Taktik-Trainer stehen unter Phase 2.
-
-**Nur emuliert, bitte auf dem echten Handy prüfen (Vorarbeiten):**
-- "Zum Home-Bildschirm" auf iPhone (Safari: Teilen, dann "Zum Home-Bildschirm") und auf
-  Android (Chrome: Menü, "App installieren"); Icon, Name und Start im Vollbild.
-- Pinch-Zoom auf der Seite geht; auf dem Brett verhindert Doppeltippen das Zoomen nicht
-  ungewollt Züge. Ziehen einer Figur scrollt die Seite nicht (in iOS-Safari besonders prüfen).
-- Untere Leiste sitzt über dem iPhone-Rand (Home-Balken) und verdeckt nichts.
-- Export per "Daten exportieren": iPhone-Safari öffnet oder lädt die Datei anders als
-  Desktop-Browser; "Datei teilen" nutzen, falls der Download nicht klappt. Import mit
-  einer Datei aus "Dateien" testen.
-- "Dauerhafter Speicher" (Daten-Seite): ob der Browser den Schutz gewährt.
-- App im Flugmodus starten (nach einmaligem Besuch online).
-
-**Nur emuliert, bitte auf dem echten Handy prüfen (Taktik, Pull Request 3):**
-- Rätsel mit dem Finger lösen: Tippen-Tippen und Ziehen auf dem Taktik-Brett, auch kleine
-  Felder (Treffgenauigkeit), Umwandlung per Auswahlfenster.
-- Nach "Schach." oder anderen Hinweisen über dem Brett: der nächste Tipp trifft das richtige Feld.
-- Die Seite scrollt beim Ziehen einer Figur nicht (iOS-Safari und Android-Chrome).
-- Brett und Texte bei Zoom und bei gedrehtem Gerät (Hochformat ist das Ziel).
-- Standortbestimmung am Stück (15 bis 25 Minuten): Bildschirm geht nicht aus, Fortsetzen nach
-  Wechsel in eine andere App.
-- Zeitmessung fühlt sich richtig an (läuft nur bei sichtbarer App).
-- Flugmodus: erst online eine Sitzung starten, dann im Flugmodus weiterüben.
-- Diagramm in der Statistik gut lesbar auf dem kleinen Bildschirm.
-- Ob die Erinnerung nach 4 Wochen ruhig genug wirkt (Text steht in `index.html`).
+- Seite ist bei 390 px genau 390 px breit; Zoom erlaubt, Doppeltipp-Zoom auf dem Brett
+  verhindert (`touch-action: manipulation`).
+- Hash-Router (`#/brett`, `#/taktik`, `#/taktik/statistik`, `#/mehr/...`), feste untere Leiste
+  (Brett, Taktik), Knopf "Mehr" oben rechts, Info-Seite mit Namensnennung Cburnett (CC BY-SA 3.0)
+  und den Lizenzen.
+- Zentrale Speicherung `js/storage.js`: ein Schlüssel (`schach-training`) mit Versionsnummer und
+  Migrationskette, Schutz vor unlesbaren Ständen, `navigator.storage.persist()` bei jedem Start.
+- Seite "Mehr > Daten": exportieren, importieren (mit Vorschau und Rückfrage), löschen, Hinweis
+  "immer denselben Link benutzen"; Hinweisleiste nach 14 Tagen ohne Export.
+- Installierbar: `manifest.webmanifest`, Icons ohne Emojis (`tools/make_icons.py`), `sw.js` mit
+  Netzwerk-zuerst (online immer die neueste Version, Cache nur als Rückfall), versionierter Cache.
+- Rätsel-Daten: `tools/build_puzzles.py` (nur Standardbibliothek) und
+  `.github/workflows/build-puzzles.yml` bauen `data/puzzles/` aus der Lichess-Datenbank (CC0).
+  Echter Lauf am 12.11.2026: 6.193.530 Zeilen gelesen, 2.188.703 bestanden die Filter, 22 Bänder
+  mit je 1000 Rätseln, 49 Themen, 3,18 MB.
 
 ## Phase 2 — Taktik-Training
 
-Stand: Pull Request 3 (Taktik-Trainer) ist in Arbeit beziehungsweise zur Prüfung.
-
 **Fertig:**
-- Rätsel laden (`js/puzzles.js`): Bandateien werden erst geladen, wenn sie gebraucht werden, und
-  im Speicher gehalten. Rund um die eigene Stärke (minus 150 bis plus 250) und das Prüfset
-  werden die Dateien im Hintergrund abgeholt, damit der Service Worker sie für offline ablegt.
-- Rätsel lösen (`js/puzzle-runner.js`): Stellung nach dem Gegnerzug (erster Zug in `zuege`, wird
-  automatisch gespielt), Brett aus Sicht des Spielers, darüber "Weiß am Zug" oder "Schwarz am Zug".
-  Richtiger Zug: die Gegnerantwort kommt automatisch. Falscher Zug: wird kurz gezeigt,
-  zurückgenommen, zählt als Fehler und beendet das Rätsel als nicht gelöst. Jeder Zug, der sofort
-  Matt setzt, gilt als richtig. Keine Hinweise. Zeitmessung pausiert, wenn die App im Hintergrund
-  ist (einzelne Zeiten werden bei 120 Sekunden gedeckelt).
-- Nach einem Fehler: die richtige Zugfolge wird Zug für Zug gezeigt (etwa 1 Sekunde je Zug),
-  danach spielt der Spieler sie einmal selbst nach (falsche Züge springen zurück und zählen nicht;
-  nach dem zweiten Fehlversuch zeigt ein Pfeil den richtigen Zug), dann "Weiter".
-- Einstufung (`js/rating.js`): beim ersten Start 10 adaptive Rätsel ab Wertung 1000 (Schritte
-  400, 300, 200, 150, dann 100: richtig = schwerer, falsch = leichter). Danach einfaches Elo mit
-  K = 40 (erste 30 Rätsel), 24 (bis 100), 16 (danach); Rätsel für die Sitzungen liegen im Bereich
-  Stärke minus 50 bis plus 150. Die Taktikstärke wird nur als ruhige Zahl angezeigt.
-- Wiederholung nach Leitner (`js/leitner.js`): nicht gelöste Rätsel kommen nach 1, 3, 7, 21 Tagen
-  wieder (nach Kalendertag); richtig = nächste Stufe, falsch = zurück auf Stufe 1, richtig auf
-  Stufe 4 = erledigt. Wiederholungen ändern die Taktikstärke nicht. Die Karten enthalten das
-  ganze Rätsel, Wiederholungen gehen deshalb auch nach einem Neubau der Daten und offline.
-- Sitzung (`js/session.js`): standardmäßig 10 Rätsel (wählbar 5, 10, 20), etwa 30 Prozent fällige
-  Wiederholungen, Rest neu, davon die Hälfte aus den schwächsten Themen; fehlen Fällige, werden
-  neue aufgefüllt. Anzeige "Rätsel 4 von 10" (keine Serien, keine Auszeichnungen). Ende: ruhige
-  Zusammenfassung (gelöst, Fehler, durchschnittliche Zeit, schwächstes Thema der Sitzung). Eine
-  unterbrochene Sitzung kann fortgesetzt oder verworfen werden. Themenfilter bei jeder Sitzung.
-- Statistik (`#/taktik/statistik`): Taktikstärke, Liniendiagramm des Verlaufs (einfaches SVG, ein
-  Punkt je Sitzung), Sitzungen pro Woche (8 Wochen), je Thema Trefferquote und durchschnittliche
-  Zeit (ab 5 Versuchen, sonst "zu wenig Daten"), die 3 schwächsten Themen mit dem Knopf "Dieses
-  Thema üben".
-- Standortbestimmung (Zusatz): 20 feste Prüfrätsel (Wertung 850 bis 2050, 20 verschiedene
-  Hauptthemen), ohne Hinweise, ohne Lösung und ohne Nachspielen. Ergebnis (gelöst von 20,
-  durchschnittliche Zeit) wird mit Datum gespeichert und als einfache Liste angezeigt. Sie ändert
-  Taktikstärke, Statistik und Wiederholungen nicht. Die Prüfrätsel fehlen im normalen
-  Trainingsvorrat. Ruhige Erinnerung nach 4 Wochen (Hinweisleiste mit "Zur Statistik" und
-  "Später"); wer noch keine gemacht hat, wird nicht erinnert.
-- Speicherformat Version 2 (`taktik.anzahl`, `taktik.standort`), alte Sicherungsdateien
-  (Version 1) werden beim Import und beim Laden umgestellt.
-- Fehler aus Phase 1 behoben: Nach dem Hinweis "Schach." verschob sich das Brett auf der Seite,
-  und Chessground traf mit dem gemerkten alten Standort das falsche Feld. Jetzt wird der Standort
-  vor jeder Berührung neu gelesen (`keepBoundsFresh`), mit Regressionstest.
+- Rätsel lösen: Der erste Zug in `zuege` ist der Gegnerzug und wird automatisch gespielt, Brett
+  aus Sicht des Spielers, "Weiß am Zug" oder "Schwarz am Zug" darüber. Falscher Zug: kurz gezeigt,
+  zurückgenommen, Fehler, Rätsel nicht gelöst. Jeder Matt-in-1-Zug zählt. Keine Hinweise.
+- Nach einem Fehler: Lösung Zug für Zug zeigen, dann einmal selbst nachspielen.
+- Einstufung mit 10 adaptiven Rätseln ab 1000, danach einfaches Elo (K = 40, 24, 16), Rätsel
+  im Bereich Stärke minus 50 bis plus 150. Die Stärke erscheint nur als ruhige Zahl.
+- Wiederholung nach Leitner (1, 3, 7, 21 Tage), Sitzungen mit 10 Rätseln (30 Prozent
+  Wiederholung, 70 Prozent neu, davon die Hälfte aus den schwächsten Themen), Fortschritt
+  "Rätsel 4 von 10", ruhige Zusammenfassung, fortsetzbare Sitzungen, Themenfilter.
+- Statistik: Trefferquote und Zeit je Thema (ab 5 Versuchen), Liniendiagramm der Stärke,
+  Sitzungen pro Woche, die 3 schwächsten Themen mit "Dieses Thema üben".
+- Standortbestimmung: 20 feste Prüfrätsel (`data/puzzles/pruefset.json`, Wertung 848 bis 2051,
+  Satz `d5b8cbda`, nicht im Trainingsvorrat), ohne Hinweise, Ergebnis mit Datum als einfache
+  Liste, ruhige Erinnerung nach 4 Wochen. Das Prüfset bleibt bei Neubauten der Daten unverändert.
+- Bänder werden erst geladen, wenn sie gebraucht werden, und für offline zwischengespeichert.
+- Speicherformat Version 2 mit Migration (`taktik.anzahl`, `taktik.standort`).
 
-**Getestet (emuliert, 390 px, Touch-Emulation, echte Rätsel-Daten):** `tests/run-all.sh`
-(Stand 12.11.2026: 41 Logik-Tests, 16 Python-Tests, 180 Browser-Prüfungen, alle bestanden;
-`QUICK=1 tests/run-all.sh` überspringt die langen Sitzungstests, Gesamtdauer sonst etwa 15 Minuten)
-- `tests/unit/logic.test.mjs`: Elo, Einstufung mit simulierten Spielern (Stärke 700 bis 2400,
-  Abweichung höchstens 100), Leitner, Statistik, Sitzungsplanung, Rätsel laden, Taktik-Zustand.
-- `tests/e2e/taktik.cjs`: Rätsel richtig lösen, falsch lösen und nachspielen, Matt-in-1-Alternative
-  (zweiter Mattzug aus den echten Daten), komplette Einstufung mit simulierten Antworten bei Stärke
-  900, 1500, 2100 (Schätzung 909, 1490, 2090).
-- `tests/e2e/taktik-session.cjs`: Fälligkeit mit künstlich verschobenem Datum, Sitzung mit 3
-  Wiederholungen und 7 neuen Rätseln, Stufen steigen und fallen, Zusammenfassung, Fortsetzen.
-- `tests/e2e/statistik.cjs`: Statistik mit Beispieldaten, leere Statistik, "Dieses Thema üben",
-  vollständige Standortbestimmung (10 von 20), Erinnerung nach 28 Tagen (nicht nach 27).
-- `tests/e2e/taktik-offline.cjs`: nach einem Besuch online laufen Sitzung und Standortbestimmung
-  ohne Netzwerk; fehlt ein Band, kommt eine verständliche Meldung.
-- Solange `data/puzzles/pruefset.json` noch nicht gebaut ist, liefern die Tests ein gleichwertiges
-  Prüfset aus den Bandateien (`tests/e2e/lib.cjs`).
+**Entscheidungen und bekannte Grenzen:**
+- Wiederholungen ändern die Taktikstärke nicht; die Standortbestimmung auch nicht.
+- Die Einstufung beim ersten Start kann man nicht überspringen.
+- Beim ersten Start braucht die Taktik-Seite einmal eine Internetverbindung (Bänder holen).
+- Sehr lange Rätsel kosten Zeit; die Zeitmessung deckelt bei 120 Sekunden.
 
-**Offen:**
-- Workflow ein zweites Mal starten, damit `data/puzzles/pruefset.json` entsteht (ohne die Datei
-  ist die Standortbestimmung nicht verfügbar; der Knopf zeigt dann eine Meldung).
+**Getestet (emuliert, Stand 12.11.2026):** 41 Logik-Tests, 16 Python-Tests, 180 Browser-Prüfungen,
+alle bestanden: Rätsel richtig und falsch lösen, Matt-in-1-Alternative, Einstufung mit
+simulierten Spielern (Stärke 900, 1500, 2100 ergibt 909, 1490, 2090), Wiederholungsplanung mit
+verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinnerung nach 28 Tagen.
 
-**Bekannte Mängel / Entscheidungen:**
-- Das Prüfset ist fest: bei späteren Neubauten bleibt es unverändert (`--pruefset-neu` ändert es;
-  dann wird in der Liste "anderer Prüfsatz" vermerkt).
-- Rätsel mit sehr langer Zugfolge (bis 10 Züge) kosten Zeit; die Zeitmessung deckelt bei 120 s.
-- Die Einstufung kann man nicht überspringen.
-- Beim ersten Start braucht die Taktik-Seite einmal eine Internetverbindung, um die Bänder zu holen.
+## Brett-Designs, Einführung, leere Zustände (Pull Request 4)
+
+**Fertig bisher:**
+- Speicherformat Version 3: `einstellungen.brettDesign` und `einstellungen.einfuehrungGesehen`.
+  Neue Nutzer: Design Klassisch, Einführung noch nicht gesehen. Bisherige Stände (Version 2 und
+  älter, auch importierte Dateien): Design Dunkel, Einführung gilt als gesehen (bleibt unter
+  "Mehr" erreichbar). Wer bisher nur das Brett benutzt und nie etwas gespeichert hat, zählt als neu.
+- `js/board-designs.js`: eine Quelle für Feldfarben und Markierungen der drei Designs (Klassisch,
+  Dunkel, Grün).
+- `tests/unit/kontrast.test.mjs` berechnet den Kontrast aller Designs und gibt alle Werte aus.
+  Dunkel: schwarze und weiße Figuren auf beiden Feldfarben mindestens 3:1 (gemessen schwarz 6,74
+  und 3,34, weiß 3,11 und 6,28), Zielpunkte, Ringe, Schach-Rahmen und Koordinaten mindestens 3:1.
+  Markierte Felder (letzter Zug, gewähltes Feld, Schach) heben sich um mindestens 1,3:1 ab,
+  und Figuren bleiben darauf mindestens 3:1 erkennbar. Klassisch und Grün: Zielpunkte, Ringe und
+  Schach-Rahmen mindestens 3:1 (sehr dunkle Markierungen), Flächen mindestens 1,2:1.
+- Korrektur zu meiner früheren Aussage: 3:1 auf beiden Feldfarben ist bei braun/creme und
+  grün/creme doch möglich, aber nur mit sehr dunklen Markierungen. Eine Fläche (letzter Zug,
+  gewähltes Feld) mit 3:1 gegen das normale Feld geht dagegen nirgends, ohne die Figuren darauf
+  unleserlich zu machen; dort gelten die niedrigeren Werte oben.
+
+- Drei Designs: Klassisch (Standard für neue Nutzer), Dunkel (verbessert, mittelhelle Felder in
+  Blaugrau) und Grün (Creme gegen gedämpftes Grün: vertraut, ruhig, wenig Blendung, schwarze Figuren
+  mindestens 5,7:1). Nur das Brett ändert sich, die App-Oberfläche bleibt dunkel.
+- Mehr > Darstellung (`#/mehr/darstellung`): drei Karten mit echter Vorschau (Figuren beider Farben
+  auf beiden Feldfarben, letzter Zug, gewähltes Feld, Zielpunkte, Schlagring, Schach). Die Wahl wirkt
+  sofort auf Brett, Taktik und Standortbestimmung und wird gespeichert (`js/design.js`).
+- Die Figuren der Umwandlungsauswahl liegen auf der Feldfarbe des Designs mit dem besten Kontrast
+  (weiße auf dem dunklen, schwarze auf dem hellen Feld).
+- Kleiner Fehler im Brett behoben: Nach "Neustart" oder FEN laden blieb das zuvor gewählte Feld
+  markiert.
+- Getestet: `tests/e2e/design.cjs` (21 Prüfungen: Standard, sofortiger Wechsel auf allen Brettern,
+  Speichern nach Neuladen, Migration, Vorschau, Umwandlung).
+
+- Screenshots aller Designs (Startstellung; Stellung mit Schach, letztem Zug, gewähltem Feld,
+  Zielpunkten und Schlagring) liegen unter `tests/screenshots/` (erzeugt mit
+  `node tests/e2e/screenshots.cjs`).
+- Service Worker: `CACHE_VERSION` ist jetzt 2, alte Caches werden beim Aktivieren gelöscht.
+- Koordinaten (Buchstaben und Zahlen) liegen jetzt über den Figuren; vorher verdeckten die
+  Figurensockel die Buchstaben der ersten Reihe.
+
+**Schwächen, die ich auf den Screenshots sehe (ehrlich):**
+- Dunkel: Die schwächsten Paare sind die schwarze Figur auf dem dunklen Feld (3,3:1) und die weiße
+  Figur auf dem hellen Feld (3,1:1). Das ist die Grenze, bei der das Schachbrettmuster noch klar
+  erkennbar bleibt; die Figuren sind auf den Bildern gut zu erkennen, draußen ungeprüft.
+- Dunkel: Die Markierungen sind kräftige Farbflächen (Bernstein, Türkis, Rot). Das war nötig, damit
+  die Figuren darauf lesbar bleiben (mindestens 3:1) und die Fläche sich vom Feld abhebt. Es wirkt
+  weniger zurückhaltend als vorher.
+- Klassisch und Grün: Die Füllung weißer Figuren auf den hellen Feldern ist nur etwa 1,2:1 hell
+  gegen Creme; sie wird vom schwarzen Rand getragen. Auf den Bildern gut sichtbar, bei starkem
+  Sonnenlicht zu prüfen.
+- Letzter Zug bei Klassisch und Grün: Das gleiche Gelb sieht auf Creme heller aus als auf Braun
+  oder Grün; die beiden Felder gehören trotzdem erkennbar zusammen.
+- Koordinaten: Auf braunen und grünen Feldern stehen dunkle Zeichen mit hellem Rand (rund 3:1),
+  die kleinen Buchstaben sind lesbar, aber keine Stärke. Einen einzelnen Farbwert mit 3:1 auf
+  hellem und dunklem Feld gibt es dort nicht.
+- Die Vorschau in "Darstellung" ist klein (112 px); Figuren sind dort nur zu erahnen, die Farben
+  und Markierungen aber gut zu beurteilen.
+
+- Einführung (`js/pages/einfuehrung.js`): Vollbild-Fenster mit 6 kurzen Seiten (Was die App kann; So
+  fängst du an; So löst du ein Rätsel; Fehler sind das Training; Fortschritt messen; Daten, Gerät und
+  ein ehrlicher Hinweis). Wischen (natives Einrasten) oder "Weiter" und "Zurück", immer
+  "Überspringen", "Seite 2 von 6", keine Effekte, keine Emojis. Sie erscheint beim ersten Start
+  automatisch (nur neue Nutzer) und ist unter Mehr > Einführung jederzeit wieder aufrufbar.
+  "Überspringen" und "Fertig" zählen als gesehen (`einstellungen.einfuehrungGesehen`).
+- Getestet: `tests/e2e/einfuehrung.cjs` (44 Prüfungen: nur beim ersten Start, überspringen, wieder
+  öffnen, Weiter, Wischen per Touch, Inhalt, keine Emojis, Tippflächen, bisherige Nutzer ohne
+  automatische Einführung). Alle anderen Browsertests starten mit "Einführung schon gesehen"
+  (`tests/e2e/lib.cjs`, `seed: false` schaltet das für neue Nutzer aus).
+
+- Leere Zustände: Die Statistik ohne Daten zeigt einen erklärenden Satz und einen Knopf
+  ("Einstufung starten" vor der Einstufung, danach "Sitzung starten"; läuft eine Sitzung, "Zur
+  Sitzung") statt leerer Diagramme. Auf der Seite Üben erklärt ein Satz die Wiederholungen
+  ("Noch keine Wiederholungen. Rätsel, die du nicht löst, kommen nach 1, 3, 7 und 21 Tagen wieder."),
+  darunter steht der Knopf "Sitzung starten".
+- Getestet: `tests/e2e/leer.cjs` (16 Prüfungen).
+
+**Offen:** Test auf dem echten Handy (Liste unten).
 
 ## Phase 3 — Eigene Partien analysieren
 
-Noch nicht begonnen.
+Noch nicht begonnen (siehe "Nächste Schritte").
 
 ## Phase 4 — Eröffnung und Endspiel
 
@@ -225,3 +193,30 @@ Noch nicht begonnen.
 ## Phase 5 — Tagesplan
 
 Noch nicht begonnen.
+
+## Auf dem echten Handy prüfen (bisher nur emuliert)
+
+Allgemein und Taktik:
+- "Zum Home-Bildschirm" auf iPhone (Safari: Teilen) und Android (Chrome: App installieren);
+  Icon, Name und Start im Vollbild.
+- Pinch-Zoom geht; Ziehen einer Figur scrollt die Seite nicht (iOS-Safari und Android-Chrome).
+- Untere Leiste sitzt über dem iPhone-Rand und verdeckt nichts.
+- Export: iPhone-Safari lädt Dateien anders; "Datei teilen" nutzen, falls der Download nicht
+  klappt. Import mit einer Datei aus "Dateien". "Dauerhafter Speicher" auf der Daten-Seite.
+- Rätsel mit dem Finger lösen (Tippgenauigkeit, Umwandlung), auch nach "Schach.".
+- Standortbestimmung am Stück (15 bis 25 Minuten): Bildschirm bleibt an, Fortsetzen nach
+  Wechsel in eine andere App.
+- Flugmodus: erst online eine Sitzung starten, dann offline weiterüben.
+- Diagramm in der Statistik lesbar; Erinnerung nach 4 Wochen wirkt ruhig genug.
+
+Brett-Designs und Einführung (Pull Request 4):
+- Lesbarkeit der Figuren **draußen bei Sonnenlicht** und bei niedriger Helligkeit, in allen drei
+  Designs. Besonders: schwarze Dame und Turm, weiße Figuren auf hellen Feldern (Klassisch, Grün),
+  schwarze Figuren auf dunklen Feldern (Dunkel). Welches Design nimmst du am liebsten?
+- Wirkt "Klassisch" (hell) auf dem Handy neben der dunklen Oberfläche zu hell?
+- Koordinaten (kleine Buchstaben und Zahlen am Brettrand) lesbar.
+- Markierungen (Zielpunkte, letzter Zug, Schach) gut zu sehen, auch beim Ziehen mit dem Finger.
+- Die Karten unter Mehr > Darstellung lassen sich sicher antippen; die kleinen Vorschauen sind
+  verständlich.
+- **Wischen in der Einführung** (iOS-Safari und Android-Chrome): rastet die Seite sauber ein,
+  funktioniert "Weiter" und "Überspringen" mit dem Daumen, sind die Texte gut lesbar.

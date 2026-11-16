@@ -6,7 +6,7 @@ import { puzzleStore } from "../puzzles.js";
 import { themeStats, weakestThemes, sessionsPerWeek, MIN_ATTEMPTS } from "../stats.js";
 import { themeLabel } from "../themes.js";
 import { dayKey } from "../leitner.js";
-import { practiceTheme, startStandortbestimmung } from "./taktik.js";
+import { practiceTheme, startStandortbestimmung, startFromStatistik } from "./taktik.js";
 
 const $ = (id) => document.getElementById(id);
 const taktik = () => store.get().taktik;
@@ -175,8 +175,32 @@ async function renderStandort() {
   }
 }
 
+// Leerer Zustand: erklärender Satz und ein Knopf zur passenden Aktion statt einer leeren Seite.
+function renderLeer(t) {
+  const hasData = t.sitzungen.length > 0;
+  $("stat-inhalt").hidden = !hasData;
+  $("stat-leer").hidden = hasData;
+  if (hasData) return;
+  const button = $("btn-stat-leer");
+  if (t.aktiv) {
+    $("stat-leer-text").textContent = "Eine Sitzung läuft noch. Beende sie, dann erscheinen hier dein Verlauf und deine Themen.";
+    button.textContent = "Zur Sitzung";
+    button.dataset.aktion = "sitzung-fortsetzen";
+  } else if (!t.eingestuft) {
+    $("stat-leer-text").textContent =
+      "Die Statistik füllt sich, sobald du Rätsel gelöst hast. Starte mit der Einstufung: 10 Rätsel, danach passt die App die Schwierigkeit an dich an.";
+    button.textContent = "Einstufung starten";
+    button.dataset.aktion = "einstufung";
+  } else {
+    $("stat-leer-text").textContent = "Noch keine Sitzung gespielt. Nach der ersten Sitzung erscheinen hier dein Verlauf und deine Themen.";
+    button.textContent = "Sitzung starten";
+    button.dataset.aktion = "sitzung";
+  }
+}
+
 export function onShowStatistik() {
   const t = taktik();
+  renderLeer(t);
   $("stat-staerke").textContent = t.eingestuft && t.staerke !== null ? `Taktikstärke: ${Math.round(t.staerke)}` : "Noch nicht eingestuft";
   renderChart(t.verlauf);
   renderWeeks(t.sitzungen);
@@ -185,6 +209,11 @@ export function onShowStatistik() {
 }
 
 export function initStatistik() {
+  $("btn-stat-leer").addEventListener("click", () => {
+    const aktion = $("btn-stat-leer").dataset.aktion;
+    if (aktion === "sitzung-fortsetzen") location.hash = "#/taktik";
+    else startFromStatistik(aktion);
+  });
   $("btn-standort").addEventListener("click", async () => {
     $("btn-standort").disabled = true;
     try {

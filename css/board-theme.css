@@ -1,46 +1,55 @@
-/* Eigenes, dunkles Brett-Thema (ersetzt die helle Standardfarbe von Chessground). */
+/* Brett-Design: alle Farben kommen aus CSS-Variablen, die js/board-designs.js setzt
+   (auf <html> für alle Bretter, auf einer Vorschau nur dort). Die Werte stehen dort. */
 
 cg-board {
-  background-color: #2b3038;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDIiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+PHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMSIgeD0iMCIgeT0iMCIgZmlsbD0iIzJiMzAzOCIvPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHg9IjEiIHk9IjAiIGZpbGw9IiMxYjFlMjMiLz48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4PSIwIiB5PSIxIiBmaWxsPSIjMWIxZTIzIi8+PHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMSIgeD0iMSIgeT0iMSIgZmlsbD0iIzJiMzAzOCIvPjwvc3ZnPg==");
+  background-color: var(--feld-hell, #f0e6d2);
+  background-image: var(--brett-hintergrund, none);
   background-size: 25% 25%;
 }
 
+/* Zielpunkt auf einem leeren Feld */
 cg-board square.move-dest {
-  background: radial-gradient(
-    rgba(228, 230, 234, 0.22) 20%,
-    rgba(228, 230, 234, 0.22) 0,
-    rgba(0, 0, 0, 0) 0
-  );
+  background-image: radial-gradient(circle at center, var(--mk-zeichen) 0, var(--mk-zeichen) 16%, transparent 17%);
 }
 
-cg-board square.move-dest:hover {
-  background: rgba(228, 230, 234, 0.3);
-}
-
+/* Ring um eine Figur, die geschlagen werden kann */
 cg-board square.oc.move-dest {
-  background: radial-gradient(transparent 0%, transparent 78%, rgba(228, 230, 234, 0.28) 80%);
+  background-image: radial-gradient(
+    circle at center,
+    transparent 0,
+    transparent 55%,
+    var(--mk-zeichen) 56%,
+    var(--mk-zeichen) 64%,
+    transparent 65%
+  );
 }
 
 cg-board square.last-move {
-  background-color: rgba(109, 139, 176, 0.35);
+  background-color: var(--mk-letzter);
 }
 
 cg-board square.selected {
-  background-color: rgba(109, 139, 176, 0.5);
+  background-color: var(--mk-gewaehlt);
 }
 
+/* König im Schach: farbige Fläche mit Rahmen, der auf beiden Feldfarben sichtbar bleibt */
 cg-board square.check {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(196, 90, 74, 0.9) 0%,
-    rgba(196, 90, 74, 0.7) 25%,
-    rgba(196, 90, 74, 0) 89%
-  );
+  background-color: var(--mk-schach);
+  background-image: none;
+  box-shadow: inset 0 0 0 3px var(--mk-zeichen);
+}
+
+.cg-wrap coords {
+  opacity: 1;
+  z-index: 3; /* Buchstaben und Zahlen liegen über den Figuren, sonst verdecken die Sockel sie */
 }
 
 .cg-wrap coords coord {
-  color: #9aa0ab;
+  color: var(--koordinaten, #2a1a0e);
+  font-weight: 600;
+  text-shadow:
+    0 0 2px var(--koordinaten-rand, transparent),
+    0 0 2px var(--koordinaten-rand, transparent);
 }
 
 /* Buchstaben unter dem Brett: Chessground verschiebt sie um 24 px nach rechts und

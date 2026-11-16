@@ -17,7 +17,7 @@ export function askPromotion(color, onChoose) {
     btn.type = "button";
     btn.className = "promo-btn";
     btn.innerHTML =
-      `<span class="cg-wrap promo-piece"><piece class="${piece.role} ${color}"></piece></span>` +
+      `<span class="cg-wrap promo-piece ${color}"><piece class="${piece.role} ${color}"></piece></span>` +
       `<span class="promo-label">${piece.label}</span>`;
     btn.addEventListener("click", () => {
       overlay.hidden = true;

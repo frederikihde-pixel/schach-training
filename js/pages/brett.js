@@ -43,6 +43,7 @@ function renderPosition() {
   const dests = frozen ? new Map() : computeDests(game);
   const lastMove = viewIndex > 0 ? [verbose[viewIndex - 1].from, verbose[viewIndex - 1].to] : undefined;
 
+  cg.selectSquare(null);
   cg.set({
     fen,
     turnColor,
