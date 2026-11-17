@@ -342,7 +342,10 @@ test("Standortbestimmung: Ergebnis mit Datum, Stärke und Statistik bleiben unbe
   const before = JSON.stringify(t);
   const results = Array.from({ length: 20 }, (_, i) => ({ id: "x" + i, themen: ["pin"], ok: i < 14, ms: 40000 }));
   const e = recordStandort(t, { results, satz: "abcd1234", nowIso: T0 });
-  assert.deepEqual(e, { datum: T0, geloest: 14, von: 20, msSchnitt: 40000, satz: "abcd1234" });
+  assert.deepEqual(e, { datum: T0, geloest: 14, von: 20, msSchnitt: 40000, satz: "abcd1234", pruefset: "fortgeschritten" });
+  const f = recordStandort(t, { results, satz: "e1", pruefset: "einsteiger", nowIso: T0 });
+  assert.equal(f.pruefset, "einsteiger");
+  t.standort.pop();
   assert.equal(t.standort.length, 1);
   const copy = JSON.parse(before);
   copy.standort = t.standort;
@@ -372,4 +375,34 @@ test("Themen: jedes hat Namen und einen erklärenden Satz; Einsteiger-Themen ste
 
 test("Rätsel: das Schlagwort oneMove wird nicht als Thema übernommen", () => {
   assert.deepEqual(parsePuzzle(["x", "f", "a b", 450, ["mateIn1", "oneMove", "middlegame"]]).themen, ["mateIn1", "middlegame"]);
+});
+
+// ---------- Prüfsets ----------
+import { PRUEFSETS, pruefsetName, recommendedPruefset } from "../../js/pruefsets.js";
+
+test("Prüfsets: zwei Sätze, Empfehlung nach Stärke", () => {
+  assert.deepEqual(PRUEFSETS.map((p) => p.id), ["einsteiger", "fortgeschritten"]);
+  assert.equal(pruefsetName("einsteiger"), "Prüfset Einsteiger");
+  assert.equal(pruefsetName("fortgeschritten"), "Prüfset Fortgeschritten");
+  assert.equal(recommendedPruefset(null, false), "einsteiger", "unbekannte Stärke");
+  assert.equal(recommendedPruefset(null, true), "einsteiger");
+  assert.equal(recommendedPruefset(450, true), "einsteiger");
+  assert.equal(recommendedPruefset(999, true), "einsteiger");
+  assert.equal(recommendedPruefset(1000, true), "fortgeschritten");
+  assert.equal(recommendedPruefset(1500, true), "fortgeschritten");
+});
+
+test("Rätsel-Store: beide Prüfsets werden aus ihren Dateien geladen und einzeln gemerkt", async () => {
+  const calls = [];
+  const fetchJson = async (url) => {
+    calls.push(url);
+    return { satz: url.includes("einsteiger") ? "eins" : "fort", raetsel: [[`p-${url}`, "f x y z", "a b", 500, ["oneMove", "pin"]]] };
+  };
+  const store = createPuzzleStore({ fetchJson, base: "p/" });
+  const ein = await store.loadPruefset("einsteiger");
+  const fort = await store.loadPruefset("fortgeschritten");
+  const std = await store.loadPruefset();
+  assert.deepEqual([ein.id, ein.satz, fort.id, fort.satz, std.id], ["einsteiger", "eins", "fortgeschritten", "fort", "fortgeschritten"]);
+  assert.deepEqual(calls.sort(), ["p/pruefset-einsteiger.json", "p/pruefset.json"], "jede Datei nur einmal");
+  assert.deepEqual(ein.raetsel[0].themen, ["pin"]);
 });

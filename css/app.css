@@ -782,6 +782,28 @@ select {
   color: var(--text-muted);
 }
 
+.pruefset-opt {
+  margin: 12px 0;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.pruefset-opt p {
+  margin: 0 0 6px;
+}
+
+.tag-quiet {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
 .stat-row {
   display: flex;
   flex-direction: column;

@@ -66,7 +66,7 @@ const COLORS = {
   await page.click("#btn-beenden-ja");
   await page.goto(url + "index.html#/taktik/statistik");
   await page.waitForTimeout(600);
-  await page.click("#btn-standort");
+  await page.click("#btn-standort-fortgeschritten");
   await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
   await page.waitForTimeout(600);
   r.check("Standortbestimmung zeigt die Dunkel-Farben", (await bg(page, "#taktik-board cg-board")) === COLORS.dunkel.hell);

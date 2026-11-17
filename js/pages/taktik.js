@@ -10,6 +10,7 @@ import { buildSession, sessionWindow } from "../session.js";
 import { weakestThemes } from "../stats.js";
 import { recordAttempt, finishSession, applyPlacement, recordStandort } from "../taktik-state.js";
 import { themeLabel, allThemes } from "../themes.js";
+import { pruefsetName } from "../pruefsets.js";
 
 const $ = (id) => document.getElementById(id);
 const today = () => dayKey(store.now());
@@ -179,8 +180,8 @@ async function startSitzung() {
 }
 
 // Wird von der Statistik-Seite aufgerufen.
-export async function startStandortbestimmung() {
-  const pruefset = await puzzleStore.loadPruefset();
+export async function startStandortbestimmung(id = "fortgeschritten") {
+  const pruefset = await puzzleStore.loadPruefset(id);
   store.update((d) => {
     d.taktik.aktiv = {
       typ: "standort",
@@ -188,6 +189,7 @@ export async function startStandortbestimmung() {
       index: 0,
       ergebnisse: [],
       satz: pruefset.satz,
+      pruefset: pruefset.id,
       start: nowIso(),
     };
   });
@@ -340,6 +342,7 @@ function showSummary(typ, s) {
   if (typ === "standort") {
     $("zus-titel").textContent = "Standortbestimmung abgeschlossen";
     facts([
+      ["Verwendet", pruefsetName(s.pruefset)],
       ["Gelöst", `${s.geloest} von ${s.von}`],
       ["Durchschnittliche Zeit", `${seconds(s.msSchnitt)} je Rätsel`],
       ["Gespeichert am", formatDate(s.datum)],
@@ -370,7 +373,7 @@ async function finishRun() {
     } else if (a.typ === "sitzung") {
       summary = finishSession(t, { typ: a.typ, results: a.ergebnisse, nowIso: nowIso() });
     } else {
-      summary = recordStandort(t, { results: a.ergebnisse, satz: a.satz, nowIso: nowIso() });
+      summary = recordStandort(t, { results: a.ergebnisse, satz: a.satz, pruefset: a.pruefset, nowIso: nowIso() });
     }
     t.aktiv = null;
   });

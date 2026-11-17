@@ -2,6 +2,7 @@
 // Außerdem die Hinweisleisten oben (Export-Erinnerung, Speicherprobleme).
 
 import { store, DataError, EXPORT_REMINDER_DAYS } from "../storage.js";
+import { pruefsetName } from "../pruefsets.js";
 
 const $ = (id) => document.getElementById(id);
 let pendingImportText = null;
@@ -29,7 +30,12 @@ export function renderHinweise() {
       "Sichere deine Daten und benutze immer denselben Link zur App, denn die Daten gelten pro Adresse.";
   }
 
-  $("hinweis-standort").hidden = !(store.standortReminderDue() && !standortSnoozed);
+  const standort = store.standortReminder();
+  $("hinweis-standort").hidden = !(standort && !standortSnoozed);
+  if (standort) {
+    $("hinweis-standort-text").textContent =
+      `Deine letzte Standortbestimmung (${pruefsetName(standort.pruefset)}) ist vier Wochen her. Wenn du magst, wiederhole sie in der Statistik.`;
+  }
 
   const st = store.status;
   let warn = "";

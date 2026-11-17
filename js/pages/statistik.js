@@ -6,6 +6,7 @@ import { puzzleStore } from "../puzzles.js";
 import { themeStats, weakestThemes, sessionsPerWeek, MIN_ATTEMPTS } from "../stats.js";
 import { themeLabel } from "../themes.js";
 import { dayKey } from "../leitner.js";
+import { PRUEFSETS, pruefsetName, recommendedPruefset } from "../pruefsets.js";
 import { practiceTheme, startStandortbestimmung, startFromStatistik } from "./taktik.js";
 
 const $ = (id) => document.getElementById(id);
@@ -142,36 +143,44 @@ function renderThemes(themen) {
 
 async function renderStandort() {
   const t = taktik();
-  const list = $("stat-standort-liste");
-  list.innerHTML = "";
-  $("stat-standort-leer").hidden = t.standort.length > 0;
+  const rec = recommendedPruefset(t.staerke, t.eingestuft);
+  let anyOk = false;
+  const status = {};
 
-  let satz = null;
-  let verfuegbar = true;
-  try {
-    satz = (await puzzleStore.loadPruefset()).satz;
-  } catch (err) {
-    verfuegbar = false;
+  for (const info of PRUEFSETS) {
+    const list = $(`stat-standort-liste-${info.id}`);
+    list.innerHTML = "";
+    const entries = t.standort.filter((e) => e.pruefset === info.id);
+    $(`stat-standort-leer-${info.id}`).hidden = entries.length > 0;
+    $(`empf-${info.id}`).hidden = rec !== info.id;
+
+    let satz = null;
+    try {
+      satz = (await puzzleStore.loadPruefset(info.id)).satz;
+      status[info.id] = true;
+      anyOk = true;
+    } catch (err) {
+      status[info.id] = false;
+    }
+    for (const e of [...entries].reverse()) {
+      const li = document.createElement("li");
+      const other = satz && e.satz && e.satz !== satz ? " (anderer Prüfsatz)" : "";
+      li.textContent = `${longDate(e.datum)}: ${e.geloest} von ${e.von} gelöst, durchschnittlich ${seconds(e.msSchnitt)} je Rätsel${other}`;
+      list.append(li);
+    }
   }
 
-  for (const e of [...t.standort].reverse()) {
-    const li = document.createElement("li");
-    const other = satz && e.satz && e.satz !== satz ? " (anderer Prüfsatz)" : "";
-    li.textContent = `${longDate(e.datum)}: ${e.geloest} von ${e.von} gelöst, durchschnittlich ${seconds(e.msSchnitt)} je Rätsel${other}`;
-    list.append(li);
-  }
-
-  const button = $("btn-standort");
   const note = $("stat-standort-meldung");
+  const last = t.standort[t.standort.length - 1];
+  for (const info of PRUEFSETS) {
+    $(`btn-standort-${info.id}`).disabled = !!t.aktiv || !status[info.id];
+  }
   if (t.aktiv) {
-    button.disabled = true;
     note.textContent = "Es läuft gerade eine Sitzung. Beende oder verwirf sie zuerst auf der Seite Üben.";
-  } else if (!verfuegbar) {
-    button.disabled = true;
+  } else if (!anyOk) {
     note.textContent = "Die Prüfrätsel sind gerade nicht verfügbar (Daten fehlen oder keine Verbindung).";
   } else {
-    button.disabled = false;
-    note.textContent = t.standort.length ? `Letzte Standortbestimmung: ${longDate(t.standort[t.standort.length - 1].datum)}.` : "";
+    note.textContent = last ? `Letzte Standortbestimmung: ${longDate(last.datum)} (${pruefsetName(last.pruefset)}).` : "";
   }
 }
 
@@ -214,15 +223,18 @@ export function initStatistik() {
     if (aktion === "sitzung-fortsetzen") location.hash = "#/taktik";
     else startFromStatistik(aktion);
   });
-  $("btn-standort").addEventListener("click", async () => {
-    $("btn-standort").disabled = true;
-    try {
-      await startStandortbestimmung();
-    } catch (err) {
-      $("stat-standort-meldung").textContent = "Die Prüfrätsel konnten nicht geladen werden.";
-      $("btn-standort").disabled = false;
-    }
-  });
+  for (const info of PRUEFSETS) {
+    const button = $(`btn-standort-${info.id}`);
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      try {
+        await startStandortbestimmung(info.id);
+      } catch (err) {
+        $("stat-standort-meldung").textContent = "Die Prüfrätsel konnten nicht geladen werden.";
+        button.disabled = false;
+      }
+    });
+  }
   document.addEventListener("daten-geaendert", () => {
     if (!$("page-statistik").hidden) onShowStatistik();
   });

@@ -1,6 +1,7 @@
 // Rätsel-Daten laden. Die Bandateien (data/puzzles/band-*.json) werden erst geladen, wenn sie
 // gebraucht werden, und im Speicher gehalten. Der Service Worker legt sie zusätzlich im Cache ab.
 import { bandOf, bandsFor, MIN_RATING, MAX_RATING } from "./rating.js";
+import { PRUEFSETS, pruefsetInfo, DEFAULT_PRUEFSET } from "./pruefsets.js";
 
 const BASE = "data/puzzles/";
 
@@ -23,7 +24,7 @@ async function defaultFetchJson(url) {
 export function createPuzzleStore({ fetchJson = defaultFetchJson, base = BASE } = {}) {
   const bands = new Map(); // band -> Promise<Puzzle[]>
   let indexPromise = null;
-  let pruefsetPromise = null;
+  const pruefsets = new Map(); // id -> Promise
 
   function loadIndex() {
     indexPromise ||= fetchJson(`${base}index.json`).catch((e) => {
@@ -64,14 +65,20 @@ export function createPuzzleStore({ fetchJson = defaultFetchJson, base = BASE } 
     return bands.get(key);
   }
 
-  function loadPruefset() {
-    pruefsetPromise ||= fetchJson(`${base}pruefset.json`)
-      .then((data) => ({ satz: data.satz, raetsel: data.raetsel.map(parsePuzzle) }))
-      .catch((e) => {
-        pruefsetPromise = null;
-        throw e;
-      });
-    return pruefsetPromise;
+  function loadPruefset(id = DEFAULT_PRUEFSET) {
+    const info = pruefsetInfo(id);
+    if (!pruefsets.has(info.id)) {
+      pruefsets.set(
+        info.id,
+        fetchJson(`${base}${info.datei}`)
+          .then((data) => ({ id: info.id, satz: data.satz, raetsel: data.raetsel.map(parsePuzzle) }))
+          .catch((e) => {
+            pruefsets.delete(info.id);
+            throw e;
+          }),
+      );
+    }
+    return pruefsets.get(info.id);
   }
 
   // Alle Rätsel mit Wertung in [low, high] (lädt nur die nötigen Bänder).
@@ -100,7 +107,7 @@ export function createPuzzleStore({ fetchJson = defaultFetchJson, base = BASE } 
     const bands = [...new Set(list.map(bandOf))];
     bandList().then((available) => warm(bands.filter((b) => available.includes(b)).map((b) => `${base}band-${b}.json`)));
   };
-  const warmPruefset = () => warm([`${base}pruefset.json`]);
+  const warmPruefset = () => warm(PRUEFSETS.map((p) => `${base}${p.datei}`));
 
   return { loadIndex, bandList, loadBand, loadPruefset, inRange, warmBands, warmPruefset };
 }

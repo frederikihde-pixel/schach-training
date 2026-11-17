@@ -4,6 +4,7 @@ import { updateStrength } from "./rating.js";
 import { afterFailure, afterSuccess } from "./leitner.js";
 import { addAttempt, cappedMs, sessionWeakest, averageMs } from "./stats.js";
 import { CAPS } from "./storage.js";
+import { DEFAULT_PRUEFSET } from "./pruefsets.js";
 
 // Ein erster Lösungsversuch ist abgeschlossen.
 // art: "neu" | "wiederholung"; placement: Rätsel der Einstufung (zählt für den K-Wert,
@@ -66,13 +67,14 @@ export function applyPlacement(t, estimate) {
 }
 
 // Ergebnis der Standortbestimmung mit Datum speichern.
-export function recordStandort(t, { results, satz, nowIso }) {
+export function recordStandort(t, { results, satz, pruefset = DEFAULT_PRUEFSET, nowIso }) {
   const entry = {
     datum: nowIso,
     geloest: results.filter((r) => r.ok).length,
     von: results.length,
     msSchnitt: Math.round(averageMs(results)),
     satz,
+    pruefset,
   };
   t.standort.push(entry);
   trimTaktik(t);

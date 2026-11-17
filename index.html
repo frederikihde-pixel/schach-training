@@ -31,7 +31,7 @@
       </div>
     </div>
     <div id="hinweis-standort" class="notice" role="status" hidden>
-      <p>Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie in der Statistik.</p>
+      <p id="hinweis-standort-text">Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie in der Statistik.</p>
       <div class="notice-actions">
         <a class="btn-link" href="#/taktik/statistik">Zur Statistik</a>
         <button id="hinweis-standort-spaeter" type="button">Später</button>
@@ -254,13 +254,26 @@
             <p>
               20 feste Rätsel von leicht bis schwer, ohne Hinweise und ohne Zeitvorgabe. Das Ergebnis wird mit
               Datum gespeichert, damit du es später mit einer Wiederholung vergleichen kannst. Deine
-              Taktikstärke ändert sich dadurch nicht. Plane etwa 15 bis 25 Minuten ein.
+              Taktikstärke ändert sich dadurch nicht. Plane etwa 15 bis 25 Minuten ein. Es gibt zwei Prüfsets;
+              ihre Ergebnisse werden getrennt gespeichert und nicht miteinander verglichen.
             </p>
             <p id="stat-standort-meldung" class="muted"></p>
-            <div class="stack"><button id="btn-standort" type="button">Standortbestimmung starten</button></div>
-            <h4 class="subhead">Frühere Ergebnisse</h4>
-            <p id="stat-standort-leer" class="muted">Noch keine Ergebnisse.</p>
-            <ul id="stat-standort-liste" class="plain-list"></ul>
+            <div class="pruefset-opt">
+              <p><strong>Prüfset Einsteiger</strong> <span id="empf-einsteiger" class="tag-quiet" hidden>Empfohlen</span></p>
+              <p class="muted">20 Rätsel, Wertung etwa 450 bis 1100.</p>
+              <div class="stack"><button id="btn-standort-einsteiger" type="button">Prüfset Einsteiger starten</button></div>
+            </div>
+            <div class="pruefset-opt">
+              <p><strong>Prüfset Fortgeschritten</strong> <span id="empf-fortgeschritten" class="tag-quiet" hidden>Empfohlen</span></p>
+              <p class="muted">20 Rätsel, Wertung etwa 850 bis 2050.</p>
+              <div class="stack"><button id="btn-standort-fortgeschritten" type="button">Prüfset Fortgeschritten starten</button></div>
+            </div>
+            <h4 class="subhead">Frühere Ergebnisse: Prüfset Einsteiger</h4>
+            <p id="stat-standort-leer-einsteiger" class="muted">Noch keine Ergebnisse.</p>
+            <ul id="stat-standort-liste-einsteiger" class="plain-list"></ul>
+            <h4 class="subhead">Frühere Ergebnisse: Prüfset Fortgeschritten</h4>
+            <p id="stat-standort-leer-fortgeschritten" class="muted">Noch keine Ergebnisse.</p>
+            <ul id="stat-standort-liste-fortgeschritten" class="plain-list"></ul>
           </div>
         </div>
       </div>
