@@ -141,7 +141,7 @@ const loadBand = (b) => JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles
   }
 
   // ---- Einstufung komplett mit simulierten Antworten ----
-  for (const skill of [900, 1500, 2100]) {
+  for (const skill of [450, 600, 900, 1500, 2100]) {
     const { page } = await fresh();
     await start(page);
     await page.click("#btn-einstufung");
@@ -172,13 +172,46 @@ const loadBand = (b) => JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles
     }
     await page.waitForSelector("#taktik-zusammenfassung:not([hidden])", { timeout: 10000 });
     const t = await state(page);
-    r.check(`Einstufung bei Stärke ${skill}: Schätzung ${t.staerke} im erwarteten Band`, t.eingestuft && Math.abs(t.staerke - skill) <= 150, String(t.staerke));
+    r.check(`Einstufung bei Stärke ${skill}: Schätzung ${t.staerke} im erwarteten Band`, t.eingestuft && Math.abs(t.staerke - skill) <= 120, String(t.staerke));
     r.check(`Einstufung ${skill}: Zusammenfassung nennt Stärke`, /Geschätzte Taktikstärke/.test(await page.innerText("#zus-fakten")));
     r.check(`Einstufung ${skill}: 10 Versuche, Sitzung und Verlauf gespeichert`, t.versuche.length === 10 && t.sitzungen.length === 1 && t.verlauf.length === 1 && t.anzahl === 10);
     if (skill === 1500) {
       await page.click("#btn-zus-zurueck");
       r.check("Nach der Einstufung: Taktikstärke wird ruhig als Zahl angezeigt", /^Taktikstärke: \d+$/.test(await page.textContent("#taktik-staerke")));
       r.check("Nach der Einstufung: Training bereit, Einstufung weg", await page.evaluate(() => document.getElementById("taktik-einstufung").hidden && !document.getElementById("taktik-training").hidden));
+    }
+    if (skill === 450) {
+      r.check("Einstufung 450: erstes Rätsel lag um 700, die Rätsel liegen nicht über 1000", await page.evaluate(async () => {
+        const { store } = await import("./js/storage.js");
+        const v = store.get().taktik.versuche;
+        return v[0].r >= 600 && v[0].r <= 800 && v.every((x) => x.r <= 1000 && x.r >= 400);
+      }));
+      // Einstufung wiederholen: mit Rückfrage, Verlauf bleibt
+      await page.click("#btn-zus-zurueck");
+      const before = await state(page);
+      r.check("Einstufung wiederholen: Knopf sichtbar, mindestens 44 px", await page.evaluate(() => {
+        const b = document.getElementById("btn-neu-einstufen");
+        const x = b.getBoundingClientRect();
+        return !!b.offsetParent && x.height >= 43.5 && x.width >= 43.5;
+      }));
+      await page.click("#btn-neu-einstufen");
+      r.check("Rückfrage erscheint, Knopf verschwindet", await page.evaluate(() => !document.getElementById("neu-einstufen-frage").hidden && document.getElementById("btn-neu-einstufen").hidden));
+      await page.click("#btn-neu-nein");
+      r.check("'Abbrechen' schließt die Rückfrage ohne Folgen", await page.evaluate(() => document.getElementById("neu-einstufen-frage").hidden && !document.getElementById("btn-neu-einstufen").hidden && !document.getElementById("taktik-training").hidden));
+      await page.click("#btn-neu-einstufen");
+      r.check("Rückfrage: Tippflächen mindestens 44 px", await page.evaluate(() => ["btn-neu-ja", "btn-neu-nein"].every((id) => { const x = document.getElementById(id).getBoundingClientRect(); return x.height >= 43.5 && x.width >= 43.5; })));
+      await page.click("#btn-neu-ja");
+      await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
+      r.check("Wiederholung startet eine Einstufung ('Rätsel 1 von 10')", (await page.textContent("#lauf-fortschritt")) === "Rätsel 1 von 10" && (await page.textContent("#lauf-art")) === "Einstufung");
+      const during = await state(page);
+      r.check("Verlauf, Statistik und alte Stärke bleiben, bis die neue Einstufung fertig ist", during.versuche.length === before.versuche.length && during.staerke === before.staerke && during.sitzungen.length === 1 && during.eingestuft);
+      const known = new Set(before.versuche.map((v) => v.id));
+      const cur = await currentPuzzle(page);
+      r.check("Die neuen Rätsel sind keine schon gespielten", !known.has(cur.puzzle.id));
+      await page.click("#btn-beenden");
+      await page.click("#btn-beenden-ja");
+      await page.waitForSelector("#taktik-start:not([hidden])");
+      r.check("Abbruch der Wiederholung: Stärke und eingestuft unverändert", (await state(page)).staerke === before.staerke);
     }
     r.check(`keine Skriptfehler (Einstufung ${skill})`, page.__errors.length === 0, page.__errors.join("; "));
   }

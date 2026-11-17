@@ -92,6 +92,7 @@
           <nav class="subnav" aria-label="Taktik">
             <a href="#/taktik" aria-current="page">Üben</a>
             <a href="#/taktik/statistik">Statistik</a>
+            <a href="#/taktik/themen">Themen</a>
           </nav>
           <h2 class="page-title">Taktik</h2>
           <p id="taktik-staerke" class="strength"></p>
@@ -119,6 +120,17 @@
               <select id="sel-thema"></select>
             </div>
             <div class="stack"><button id="btn-sitzung" type="button">Sitzung starten</button></div>
+            <div class="stack"><button id="btn-neu-einstufen" type="button" class="btn-quiet">Einstufung wiederholen</button></div>
+            <div id="neu-einstufen-frage" class="confirm" hidden>
+              <p>
+                Die Einstufung wiederholen? Deine Taktikstärke wird mit 10 neuen Rätseln neu geschätzt.
+                Verlauf, Wiederholungen und Statistik bleiben erhalten.
+              </p>
+              <div class="stack">
+                <button id="btn-neu-ja" type="button">Einstufung starten</button>
+                <button id="btn-neu-nein" type="button">Abbrechen</button>
+              </div>
+            </div>
           </div>
 
           <div id="taktik-fortsetzen" class="block" hidden>
@@ -172,12 +184,34 @@
         </div>
       </div>
 
+      <!-- Seite: Themen -->
+      <div id="page-themen" class="page" hidden>
+        <div class="page-inner">
+          <nav class="subnav" aria-label="Taktik">
+            <a href="#/taktik">Üben</a>
+            <a href="#/taktik/statistik">Statistik</a>
+            <a href="#/taktik/themen" aria-current="page">Themen</a>
+          </nav>
+          <h2 class="page-title">Themen</h2>
+          <p class="muted">
+            Jedes Rätsel gehört zu einem oder mehreren Themen. Hier steht, was die Themen bedeuten, und du
+            kannst ein Thema gezielt üben. Die ersten zehn eignen sich besonders für den Einstieg.
+          </p>
+          <p id="themen-meldung" class="message" role="status" aria-live="polite"></p>
+          <h3 class="list-title">Für den Einstieg</h3>
+          <ul id="themen-einstieg" class="theme-list"></ul>
+          <h3 class="list-title">Weitere Themen</h3>
+          <ul id="themen-weitere" class="theme-list"></ul>
+        </div>
+      </div>
+
       <!-- Seite: Statistik -->
       <div id="page-statistik" class="page" hidden>
         <div class="page-inner">
           <nav class="subnav" aria-label="Taktik">
             <a href="#/taktik">Üben</a>
             <a href="#/taktik/statistik" aria-current="page">Statistik</a>
+            <a href="#/taktik/themen">Themen</a>
           </nav>
           <h2 class="page-title">Statistik</h2>
 

@@ -235,6 +235,25 @@ Abschnitten; nach jedem Abschnitt wird committet.
 - Prüfset Einsteiger (`pruefset-einsteiger.json`, Satz `6f01270e`): 20 Rätsel, Wertung 450 bis 1100, aufsteigend, keine Überschneidung mit
   `pruefset.json` (Satz `d5b8cbda`, unverändert 848 bis 2051) und mit den Bändern.
 
+### Abschnitt 2: Einstufung und Auswahl für Einsteiger, fertig (emuliert getestet)
+
+- Die App liest `index.json` und lädt nur vorhandene Bänder ab 400 (Band 300 bleibt unbenutzt; ohne lesbare `index.json` gilt die
+  Liste 400 bis 2700). Untergrenze für Rätselwertung und Stärke: 400.
+- Einstufung beginnt bei 700 (vorher 1000). Schrittweite: 250, halbiert sich bei jedem Richtungswechsel (mindestens 50), wächst
+  bei gleicher Richtung um die Hälfte (höchstens 400). Simulierte Spieler (Rätselwertung Ziel plus/minus 50): sichere
+  Antworten höchstens 83 daneben (Stärke 400), bei 450 höchstens 53, 600 höchstens 47, 900 höchstens 41, 1500 höchstens 80;
+  zufällige Antworten (200 Läufe) im Mittel höchstens 79 daneben (bei 450 etwas zu hoch, weil unten bei 400 Schluss ist).
+- Neu auf der Seite Üben: "Einstufung wiederholen" mit Rückfrage. Verlauf, Wiederholungskarten und Statistik bleiben;
+  die alte Stärke gilt, bis die neue Einstufung fertig ist; bereits gespielte Rätsel kommen nicht noch einmal.
+- Das Schlagwort `oneMove` wird beim Laden nicht als Thema übernommen (doppelt zu "Matt in 1").
+
+### Abschnitt 3: Sitzungen und Themen, fertig (emuliert getestet)
+
+- Rätselfenster einer Sitzung: bei Stärke unter 1000 minus 50 bis plus 100, sonst wie bisher minus 50 bis plus 150. Anteil
+  der schwächsten Themen unverändert.
+- Jedes Thema hat einen deutschen Namen und einen erklärenden Satz (`js/themes.js`). Neue Seite `#/taktik/themen`
+  (dritter Reiter neben Üben und Statistik): zehn Einsteiger-Themen oben, danach die übrigen, je mit "Dieses Thema üben".
+
 ## Phase 3 — Eigene Partien analysieren
 
 Noch nicht begonnen (siehe "Nächste Schritte").

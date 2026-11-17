@@ -755,6 +755,33 @@ select {
   border-bottom: 1px solid var(--border);
 }
 
+.list-title {
+  margin: 20px 0 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.theme-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.theme-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.theme-row p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
 .stat-row {
   display: flex;
   flex-direction: column;

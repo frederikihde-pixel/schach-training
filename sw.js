@@ -31,6 +31,7 @@ const PRECACHE = [
   "./js/puzzle-runner.js",
   "./js/pages/taktik.js",
   "./js/pages/statistik.js",
+  "./js/pages/themen.js",
   "./js/themes.js",
   "./js/rating.js",
   "./js/leitner.js",

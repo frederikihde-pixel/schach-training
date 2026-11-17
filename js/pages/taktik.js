@@ -6,7 +6,7 @@ import { puzzleStore } from "../puzzles.js";
 import { createRunner, Cancelled } from "../puzzle-runner.js";
 import { placementNextTarget, placementEstimate, PLACEMENT_COUNT, bandsFor } from "../rating.js";
 import { dayKey, dueCards } from "../leitner.js";
-import { buildSession } from "../session.js";
+import { buildSession, sessionWindow } from "../session.js";
 import { weakestThemes } from "../stats.js";
 import { recordAttempt, finishSession, applyPlacement, recordStandort } from "../taktik-state.js";
 import { themeLabel, allThemes } from "../themes.js";
@@ -59,6 +59,8 @@ function renderStart() {
   }
   $("taktik-info").textContent = info;
 
+  $("neu-einstufen-frage").hidden = true;
+  $("btn-neu-einstufen").hidden = false;
   $("taktik-fortsetzen").hidden = !aktiv;
   $("taktik-einstufung").hidden = !!aktiv || t.eingestuft;
   $("taktik-training").hidden = !!aktiv || !t.eingestuft;
@@ -117,14 +119,15 @@ async function planSession(size, filter) {
   const strength = t.staerke;
   const known = new Set([...Object.keys(t.gesehen), ...Object.keys(t.karten)]);
   let candidates = [];
+  const win = sessionWindow(strength);
   for (const widen of [0, 100, 250, 500]) {
-    const all = await puzzleStore.inRange(strength - 50 - widen, strength + 150 + widen);
+    const all = await puzzleStore.inRange(win.low - widen, win.high + widen);
     candidates = all.filter((p) => !known.has(p.id) && (!filter || p.themen.includes(filter)));
     if (candidates.length >= size * 3) break;
   }
   if (candidates.length < size) {
     // Vorrat ausgeschöpft: auch schon gesehene Rätsel zulassen.
-    const all = await puzzleStore.inRange(strength - 150, strength + 250);
+    const all = await puzzleStore.inRange(win.low - 100, win.high + 100);
     candidates = all.filter((p) => !t.karten[p.id] && (!filter || p.themen.includes(filter)));
   }
   const weak = weakestThemes(t.themen, 3).map((x) => x.tag);
@@ -437,6 +440,19 @@ export function onShowTaktik() {
 export function initTaktik() {
   $("btn-einstufung").addEventListener("click", startEinstufung);
   $("btn-sitzung").addEventListener("click", startSitzung);
+  $("btn-neu-einstufen").addEventListener("click", () => {
+    $("neu-einstufen-frage").hidden = false;
+    $("btn-neu-einstufen").hidden = true;
+  });
+  $("btn-neu-nein").addEventListener("click", () => {
+    $("neu-einstufen-frage").hidden = true;
+    $("btn-neu-einstufen").hidden = false;
+  });
+  $("btn-neu-ja").addEventListener("click", () => {
+    $("neu-einstufen-frage").hidden = true;
+    $("btn-neu-einstufen").hidden = false;
+    startEinstufung();
+  });
   $("btn-fortsetzen").addEventListener("click", () => guarded(async () => {
     const a = taktik().aktiv;
     if (a.typ === "einstufung" && !a.plan[a.index]) await addPlacementPuzzle(a);
