@@ -212,8 +212,28 @@ Abschnitten; nach jedem Abschnitt wird committet.
 - Getestet (Python, künstliche CSV): 31 Tests, alle bestanden. Neu: Bänder ab 400 und Band 300 nur mit
   genug Rätseln, strenge zuerst und Stufen nur unter 700, Mindestzahl der Themen auch mit gelockerten
   Rätseln, Prüfset Einsteiger (20, Wertung, Themen, getrennt, fest, Neubau mit Flag), unabhängige Bänder.
-- **Noch offen:** Die echten Zahlen (wie viele Rätsel unter 600, welche Stufe, ob `oneMove` existiert) zeigt
-  erst der Lauf von "Build puzzles" auf GitHub. Der Lichess-Download ist in dieser Umgebung gesperrt.
+- **Echte Daten gebaut** (GitHub-Lauf vom 17.11.2026 auf dem Arbeits-Branch; 6,19 Mio. Zeilen gelesen, 2,31 Mio. bestanden die
+  Filter, Gesamtgröße 3,58 MB):
+
+  | Band | Rätsel | streng gewählt | Stufe 1 | Stufe 2 | Kandidaten streng / Stufe 1 / Stufe 2 |
+  | --- | --- | --- | --- | --- | --- |
+  | 300 | 1000 | 117 | 651 | 232 | 117 / 780 / 339 |
+  | 400 | 1000 | 948 | 44 | 8 | 3717 / 15283 / 5778 |
+  | 500 | 1000 | 936 | 14 | 50 | 8524 / 23589 / 11217 |
+  | 600 | 1000 | 1000 | 0 | 0 | 15679 / (30201 / 17912, nicht nötig) |
+  | ab 700 | je 1000 | alle streng | 0 | 0 | nicht gelockert |
+
+- Auffälligkeiten:
+  - **Band 300 enthält nur Rätsel mit Wertung 399** (Untergrenze der Lichess-Wertung) und besteht zu 88 Prozent aus
+    gelockerten Rätseln. Er taugt nicht zum Feinabstufen; die App lädt Bänder erst ab 400 (die Datei bleibt zunächst liegen).
+  - `oneMove` gibt es im Rohdatensatz (157 418 Rätsel), aber praktisch nur zusammen mit `mateIn1` (157 330); es ist für die App
+    kein eigenes Thema. Die Mindestzahl gilt für beide gleich.
+  - Mindestzahl 80 je Einsteiger-Thema: erreicht in den Bändern 500 bis 1000; **Band 400: Fesselung (pin) nur 10**,
+    Gabel (fork) genau 80; Band 300: Gabel 0, Fesselung 0, ungedeckte Figur 36. Es gibt dort schlicht kaum solche Rätsel
+    (alle Stufen waren schon ausgeschöpft).
+  - Rätsel mit einem Zug (nur Matt in 1): Band 400 gut die Hälfte (555 von 1000), Band 500 463, Band 600 393.
+- Prüfset Einsteiger (`pruefset-einsteiger.json`, Satz `6f01270e`): 20 Rätsel, Wertung 450 bis 1100, aufsteigend, keine Überschneidung mit
+  `pruefset.json` (Satz `d5b8cbda`, unverändert 848 bis 2051) und mit den Bändern.
 
 ## Phase 3 — Eigene Partien analysieren
 
