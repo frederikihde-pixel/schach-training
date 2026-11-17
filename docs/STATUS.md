@@ -5,8 +5,8 @@ Abschnitt aktualisiert. Stand: 17.11.2026.
 
 ## Nächste Schritte
 
-1. **Taktik für Einsteiger fertigstellen** (siehe Abschnitt "Taktik für Einsteiger") und danach
-   **auf dem echten Handy prüfen** (Liste ganz unten).
+1. **Taktik für Einsteiger auf dem echten Handy prüfen** (Abschnitt "Taktik für Einsteiger" und Liste ganz unten), dann
+   Pull Request 5 mergen.
 2. **Computergegner auf dem Brett:** gegen den Computer spielen, Stärke wählbar. Idee: eine
    Schach-Engine als WebAssembly (zum Beispiel Stockfish, GPL-3 passt zur Lizenz), sie läuft
    komplett im Browser, ohne Server. Vorher klären: Größe der Datei (einige MB) und
@@ -26,7 +26,7 @@ Abschnitt aktualisiert. Stand: 17.11.2026.
 | Vorarbeiten: Mängel, Speichern, installierbar, Rätsel-Daten | fertig, gemergt |
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
 | Brett-Designs, Einführung, leere Zustände | fertig, gemergt (Pull Request 4), emuliert getestet |
-| Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe | in Arbeit |
+| Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe, Themen-Seite | fertig, emuliert getestet (Pull Request 5) |
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
@@ -183,7 +183,7 @@ verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinner
 
 **Offen:** Test auf dem echten Handy (Liste unten).
 
-## Taktik für Einsteiger (Wertung um 440), in Arbeit
+## Taktik für Einsteiger (Wertung um 440), fertig, emuliert getestet
 
 Ausgangslage: Die Taktik-Funktionen waren für Spieler um 1000 gebaut (Einstufung ab 1000, Rätsel ab
 Wertung 600, Prüfset 850 bis 2050). Für eine Chess.com-Wertung um 440 ist das zu schwer. Der Umbau läuft in
@@ -254,6 +254,40 @@ Abschnitten; nach jedem Abschnitt wird committet.
 - Jedes Thema hat einen deutschen Namen und einen erklärenden Satz (`js/themes.js`). Neue Seite `#/taktik/themen`
   (dritter Reiter neben Üben und Statistik): zehn Einsteiger-Themen oben, danach die übrigen, je mit "Dieses Thema üben".
 
+### Abschnitt 4: Zwei Prüfsets, fertig (emuliert getestet)
+
+- Statistik-Seite: Wahl zwischen "Prüfset Einsteiger" (20 Rätsel, etwa 450 bis 1100) und "Prüfset Fortgeschritten" (20 Rätsel,
+  etwa 850 bis 2050, unverändert). "Empfohlen" steht beim Einsteiger-Set bei Stärke unter 1000 oder unbekannter Stärke,
+  sonst beim Fortgeschrittenen-Set.
+- Speicher **Version 4** mit Migration: vorhandene Ergebnisse gelten als "fortgeschritten"; jedes Ergebnis speichert den Satz
+  (`pruefset`); die Ergebnislisten sind getrennt und werden nie verglichen oder vermischt. Neue Einstellung
+  `einstellungen.denkhilfe` (Standard: an). Alte Sicherungsdateien (Version 2 und 3) lassen sich weiter importieren.
+- Die Erinnerung nach 4 Wochen zählt ab dem letzten Ergebnis (egal welcher Satz) und nennt den Satz dieses Ergebnisses.
+- Offline: `index.json`, beide Prüfsets und die Bänder um die eigene Stärke werden im Hintergrund vorab geholt (getestet:
+  Standortbestimmung mit beiden Sätzen ohne Netzwerk).
+
+### Abschnitt 5: Der häufigste Fehler, fertig (emuliert getestet)
+
+- **Denkhilfe:** Zeile "Erst prüfen: Was bedroht der Gegner? Welche Figur ist ungedeckt?" über dem Brett. Sie erscheint nur bei den
+  ersten 10 Rätseln überhaupt (gezählt an den bisher gespielten Rätseln) und nur bei Stärke unter 900 (unbekannt zählt dazu),
+  nie in der Standortbestimmung. Der Platz wird zu Beginn eines Laufs reserviert; das Brett springt nicht (getestet).
+  Abschaltbar unter Mehr, Einstellungen.
+- **Einführung:** neue 7. Seite "Der häufigste Fehler: ungedeckte Figuren und übersehene Drohungen" mit den vier Fragen vor jedem Zug.
+  Die Einführung hat jetzt 7 Seiten (vorher 6; die neue Vorgabe geht der früheren Grenze von 4 bis 6 vor).
+
+### Was nur emuliert ist und was auf dem echten Handy zu prüfen ist (Taktik für Einsteiger)
+
+Emuliert getestet (Chromium mit 390 px und Touch-Emulation, echte Rätsel-Daten): Rechenlogik der Einstufung mit simulierten
+Spielern, Auswahl der Bänder, Seiten, Speicher-Migration, Offline-Betrieb mit dem Service Worker, Überlauf, Tippflächen
+mindestens 44 px. **Nicht** emuliert beurteilbar (bitte auf dem echten Handy prüfen):
+- Sind die Rätsel ab etwa 450 **machbar** (nicht zu schwer, nicht zu leicht)? Fühlt sich Band 400 und 500 sinnvoll an?
+  (Jedes zweite Rätsel in Band 400 ist ein Matt in 1.)
+- Landet die neue **Einstufung** nahe der eigenen Wertung (etwa 450 bis 500)? Die Simulation setzt voraus, dass jemand Rätsel unterhalb seiner
+  Stärke sicher löst und darüber nicht; echte Menschen raten und schwanken.
+- Ist die **Denkhilfe** hilfreich oder stört sie? Ist der Text auf dem Handy gut lesbar und hat er genug Abstand zum Brett?
+- Sind die **Erklärungen der Themen** verständlich? Was fehlt oder ist unklar?
+- Ist die Wahl zwischen den zwei **Prüfsets** auf der Statistik-Seite klar genug?
+
 ## Phase 3 — Eigene Partien analysieren
 
 Noch nicht begonnen (siehe "Nächste Schritte").
@@ -279,6 +313,7 @@ Allgemein und Taktik:
 - Standortbestimmung am Stück (15 bis 25 Minuten): Bildschirm bleibt an, Fortsetzen nach
   Wechsel in eine andere App.
 - Flugmodus: erst online eine Sitzung starten, dann offline weiterüben.
+- Taktik für Einsteiger: siehe den Abschnitt "Taktik für Einsteiger" (machbare Rätsel ab 450, Einstufung, Denkhilfe, Themen-Erklärungen).
 - Diagramm in der Statistik lesbar; Erinnerung nach 4 Wochen wirkt ruhig genug.
 
 Brett-Designs und Einführung (Pull Request 4, gemergt):
