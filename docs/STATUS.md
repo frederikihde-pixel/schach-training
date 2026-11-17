@@ -1,12 +1,12 @@
 # Status
 
 Diese Datei wird zu Beginn jeder Sitzung zuerst gelesen und nach jedem
-Abschnitt aktualisiert. Stand: 14.11.2026.
+Abschnitt aktualisiert. Stand: 17.11.2026.
 
 ## Nächste Schritte
 
-1. **Auf dem echten Handy prüfen** (Liste ganz unten). Das ist die einzige offene Aufgabe
-   aus den fertigen Phasen.
+1. **Taktik für Einsteiger fertigstellen** (siehe Abschnitt "Taktik für Einsteiger") und danach
+   **auf dem echten Handy prüfen** (Liste ganz unten).
 2. **Computergegner auf dem Brett:** gegen den Computer spielen, Stärke wählbar. Idee: eine
    Schach-Engine als WebAssembly (zum Beispiel Stockfish, GPL-3 passt zur Lizenz), sie läuft
    komplett im Browser, ohne Server. Vorher klären: Größe der Datei (einige MB) und
@@ -25,7 +25,8 @@ Abschnitt aktualisiert. Stand: 14.11.2026.
 | Phase 1: Brett | fertig, gemergt, emuliert getestet |
 | Vorarbeiten: Mängel, Speichern, installierbar, Rätsel-Daten | fertig, gemergt |
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
-| Brett-Designs, Einführung, leere Zustände | fertig, Pull Request 4 (offen), emuliert getestet |
+| Brett-Designs, Einführung, leere Zustände | fertig, gemergt (Pull Request 4), emuliert getestet |
+| Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe | in Arbeit |
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
@@ -104,7 +105,7 @@ alle bestanden: Rätsel richtig und falsch lösen, Matt-in-1-Alternative, Einstu
 simulierten Spielern (Stärke 900, 1500, 2100 ergibt 909, 1490, 2090), Wiederholungsplanung mit
 verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinnerung nach 28 Tagen.
 
-## Brett-Designs, Einführung, leere Zustände (Pull Request 4)
+## Brett-Designs, Einführung, leere Zustände (Pull Request 4, gemergt)
 
 **Fertig bisher:**
 - Speicherformat Version 3: `einstellungen.brettDesign` und `einstellungen.einfuehrungGesehen`.
@@ -209,7 +210,7 @@ Allgemein und Taktik:
 - Flugmodus: erst online eine Sitzung starten, dann offline weiterüben.
 - Diagramm in der Statistik lesbar; Erinnerung nach 4 Wochen wirkt ruhig genug.
 
-Brett-Designs und Einführung (Pull Request 4):
+Brett-Designs und Einführung (Pull Request 4, gemergt):
 - Lesbarkeit der Figuren **draußen bei Sonnenlicht** und bei niedriger Helligkeit, in allen drei
   Designs. Besonders: schwarze Dame und Turm, weiße Figuren auf hellen Feldern (Klassisch, Grün),
   schwarze Figuren auf dunklen Feldern (Dunkel). Welches Design nimmst du am liebsten?
