@@ -30,8 +30,8 @@ Abschnitt aktualisiert. Stand: 17.11.2026.
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
-`QUICK=1` überspringt die langen Sitzungstests, sonst etwa 15 Minuten). Stand 14.11.2026: 56 Logik-Tests
-(davon 10 Kontrast-Tests), 16 Python-Tests und 264 Browser-Prüfungen, alle bestanden.
+`QUICK=1` überspringt die langen Sitzungstests, sonst etwa 20 Minuten). Stand 17.11.2026: 70 Logik-Tests
+(davon 10 Kontrast-Tests), 31 Python-Tests und 335 Browser-Prüfungen in 17 Dateien, alle bestanden.
 Screenshots der Designs: `node tests/e2e/screenshots.cjs` (schreibt nach `tests/screenshots/`).
 
 ## Phase 1 — Ein Brett, auf dem ich beide Seiten spielen kann
