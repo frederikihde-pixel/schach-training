@@ -151,6 +151,7 @@
             <span id="lauf-art" class="muted"></span>
           </div>
           <p id="lauf-seite" class="side-line"></p>
+          <p id="lauf-denkhilfe" class="thinking-aid" hidden></p>
           <div class="board-row">
             <div class="board-wrap">
               <div id="taktik-board" class="board"></div>
@@ -285,9 +286,29 @@
           <nav class="link-list" aria-label="Mehr">
             <button id="btn-einfuehrung" type="button">Einführung</button>
             <a href="#/mehr/darstellung">Darstellung</a>
+            <a href="#/mehr/einstellungen">Einstellungen</a>
             <a href="#/mehr/daten">Daten sichern und wiederherstellen</a>
             <a href="#/mehr/info">Info und Lizenzen</a>
           </nav>
+        </div>
+      </div>
+
+      <!-- Seite: Einstellungen -->
+      <div id="page-einstellungen" class="page" hidden>
+        <div class="page-inner">
+          <p class="back-row"><a class="back-link" href="#/mehr">Zurück</a></p>
+          <h2 class="page-title">Einstellungen</h2>
+          <div class="block">
+            <h3>Denkhilfe</h3>
+            <p>
+              Bei den ersten 10 Rätseln überhaupt (der Einstufung) und solange deine Taktikstärke unter 900 liegt,
+              steht vor dem Rätsel eine Zeile: Was bedroht der Gegner? Welche Figur ist ungedeckt? Sie ist keine
+              Lösungshilfe, sondern erinnert an die wichtigste Prüfung vor jedem Zug.
+            </p>
+            <div class="stack">
+              <button id="set-denkhilfe" type="button" role="switch" aria-checked="true">Denkhilfe: an</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -502,6 +523,20 @@
             Diese App trainiert Taktik und Wiederholung. Für echte Fortschritte gehören auch Partien mit langer
             Bedenkzeit dazu und die Analyse dieser Partien.
           </p>
+        </section>
+        <section class="intro-slide" aria-label="Seite 7">
+          <h2>Der häufigste Fehler: ungedeckte Figuren und übersehene Drohungen</h2>
+          <p>
+            Am Anfang gehen die meisten Partien aus zwei Gründen verloren: Eine Figur steht ungedeckt, oder eine
+            Drohung des Gegners wird übersehen. Stelle dir deshalb vor jedem Zug vier Fragen:
+          </p>
+          <ol class="intro-list">
+            <li>Was hat der Gegner gerade gezogen?</li>
+            <li>Was bedroht er?</li>
+            <li>Ist meine Figur gedeckt?</li>
+            <li>Kann ich Schach, Schlagen oder eine Drohung ausführen?</li>
+          </ol>
+          <p>Bei den ersten Rätseln erinnert dich die App daran. Unter Mehr, Einstellungen kannst du das abschalten.</p>
         </section>
       </div>
       <div class="intro-nav">

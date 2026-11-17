@@ -11,6 +11,7 @@ import { weakestThemes } from "../stats.js";
 import { recordAttempt, finishSession, applyPlacement, recordStandort } from "../taktik-state.js";
 import { themeLabel, allThemes } from "../themes.js";
 import { pruefsetName } from "../pruefsets.js";
+import { denkhilfeAktiv, DENKHILFE_TEXT } from "../denkhilfe.js";
 
 const $ = (id) => document.getElementById(id);
 const today = () => dayKey(store.now());
@@ -211,7 +212,15 @@ export function practiceTheme(tag) {
 
 // ---------- Ablauf ----------
 
+// Gilt die Denkhilfe jetzt? (Einstellung, erste 10 Rätsel überhaupt, Stärke unter 900)
+function denkhilfeJetzt(typ) {
+  const d = store.get();
+  return denkhilfeAktiv({ einstellung: d.einstellungen.denkhilfe, gesehen: Object.keys(d.taktik.gesehen).length, staerke: d.taktik.staerke, typ });
+}
+
 function beginRun() {
+  // Platz für die Zeile wird zu Beginn des Laufs festgelegt und bleibt, damit das Brett nicht springt.
+  $("lauf-denkhilfe").hidden = !denkhilfeJetzt(taktik().aktiv.typ);
   showView("taktik-lauf");
   $("beenden-bestaetigung").hidden = true;
   running = true;
@@ -266,6 +275,7 @@ async function runLoop() {
       $("lauf-fortschritt").textContent = `Rätsel ${a.index + 1} von ${totalOf(a)}`;
       $("lauf-art").textContent = artText(a, item);
       $("lauf-seite").textContent = "";
+      $("lauf-denkhilfe").textContent = denkhilfeJetzt(a.typ) ? DENKHILFE_TEXT : "";
       $("lauf-meldung").textContent = "";
       $("btn-weiter").hidden = true;
 

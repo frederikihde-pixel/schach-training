@@ -633,6 +633,14 @@ select {
   font-weight: 600;
 }
 
+.thinking-aid {
+  min-height: 2.8em; /* Platz bleibt reserviert, damit das Brett nicht springt */
+  margin: 0 16px 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
 .run-message {
   min-height: 1.4em;
   margin: 12px 0 8px;

@@ -406,3 +406,20 @@ test("Rätsel-Store: beide Prüfsets werden aus ihren Dateien geladen und einzel
   assert.deepEqual(calls.sort(), ["p/pruefset-einsteiger.json", "p/pruefset.json"], "jede Datei nur einmal");
   assert.deepEqual(ein.raetsel[0].themen, ["pin"]);
 });
+
+// ---------- Denkhilfe ----------
+import { denkhilfeAktiv, DENKHILFE_TEXT } from "../../js/denkhilfe.js";
+
+test("Denkhilfe: nur erste 10 Rätsel, nur unter Stärke 900 (unbekannt zählt dazu), abschaltbar, nie in der Standortbestimmung", () => {
+  const an = { einstellung: true, gesehen: 0, staerke: null, typ: "einstufung" };
+  assert.equal(denkhilfeAktiv(an), true, "neue Nutzer: unbekannte Stärke");
+  assert.equal(denkhilfeAktiv({ ...an, gesehen: 9 }), true);
+  assert.equal(denkhilfeAktiv({ ...an, gesehen: 10 }), false, "ab dem 11. Rätsel nicht mehr");
+  assert.equal(denkhilfeAktiv({ ...an, staerke: 899 }), true);
+  assert.equal(denkhilfeAktiv({ ...an, staerke: 900 }), false);
+  assert.equal(denkhilfeAktiv({ ...an, staerke: 1500 }), false);
+  assert.equal(denkhilfeAktiv({ ...an, einstellung: false }), false, "abgeschaltet");
+  assert.equal(denkhilfeAktiv({ ...an, typ: "standort" }), false);
+  assert.equal(denkhilfeAktiv({ ...an, typ: "sitzung", gesehen: 4, staerke: 500 }), true);
+  assert.equal(DENKHILFE_TEXT, "Erst prüfen: Was bedroht der Gegner? Welche Figur ist ungedeckt?");
+});

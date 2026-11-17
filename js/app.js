@@ -5,6 +5,7 @@ import { initDaten, onShowDaten } from "./pages/daten.js";
 import { initTaktik, onShowTaktik } from "./pages/taktik.js";
 import { initStatistik, onShowStatistik } from "./pages/statistik.js";
 import { onShowThemen } from "./pages/themen.js";
+import { onShowEinstellungen, initEinstellungen } from "./pages/einstellungen.js";
 import { onShowDarstellung } from "./pages/darstellung.js";
 import { initDesign } from "./design.js";
 import { initEinfuehrung } from "./pages/einfuehrung.js";
@@ -15,6 +16,7 @@ addRoute("taktik", { page: "page-taktik", tab: "taktik", title: "Taktik", onShow
 addRoute("taktik/statistik", { page: "page-statistik", tab: "taktik", title: "Statistik", onShow: onShowStatistik });
 addRoute("taktik/themen", { page: "page-themen", tab: "taktik", title: "Themen", onShow: onShowThemen });
 addRoute("mehr", { page: "page-mehr", title: "Mehr" });
+addRoute("mehr/einstellungen", { page: "page-einstellungen", title: "Einstellungen", onShow: onShowEinstellungen });
 addRoute("mehr/darstellung", { page: "page-darstellung", title: "Darstellung", onShow: onShowDarstellung });
 addRoute("mehr/daten", { page: "page-daten", title: "Daten", onShow: onShowDaten });
 addRoute("mehr/info", { page: "page-info", title: "Info und Lizenzen" });
@@ -31,6 +33,7 @@ initInfo();
 initDaten();
 initTaktik();
 initStatistik();
+initEinstellungen();
 startRouter();
 initEinfuehrung();
 
