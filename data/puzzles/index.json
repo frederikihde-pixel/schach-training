@@ -1,6 +1,6 @@
 {
- "version": 1,
- "erstellt": "2026-11-12",
+ "version": 2,
+ "erstellt": "2026-11-17",
  "quelle": "https://database.lichess.org/#puzzles",
  "lizenz": "CC0 1.0",
  "felder": [
@@ -16,6 +16,52 @@
   "nbPlays": 500,
   "ratingDeviation": 100
  },
+ "filterStufen": [
+  {
+   "stufe": 0,
+   "name": "streng",
+   "popularity": 90,
+   "nbPlays": 500,
+   "ratingDeviation": 100
+  },
+  {
+   "stufe": 1,
+   "name": "gelockert 1",
+   "popularity": 90,
+   "nbPlays": 200,
+   "ratingDeviation": 100
+  },
+  {
+   "stufe": 2,
+   "name": "gelockert 2",
+   "popularity": 80,
+   "nbPlays": 200,
+   "ratingDeviation": 100
+  }
+ ],
+ "lockernUnterBand": 700,
+ "einsteiger": {
+  "themen": [
+   "mateIn1",
+   "mateIn2",
+   "hangingPiece",
+   "fork",
+   "pin",
+   "oneMove"
+  ],
+  "mindestzahl": 80,
+  "unterBand": 1100,
+  "imRohdatensatz": {
+   "mateIn1": 157330,
+   "mateIn2": 106039,
+   "hangingPiece": 23656,
+   "fork": 71067,
+   "pin": 14950,
+   "oneMove": 157418
+  },
+  "fehlendeThemen": []
+ },
+ "entfalleneBaender": {},
  "maxProBand": 1000,
  "pruefset": {
   "datei": "pruefset.json",
@@ -25,17 +71,147 @@
   "ratingMax": 2051,
   "bytes": 2847
  },
- "gesamtBytes": 3184458,
+ "pruefsets": [
+  {
+   "id": "fortgeschritten",
+   "name": "Prüfset Fortgeschritten",
+   "datei": "pruefset.json",
+   "satz": "d5b8cbda",
+   "anzahl": 20,
+   "ratingMin": 848,
+   "ratingMax": 2051,
+   "bytes": 2847
+  },
+  {
+   "id": "einsteiger",
+   "name": "Prüfset Einsteiger",
+   "datei": "pruefset-einsteiger.json",
+   "satz": "6f01270e",
+   "anzahl": 20,
+   "ratingMin": 450,
+   "ratingMax": 1100,
+   "bytes": 2707
+  }
+ ],
+ "gesamtBytes": 3579793,
  "gelesen": 6193530,
- "qualifiziert": 2188703,
+ "qualifiziert": 2306160,
  "baender": [
+  {
+   "band": 300,
+   "datei": "band-300.json",
+   "anzahl": 1000,
+   "ratingMin": 399,
+   "ratingMax": 399,
+   "bytes": 128506,
+   "filter": {
+    "hoechsteStufe": 2,
+    "gewaehlt": {
+     "streng": 117,
+     "gelockert1": 651,
+     "gelockert2": 232
+    }
+   },
+   "kandidaten": {
+    "streng": 117,
+    "gelockert1": 780,
+    "gelockert2": 339
+   },
+   "einsteigerThemen": {
+    "mateIn1": 821,
+    "mateIn2": 175,
+    "hangingPiece": 36,
+    "fork": 0,
+    "pin": 0,
+    "oneMove": 821
+   }
+  },
+  {
+   "band": 400,
+   "datei": "band-400.json",
+   "anzahl": 1000,
+   "ratingMin": 400,
+   "ratingMax": 499,
+   "bytes": 134093,
+   "filter": {
+    "hoechsteStufe": 2,
+    "gewaehlt": {
+     "streng": 948,
+     "gelockert1": 44,
+     "gelockert2": 8
+    }
+   },
+   "kandidaten": {
+    "streng": 3717,
+    "gelockert1": 15283,
+    "gelockert2": 5778
+   },
+   "einsteigerThemen": {
+    "mateIn1": 554,
+    "mateIn2": 264,
+    "hangingPiece": 212,
+    "fork": 80,
+    "pin": 10,
+    "oneMove": 555
+   }
+  },
+  {
+   "band": 500,
+   "datei": "band-500.json",
+   "anzahl": 1000,
+   "ratingMin": 500,
+   "ratingMax": 599,
+   "bytes": 131934,
+   "filter": {
+    "hoechsteStufe": 2,
+    "gewaehlt": {
+     "streng": 936,
+     "gelockert1": 14,
+     "gelockert2": 50
+    }
+   },
+   "kandidaten": {
+    "streng": 8524,
+    "gelockert1": 23589,
+    "gelockert2": 11217
+   },
+   "einsteigerThemen": {
+    "mateIn1": 463,
+    "mateIn2": 223,
+    "hangingPiece": 141,
+    "fork": 103,
+    "pin": 80,
+    "oneMove": 463
+   }
+  },
   {
    "band": 600,
    "datei": "band-600.json",
    "anzahl": 1000,
    "ratingMin": 600,
    "ratingMax": 699,
-   "bytes": 129846
+   "bytes": 130442,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 15679,
+    "gelockert1": 30201,
+    "gelockert2": 17912
+   },
+   "einsteigerThemen": {
+    "mateIn1": 393,
+    "mateIn2": 207,
+    "hangingPiece": 124,
+    "fork": 115,
+    "pin": 96,
+    "oneMove": 393
+   }
   },
   {
    "band": 700,
@@ -43,7 +219,28 @@
    "anzahl": 1000,
    "ratingMin": 700,
    "ratingMax": 799,
-   "bytes": 130183
+   "bytes": 130786,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 28621,
+    "gelockert1": 0,
+    "gelockert2": 0
+   },
+   "einsteigerThemen": {
+    "mateIn1": 335,
+    "mateIn2": 231,
+    "hangingPiece": 105,
+    "fork": 120,
+    "pin": 105,
+    "oneMove": 335
+   }
   },
   {
    "band": 800,
@@ -51,7 +248,28 @@
    "anzahl": 1000,
    "ratingMin": 800,
    "ratingMax": 899,
-   "bytes": 132164
+   "bytes": 130224,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 55793,
+    "gelockert1": 0,
+    "gelockert2": 0
+   },
+   "einsteigerThemen": {
+    "mateIn1": 270,
+    "mateIn2": 239,
+    "hangingPiece": 111,
+    "fork": 134,
+    "pin": 95,
+    "oneMove": 270
+   }
   },
   {
    "band": 900,
@@ -59,7 +277,28 @@
    "anzahl": 1000,
    "ratingMin": 900,
    "ratingMax": 999,
-   "bytes": 133098
+   "bytes": 131582,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 136950,
+    "gelockert1": 0,
+    "gelockert2": 0
+   },
+   "einsteigerThemen": {
+    "mateIn1": 253,
+    "mateIn2": 253,
+    "hangingPiece": 115,
+    "fork": 140,
+    "pin": 102,
+    "oneMove": 253
+   }
   },
   {
    "band": 1000,
@@ -67,7 +306,28 @@
    "anzahl": 1000,
    "ratingMin": 1000,
    "ratingMax": 1099,
-   "bytes": 135538
+   "bytes": 133293,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 110151,
+    "gelockert1": 0,
+    "gelockert2": 0
+   },
+   "einsteigerThemen": {
+    "mateIn1": 199,
+    "mateIn2": 241,
+    "hangingPiece": 113,
+    "fork": 128,
+    "pin": 111,
+    "oneMove": 199
+   }
   },
   {
    "band": 1100,
@@ -75,7 +335,20 @@
    "anzahl": 1000,
    "ratingMin": 1100,
    "ratingMax": 1199,
-   "bytes": 138452
+   "bytes": 138893,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 223080,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 1200,
@@ -83,7 +356,20 @@
    "anzahl": 1000,
    "ratingMin": 1200,
    "ratingMax": 1299,
-   "bytes": 139528
+   "bytes": 139597,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 145728,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 1300,
@@ -91,7 +377,20 @@
    "anzahl": 1000,
    "ratingMin": 1300,
    "ratingMax": 1399,
-   "bytes": 140500
+   "bytes": 141551,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 180432,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 1400,
@@ -99,7 +398,20 @@
    "anzahl": 1000,
    "ratingMin": 1400,
    "ratingMax": 1499,
-   "bytes": 142405
+   "bytes": 143498,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 180836,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 1500,
@@ -107,7 +419,20 @@
    "anzahl": 1000,
    "ratingMin": 1500,
    "ratingMax": 1599,
-   "bytes": 143165
+   "bytes": 144184,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 179117,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 1600,
@@ -115,7 +440,20 @@
    "anzahl": 1000,
    "ratingMin": 1600,
    "ratingMax": 1699,
-   "bytes": 144861
+   "bytes": 144267,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 176957,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 1700,
@@ -123,7 +461,20 @@
    "anzahl": 1000,
    "ratingMin": 1700,
    "ratingMax": 1799,
-   "bytes": 145035
+   "bytes": 144917,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 139643,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 1800,
@@ -131,7 +482,20 @@
    "anzahl": 1000,
    "ratingMin": 1800,
    "ratingMax": 1899,
-   "bytes": 147682
+   "bytes": 147473,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 122758,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 1900,
@@ -139,7 +503,20 @@
    "anzahl": 1000,
    "ratingMin": 1900,
    "ratingMax": 1999,
-   "bytes": 147921
+   "bytes": 147176,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 129392,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 2000,
@@ -147,7 +524,20 @@
    "anzahl": 1000,
    "ratingMin": 2000,
    "ratingMax": 2099,
-   "bytes": 147910
+   "bytes": 149040,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 106505,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 2100,
@@ -155,7 +545,20 @@
    "anzahl": 1000,
    "ratingMin": 2100,
    "ratingMax": 2199,
-   "bytes": 150405
+   "bytes": 149771,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 85796,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 2200,
@@ -163,7 +566,20 @@
    "anzahl": 1000,
    "ratingMin": 2200,
    "ratingMax": 2299,
-   "bytes": 153564
+   "bytes": 152535,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 59121,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 2300,
@@ -171,7 +587,20 @@
    "anzahl": 1000,
    "ratingMin": 2300,
    "ratingMax": 2399,
-   "bytes": 152929
+   "bytes": 153255,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 45591,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 2400,
@@ -179,7 +608,20 @@
    "anzahl": 1000,
    "ratingMin": 2400,
    "ratingMax": 2499,
-   "bytes": 155083
+   "bytes": 155525,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 28991,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 2500,
@@ -187,7 +629,20 @@
    "anzahl": 1000,
    "ratingMin": 2500,
    "ratingMax": 2599,
-   "bytes": 154093
+   "bytes": 156083,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 16488,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 2600,
@@ -195,7 +650,20 @@
    "anzahl": 1000,
    "ratingMin": 2600,
    "ratingMax": 2699,
-   "bytes": 157901
+   "bytes": 159293,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 10914,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   },
   {
    "band": 2700,
@@ -203,205 +671,222 @@
    "anzahl": 1000,
    "ratingMin": 2700,
    "ratingMax": 3059,
-   "bytes": 162195
+   "bytes": 161875,
+   "filter": {
+    "hoechsteStufe": 0,
+    "gewaehlt": {
+     "streng": 1000,
+     "gelockert1": 0,
+     "gelockert2": 0
+    }
+   },
+   "kandidaten": {
+    "streng": 10160,
+    "gelockert1": 0,
+    "gelockert2": 0
+   }
   }
  ],
  "themen": [
   {
    "name": "endgame",
-   "anzahl": 11497
+   "anzahl": 13068
   },
   {
    "name": "middlegame",
-   "anzahl": 9035
+   "anzahl": 10376
   },
   {
    "name": "sacrifice",
-   "anzahl": 4224
+   "anzahl": 4309
   },
   {
-   "name": "advancedPawn",
-   "anzahl": 3014
-  },
-  {
-   "name": "mateIn2",
-   "anzahl": 2943
-  },
-  {
-   "name": "kingsideAttack",
-   "anzahl": 2264
-  },
-  {
-   "name": "fork",
-   "anzahl": 2243
-  },
-  {
-   "name": "attraction",
-   "anzahl": 2086
-  },
-  {
-   "name": "defensiveMove",
-   "anzahl": 2077
+   "name": "oneMove",
+   "anzahl": 4133
   },
   {
    "name": "mateIn1",
-   "anzahl": 1936
+   "anzahl": 4129
   },
   {
-   "name": "quietMove",
-   "anzahl": 1828
+   "name": "mateIn2",
+   "anzahl": 3688
   },
   {
-   "name": "mateIn3",
-   "anzahl": 1742
+   "name": "advancedPawn",
+   "anzahl": 3028
   },
   {
-   "name": "exposedKing",
-   "anzahl": 1700
+   "name": "fork",
+   "anzahl": 2686
   },
   {
-   "name": "promotion",
-   "anzahl": 1688
-  },
-  {
-   "name": "deflection",
-   "anzahl": 1684
+   "name": "kingsideAttack",
+   "anzahl": 2673
   },
   {
    "name": "pin",
-   "anzahl": 1681
+   "anzahl": 2104
   },
   {
-   "name": "discoveredAttack",
-   "anzahl": 1568
+   "name": "attraction",
+   "anzahl": 2093
   },
   {
-   "name": "pawnEndgame",
-   "anzahl": 1476
+   "name": "defensiveMove",
+   "anzahl": 1930
   },
   {
-   "name": "opening",
-   "anzahl": 1468
-  },
-  {
-   "name": "rookEndgame",
-   "anzahl": 1232
-  },
-  {
-   "name": "hangingPiece",
-   "anzahl": 918
-  },
-  {
-   "name": "mateIn4",
-   "anzahl": 898
-  },
-  {
-   "name": "queensideAttack",
-   "anzahl": 876
-  },
-  {
-   "name": "skewer",
-   "anzahl": 876
-  },
-  {
-   "name": "clearance",
-   "anzahl": 855
+   "name": "quietMove",
+   "anzahl": 1739
   },
   {
    "name": "backRankMate",
-   "anzahl": 851
+   "anzahl": 1704
+  },
+  {
+   "name": "mateIn3",
+   "anzahl": 1685
+  },
+  {
+   "name": "promotion",
+   "anzahl": 1684
+  },
+  {
+   "name": "exposedKing",
+   "anzahl": 1660
+  },
+  {
+   "name": "hangingPiece",
+   "anzahl": 1616
+  },
+  {
+   "name": "deflection",
+   "anzahl": 1586
+  },
+  {
+   "name": "opening",
+   "anzahl": 1556
+  },
+  {
+   "name": "discoveredAttack",
+   "anzahl": 1493
+  },
+  {
+   "name": "pawnEndgame",
+   "anzahl": 1428
+  },
+  {
+   "name": "rookEndgame",
+   "anzahl": 1380
+  },
+  {
+   "name": "queensideAttack",
+   "anzahl": 999
+  },
+  {
+   "name": "mateIn4",
+   "anzahl": 854
+  },
+  {
+   "name": "clearance",
+   "anzahl": 841
+  },
+  {
+   "name": "skewer",
+   "anzahl": 796
   },
   {
    "name": "zugzwang",
-   "anzahl": 768
+   "anzahl": 714
   },
   {
    "name": "doubleCheck",
-   "anzahl": 763
-  },
-  {
-   "name": "bishopEndgame",
-   "anzahl": 737
-  },
-  {
-   "name": "intermezzo",
-   "anzahl": 674
+   "anzahl": 707
   },
   {
    "name": "queenEndgame",
-   "anzahl": 667
-  },
-  {
-   "name": "knightEndgame",
-   "anzahl": 649
+   "anzahl": 703
   },
   {
    "name": "queenRookEndgame",
-   "anzahl": 606
+   "anzahl": 702
+  },
+  {
+   "name": "bishopEndgame",
+   "anzahl": 691
   },
   {
    "name": "attackingF2F7",
-   "anzahl": 602
+   "anzahl": 661
+  },
+  {
+   "name": "knightEndgame",
+   "anzahl": 658
+  },
+  {
+   "name": "intermezzo",
+   "anzahl": 653
   },
   {
    "name": "xRayAttack",
-   "anzahl": 581
-  },
-  {
-   "name": "capturingDefender",
-   "anzahl": 550
-  },
-  {
-   "name": "trappedPiece",
-   "anzahl": 550
+   "anzahl": 551
   },
   {
    "name": "mateIn5",
-   "anzahl": 546
+   "anzahl": 548
+  },
+  {
+   "name": "trappedPiece",
+   "anzahl": 529
+  },
+  {
+   "name": "capturingDefender",
+   "anzahl": 516
   },
   {
    "name": "interference",
-   "anzahl": 525
-  },
-  {
-   "name": "hookMate",
-   "anzahl": 435
+   "anzahl": 496
   },
   {
    "name": "arabianMate",
-   "anzahl": 433
+   "anzahl": 422
   },
   {
-   "name": "dovetailMate",
-   "anzahl": 398
-  },
-  {
-   "name": "enPassant",
+   "name": "hookMate",
    "anzahl": 395
   },
   {
+   "name": "enPassant",
+   "anzahl": 383
+  },
+  {
    "name": "anastasiaMate",
-   "anzahl": 393
+   "anzahl": 371
   },
   {
    "name": "smotheredMate",
-   "anzahl": 362
+   "anzahl": 363
+  },
+  {
+   "name": "dovetailMate",
+   "anzahl": 360
   },
   {
    "name": "underPromotion",
-   "anzahl": 358
+   "anzahl": 355
   },
   {
    "name": "bodenMate",
-   "anzahl": 330
+   "anzahl": 339
   },
   {
    "name": "castling",
-   "anzahl": 311
+   "anzahl": 310
   },
   {
    "name": "doubleBishopMate",
-   "anzahl": 261
+   "anzahl": 243
   }
  ]
 }
