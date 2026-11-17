@@ -1,12 +1,14 @@
 // Rätsel-Daten laden. Die Bandateien (data/puzzles/band-*.json) werden erst geladen, wenn sie
 // gebraucht werden, und im Speicher gehalten. Der Service Worker legt sie zusätzlich im Cache ab.
-import { bandOf, bandsFor } from "./rating.js";
+import { bandOf, bandsFor, MIN_RATING, MAX_RATING } from "./rating.js";
+import { PRUEFSETS, pruefsetInfo, DEFAULT_PRUEFSET } from "./pruefsets.js";
 
 const BASE = "data/puzzles/";
 
 export function parsePuzzle(row) {
   const [id, fen, zuege, rating, themen] = row;
-  return { id, fen, zuege, rating, themen };
+  // "oneMove" kommt fast nur zusammen mit "mateIn1" vor und ist für die App kein eigenes Thema.
+  return { id, fen, zuege, rating, themen: themen.filter((t) => t !== "oneMove") };
 }
 
 export function splitMoves(puzzle) {
@@ -22,7 +24,7 @@ async function defaultFetchJson(url) {
 export function createPuzzleStore({ fetchJson = defaultFetchJson, base = BASE } = {}) {
   const bands = new Map(); // band -> Promise<Puzzle[]>
   let indexPromise = null;
-  let pruefsetPromise = null;
+  const pruefsets = new Map(); // id -> Promise
 
   function loadIndex() {
     indexPromise ||= fetchJson(`${base}index.json`).catch((e) => {
@@ -30,6 +32,21 @@ export function createPuzzleStore({ fetchJson = defaultFetchJson, base = BASE } 
       throw e;
     });
     return indexPromise;
+  }
+
+  // Vorhandene Bänder laut index.json (nur ab MIN_RATING). Fehlt die Datei oder ist sie nicht
+  // lesbar, gilt die Standardliste 400 bis 2700.
+  const DEFAULT_BANDS = [];
+  for (let b = MIN_RATING; b <= MAX_RATING; b += 100) DEFAULT_BANDS.push(b);
+  let known = null;
+  function bandList() {
+    return loadIndex()
+      .then((index) => {
+        const list = (index.baender || []).map((b) => b.band).filter((b) => Number.isInteger(b) && b >= MIN_RATING);
+        known = list.length ? list.sort((a, b) => a - b) : DEFAULT_BANDS;
+        return known;
+      })
+      .catch(() => known || DEFAULT_BANDS);
   }
 
   function loadBand(band) {
@@ -48,19 +65,26 @@ export function createPuzzleStore({ fetchJson = defaultFetchJson, base = BASE } 
     return bands.get(key);
   }
 
-  function loadPruefset() {
-    pruefsetPromise ||= fetchJson(`${base}pruefset.json`)
-      .then((data) => ({ satz: data.satz, raetsel: data.raetsel.map(parsePuzzle) }))
-      .catch((e) => {
-        pruefsetPromise = null;
-        throw e;
-      });
-    return pruefsetPromise;
+  function loadPruefset(id = DEFAULT_PRUEFSET) {
+    const info = pruefsetInfo(id);
+    if (!pruefsets.has(info.id)) {
+      pruefsets.set(
+        info.id,
+        fetchJson(`${base}${info.datei}`)
+          .then((data) => ({ id: info.id, satz: data.satz, raetsel: data.raetsel.map(parsePuzzle) }))
+          .catch((e) => {
+            pruefsets.delete(info.id);
+            throw e;
+          }),
+      );
+    }
+    return pruefsets.get(info.id);
   }
 
   // Alle Rätsel mit Wertung in [low, high] (lädt nur die nötigen Bänder).
   async function inRange(low, high) {
-    const lists = await Promise.all(bandsFor(low, high).map(loadBand));
+    const available = await bandList();
+    const lists = await Promise.all(bandsFor(low, high).filter((b) => available.includes(b)).map(loadBand));
     return lists.flat().filter((p) => p.rating >= low && p.rating <= high);
   }
 
@@ -78,10 +102,14 @@ export function createPuzzleStore({ fetchJson = defaultFetchJson, base = BASE } 
       fetch(url).then((res) => res.arrayBuffer()).catch(() => {});
     }
   }
-  const warmBands = (list) => warm(list.map((b) => `${base}band-${bandOf(b)}.json`));
-  const warmPruefset = () => warm([`${base}pruefset.json`]);
+  const warmBands = (list) => {
+    warm([`${base}index.json`]);
+    const bands = [...new Set(list.map(bandOf))];
+    bandList().then((available) => warm(bands.filter((b) => available.includes(b)).map((b) => `${base}band-${b}.json`)));
+  };
+  const warmPruefset = () => warm(PRUEFSETS.map((p) => `${base}${p.datei}`));
 
-  return { loadIndex, loadBand, loadPruefset, inRange, warmBands, warmPruefset };
+  return { loadIndex, bandList, loadBand, loadPruefset, inRange, warmBands, warmPruefset };
 }
 
 export const puzzleStore = createPuzzleStore();

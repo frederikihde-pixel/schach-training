@@ -3,11 +3,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   expectedScore, kFactor, updateStrength, placementNextTarget, placementEstimate,
-  PLACEMENT_COUNT, bandOf, bandsFor,
+  PLACEMENT_COUNT, bandOf, bandsFor, MIN_RATING,
 } from "../../js/rating.js";
 import { dayKey, addDays, afterFailure, afterSuccess, isDue, dueCards, INTERVALS } from "../../js/leitner.js";
 import { addAttempt, themeStats, weakestThemes, sessionWeakest, sessionsPerWeek, mondayOf, cappedMs, MS_CAP } from "../../js/stats.js";
-import { buildSession, makeRng } from "../../js/session.js";
+import { buildSession, makeRng, sessionWindow } from "../../js/session.js";
+import { allThemes, themeInfo, themeLabel, orderedThemes, BEGINNER_THEMES } from "../../js/themes.js";
 import { createPuzzleStore, parsePuzzle, splitMoves } from "../../js/puzzles.js";
 
 // ---------- Elo und Einstufung ----------
@@ -39,39 +40,69 @@ function simulate(L, seed, probabilistic = false) {
   return { history, estimate: placementEstimate(history) };
 }
 
-test("Einstufung beginnt bei 1000 und geht schrittweise (400, 300, 200 ...)", () => {
-  assert.equal(placementNextTarget([]), 1000);
-  const h = [{ target: 1000, rating: 1000, solved: true }];
-  assert.equal(placementNextTarget(h), 1400);
-  h.push({ target: 1400, rating: 1400, solved: false });
-  assert.equal(placementNextTarget(h), 1100, "zweiter Schritt ist 300");
-  assert.equal(placementNextTarget([{ target: 600, rating: 600, solved: false }]), 600, "nicht unter 600");
+test("Einstufung beginnt bei 700; Schritt 250, halbiert bei Richtungswechsel, wächst bei Serien", () => {
+  assert.equal(placementNextTarget([]), 700);
+  const h = [{ target: 700, rating: 700, solved: false }];
+  assert.equal(placementNextTarget(h), 450, "erster Schritt ist 250");
+  h.push({ target: 450, rating: 450, solved: false });
+  assert.equal(placementNextTarget(h), 400, "zweimal falsch: Schritt 375, aber nicht unter 400");
+  const up = [{ target: 700, rating: 700, solved: true }, { target: 950, rating: 950, solved: true }];
+  assert.equal(placementNextTarget(up), 950 + 375, "gleiche Richtung: Schritt wächst um die Hälfte");
+  const turn = [{ target: 700, rating: 700, solved: true }, { target: 950, rating: 950, solved: false }];
+  assert.equal(placementNextTarget(turn), 950 - 125, "Richtungswechsel: Schritt halbiert sich");
+  const many = Array.from({ length: 6 }, (_, i) => ({ target: 700 + i * 100, rating: 700, solved: i % 2 === 0 }));
+  const step = Math.abs(placementNextTarget(many) - many[5].target);
+  assert.ok(step >= 50, "mindestens 50");
+  const run = [];
+  for (let i = 0; i < 9; i++) run.push({ target: 400 + i * 10, rating: 400, solved: true });
+  assert.ok(placementNextTarget(run) - run[8].target <= 400, "höchstens 400");
+  assert.equal(placementNextTarget([{ target: 2650, rating: 2650, solved: true }]), 2700, "nicht über 2700");
 });
 
-test("Einstufung mit simulierten Antworten landet im erwarteten Band", () => {
-  for (let L = 700; L <= 2400; L += 100) {
+test("Einstufung mit simulierten Antworten (sicherer Spieler) liegt höchstens 100 daneben", () => {
+  for (const L of [450, 500, 550, 600, 700, 800, 900, 1100, 1300, 1500, 1800, 2200]) {
     for (let seed = 1; seed <= 30; seed++) {
       const { estimate } = simulate(L, seed);
       assert.ok(Math.abs(estimate - L) <= 100, `Stärke ${L}, Schätzung ${estimate}`);
-      assert.ok(Math.abs(bandOf(estimate) - bandOf(L)) <= 100, `Band ${bandOf(L)} erwartet, ${bandOf(estimate)} erhalten`);
+    }
+  }
+});
+
+test("Einstufung für 450, 600, 900 und 1500 landet im richtigen Bereich (Bänder höchstens 100 daneben)", () => {
+  for (const L of [450, 600, 900, 1500]) {
+    for (let seed = 1; seed <= 30; seed++) {
+      const { estimate } = simulate(L, seed);
+      assert.ok(estimate >= MIN_RATING, "nie unter der Untergrenze");
+      assert.ok(Math.abs(bandOf(estimate) - bandOf(L)) <= 100, `Band ${bandOf(L)} erwartet, ${bandOf(estimate)} erhalten (Schätzung ${estimate})`);
     }
   }
 });
 
 test("Einstufung mit zufälligen Antworten (realistischer Spieler) ist im Mittel nah dran", () => {
-  for (const L of [900, 1300, 1700, 2100]) {
+  for (const L of [450, 600, 900, 1500, 2100]) {
     let sum = 0;
+    let worst = 0;
     const runs = 200;
-    for (let seed = 1; seed <= runs; seed++) sum += simulate(L, seed, true).estimate - L;
-    assert.ok(Math.abs(sum / runs) < 80, `Stärke ${L}: mittlere Abweichung ${sum / runs}`);
+    for (let seed = 1; seed <= runs; seed++) {
+      const d = simulate(L, seed, true).estimate - L;
+      sum += d;
+      worst = Math.max(worst, Math.abs(d));
+    }
+    assert.ok(Math.abs(sum / runs) <= 100, `Stärke ${L}: mittlere Abweichung ${sum / runs}`);
   }
+});
+
+test("Stärke fällt nie unter 400", () => {
+  assert.equal(updateStrength(405, 400, false, 0) >= MIN_RATING, true);
+  assert.equal(updateStrength(MIN_RATING, 1500, false, 0), MIN_RATING);
 });
 
 test("Bänder", () => {
   assert.equal(bandOf(1599), 1500);
-  assert.equal(bandOf(100), 600);
+  assert.equal(bandOf(100), 400);
   assert.equal(bandOf(3000), 2700);
   assert.deepEqual(bandsFor(1470, 1670), [1400, 1500, 1600]);
+  assert.deepEqual(bandsFor(300, 520), [400, 500]);
 });
 
 // ---------- Leitner ----------
@@ -196,18 +227,41 @@ test("Rätsel-Store lädt Bänder erst bei Bedarf und nur einmal", async () => {
   const calls = [];
   const fetchJson = async (url) => {
     calls.push(url);
-    if (url.endsWith("index.json")) return { baender: [] };
+    if (url.endsWith("index.json")) return { baender: [{ band: 300 }, { band: 1400 }, { band: 1500 }, { band: 1600 }, { band: 1700 }] };
     const band = Number(url.match(/band-(\d+)/)[1]);
     return { raetsel: [[`a${band}`, "fen x y z", "e2e4 e7e5", band + 10, ["fork"]], [`b${band}`, "fen x y z", "d2d4 d7d5", band + 90, ["pin"]]] };
   };
   const store = createPuzzleStore({ fetchJson, base: "p/" });
   assert.deepEqual(calls, []);
   const list = await store.inRange(1450, 1620);
-  assert.deepEqual(calls.sort(), ["p/band-1400.json", "p/band-1500.json", "p/band-1600.json"]);
+  assert.deepEqual(calls.sort(), ["p/band-1400.json", "p/band-1500.json", "p/band-1600.json", "p/index.json"]);
   assert.deepEqual(list.map((p) => p.id).sort(), ["a1500", "a1600", "b1400", "b1500"]);
   await store.inRange(1450, 1620);
-  assert.equal(calls.length, 3, "kein zweites Laden");
+  assert.equal(calls.length, 4, "kein zweites Laden");
   assert.deepEqual(splitMoves(parsePuzzle(["x", "f", "e2e4 e7e5 g1f3", 1000, []])), ["e2e4", "e7e5", "g1f3"]);
+});
+
+test("Rätsel-Store liest die vorhandenen Bänder aus index.json (nur ab 400, fehlende werden übersprungen)", async () => {
+  const calls = [];
+  const fetchJson = async (url) => {
+    calls.push(url);
+    if (url.endsWith("index.json")) return { baender: [{ band: 300 }, { band: 400 }, { band: 600 }] };
+    const band = Number(url.match(/band-(\d+)/)[1]);
+    return { raetsel: [[`a${band}`, "f x y z", "a b", band + 10, []]] };
+  };
+  const store = createPuzzleStore({ fetchJson, base: "p/" });
+  assert.deepEqual(await store.bandList(), [400, 600]);
+  const list = await store.inRange(350, 720);
+  assert.deepEqual(list.map((p) => p.id), ["a400", "a600"]);
+  assert.ok(!calls.some((u) => u.includes("band-300") || u.includes("band-500") || u.includes("band-700")), calls.join());
+});
+
+test("Rätsel-Store: ohne lesbare index.json gilt die Standardliste 400 bis 2700", async () => {
+  const store = createPuzzleStore({ fetchJson: async (url) => { if (url.endsWith("index.json")) throw new Error("offline"); return { raetsel: [] }; }, base: "p/" });
+  const list = await store.bandList();
+  assert.equal(list[0], 400);
+  assert.equal(list[list.length - 1], 2700);
+  assert.equal(list.length, 24);
 });
 
 test("Rätsel-Store: Fehler beim Laden wird nicht dauerhaft gemerkt", async () => {
@@ -288,9 +342,84 @@ test("Standortbestimmung: Ergebnis mit Datum, Stärke und Statistik bleiben unbe
   const before = JSON.stringify(t);
   const results = Array.from({ length: 20 }, (_, i) => ({ id: "x" + i, themen: ["pin"], ok: i < 14, ms: 40000 }));
   const e = recordStandort(t, { results, satz: "abcd1234", nowIso: T0 });
-  assert.deepEqual(e, { datum: T0, geloest: 14, von: 20, msSchnitt: 40000, satz: "abcd1234" });
+  assert.deepEqual(e, { datum: T0, geloest: 14, von: 20, msSchnitt: 40000, satz: "abcd1234", pruefset: "fortgeschritten" });
+  const f = recordStandort(t, { results, satz: "e1", pruefset: "einsteiger", nowIso: T0 });
+  assert.equal(f.pruefset, "einsteiger");
+  t.standort.pop();
   assert.equal(t.standort.length, 1);
   const copy = JSON.parse(before);
   copy.standort = t.standort;
   assert.deepEqual(t, copy);
+});
+
+// ---------- Einsteiger: Sitzungsfenster und Themen ----------
+test("Sitzungsfenster: unter 1000 minus 50 bis plus 100, sonst minus 50 bis plus 150", () => {
+  assert.deepEqual(sessionWindow(450), { low: 400, high: 550 });
+  assert.deepEqual(sessionWindow(999), { low: 949, high: 1099 });
+  assert.deepEqual(sessionWindow(1000), { low: 950, high: 1150 });
+  assert.deepEqual(sessionWindow(1500), { low: 1450, high: 1650 });
+});
+
+test("Themen: jedes hat Namen und einen erklärenden Satz; Einsteiger-Themen stehen oben", () => {
+  for (const tag of allThemes()) {
+    assert.notEqual(themeLabel(tag), tag, `${tag} hat keinen deutschen Namen`);
+    assert.ok(themeInfo(tag).length > 20, `${tag} hat keine Erklärung`);
+    assert.match(themeInfo(tag), /[.]$/, `${tag}: Erklärung endet mit Punkt`);
+    assert.ok(!/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/u.test(themeInfo(tag)), "keine Emojis");
+  }
+  const ordered = orderedThemes();
+  assert.deepEqual(ordered.slice(0, BEGINNER_THEMES.length), BEGINNER_THEMES);
+  assert.equal(new Set(ordered).size, allThemes().length, "jedes Thema genau einmal");
+  assert.deepEqual(BEGINNER_THEMES.slice(0, 4), ["mateIn1", "hangingPiece", "fork", "pin"]);
+});
+
+test("Rätsel: das Schlagwort oneMove wird nicht als Thema übernommen", () => {
+  assert.deepEqual(parsePuzzle(["x", "f", "a b", 450, ["mateIn1", "oneMove", "middlegame"]]).themen, ["mateIn1", "middlegame"]);
+});
+
+// ---------- Prüfsets ----------
+import { PRUEFSETS, pruefsetName, recommendedPruefset } from "../../js/pruefsets.js";
+
+test("Prüfsets: zwei Sätze, Empfehlung nach Stärke", () => {
+  assert.deepEqual(PRUEFSETS.map((p) => p.id), ["einsteiger", "fortgeschritten"]);
+  assert.equal(pruefsetName("einsteiger"), "Prüfset Einsteiger");
+  assert.equal(pruefsetName("fortgeschritten"), "Prüfset Fortgeschritten");
+  assert.equal(recommendedPruefset(null, false), "einsteiger", "unbekannte Stärke");
+  assert.equal(recommendedPruefset(null, true), "einsteiger");
+  assert.equal(recommendedPruefset(450, true), "einsteiger");
+  assert.equal(recommendedPruefset(999, true), "einsteiger");
+  assert.equal(recommendedPruefset(1000, true), "fortgeschritten");
+  assert.equal(recommendedPruefset(1500, true), "fortgeschritten");
+});
+
+test("Rätsel-Store: beide Prüfsets werden aus ihren Dateien geladen und einzeln gemerkt", async () => {
+  const calls = [];
+  const fetchJson = async (url) => {
+    calls.push(url);
+    return { satz: url.includes("einsteiger") ? "eins" : "fort", raetsel: [[`p-${url}`, "f x y z", "a b", 500, ["oneMove", "pin"]]] };
+  };
+  const store = createPuzzleStore({ fetchJson, base: "p/" });
+  const ein = await store.loadPruefset("einsteiger");
+  const fort = await store.loadPruefset("fortgeschritten");
+  const std = await store.loadPruefset();
+  assert.deepEqual([ein.id, ein.satz, fort.id, fort.satz, std.id], ["einsteiger", "eins", "fortgeschritten", "fort", "fortgeschritten"]);
+  assert.deepEqual(calls.sort(), ["p/pruefset-einsteiger.json", "p/pruefset.json"], "jede Datei nur einmal");
+  assert.deepEqual(ein.raetsel[0].themen, ["pin"]);
+});
+
+// ---------- Denkhilfe ----------
+import { denkhilfeAktiv, DENKHILFE_TEXT } from "../../js/denkhilfe.js";
+
+test("Denkhilfe: nur erste 10 Rätsel, nur unter Stärke 900 (unbekannt zählt dazu), abschaltbar, nie in der Standortbestimmung", () => {
+  const an = { einstellung: true, gesehen: 0, staerke: null, typ: "einstufung" };
+  assert.equal(denkhilfeAktiv(an), true, "neue Nutzer: unbekannte Stärke");
+  assert.equal(denkhilfeAktiv({ ...an, gesehen: 9 }), true);
+  assert.equal(denkhilfeAktiv({ ...an, gesehen: 10 }), false, "ab dem 11. Rätsel nicht mehr");
+  assert.equal(denkhilfeAktiv({ ...an, staerke: 899 }), true);
+  assert.equal(denkhilfeAktiv({ ...an, staerke: 900 }), false);
+  assert.equal(denkhilfeAktiv({ ...an, staerke: 1500 }), false);
+  assert.equal(denkhilfeAktiv({ ...an, einstellung: false }), false, "abgeschaltet");
+  assert.equal(denkhilfeAktiv({ ...an, typ: "standort" }), false);
+  assert.equal(denkhilfeAktiv({ ...an, typ: "sitzung", gesehen: 4, staerke: 500 }), true);
+  assert.equal(DENKHILFE_TEXT, "Erst prüfen: Was bedroht der Gegner? Welche Figur ist ungedeckt?");
 });

@@ -31,7 +31,7 @@
       </div>
     </div>
     <div id="hinweis-standort" class="notice" role="status" hidden>
-      <p>Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie in der Statistik.</p>
+      <p id="hinweis-standort-text">Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie in der Statistik.</p>
       <div class="notice-actions">
         <a class="btn-link" href="#/taktik/statistik">Zur Statistik</a>
         <button id="hinweis-standort-spaeter" type="button">Später</button>
@@ -92,6 +92,7 @@
           <nav class="subnav" aria-label="Taktik">
             <a href="#/taktik" aria-current="page">Üben</a>
             <a href="#/taktik/statistik">Statistik</a>
+            <a href="#/taktik/themen">Themen</a>
           </nav>
           <h2 class="page-title">Taktik</h2>
           <p id="taktik-staerke" class="strength"></p>
@@ -119,6 +120,17 @@
               <select id="sel-thema"></select>
             </div>
             <div class="stack"><button id="btn-sitzung" type="button">Sitzung starten</button></div>
+            <div class="stack"><button id="btn-neu-einstufen" type="button" class="btn-quiet">Einstufung wiederholen</button></div>
+            <div id="neu-einstufen-frage" class="confirm" hidden>
+              <p>
+                Die Einstufung wiederholen? Deine Taktikstärke wird mit 10 neuen Rätseln neu geschätzt.
+                Verlauf, Wiederholungen und Statistik bleiben erhalten.
+              </p>
+              <div class="stack">
+                <button id="btn-neu-ja" type="button">Einstufung starten</button>
+                <button id="btn-neu-nein" type="button">Abbrechen</button>
+              </div>
+            </div>
           </div>
 
           <div id="taktik-fortsetzen" class="block" hidden>
@@ -139,6 +151,7 @@
             <span id="lauf-art" class="muted"></span>
           </div>
           <p id="lauf-seite" class="side-line"></p>
+          <p id="lauf-denkhilfe" class="thinking-aid" hidden></p>
           <div class="board-row">
             <div class="board-wrap">
               <div id="taktik-board" class="board"></div>
@@ -172,12 +185,34 @@
         </div>
       </div>
 
+      <!-- Seite: Themen -->
+      <div id="page-themen" class="page" hidden>
+        <div class="page-inner">
+          <nav class="subnav" aria-label="Taktik">
+            <a href="#/taktik">Üben</a>
+            <a href="#/taktik/statistik">Statistik</a>
+            <a href="#/taktik/themen" aria-current="page">Themen</a>
+          </nav>
+          <h2 class="page-title">Themen</h2>
+          <p class="muted">
+            Jedes Rätsel gehört zu einem oder mehreren Themen. Hier steht, was die Themen bedeuten, und du
+            kannst ein Thema gezielt üben. Die ersten zehn eignen sich besonders für den Einstieg.
+          </p>
+          <p id="themen-meldung" class="message" role="status" aria-live="polite"></p>
+          <h3 class="list-title">Für den Einstieg</h3>
+          <ul id="themen-einstieg" class="theme-list"></ul>
+          <h3 class="list-title">Weitere Themen</h3>
+          <ul id="themen-weitere" class="theme-list"></ul>
+        </div>
+      </div>
+
       <!-- Seite: Statistik -->
       <div id="page-statistik" class="page" hidden>
         <div class="page-inner">
           <nav class="subnav" aria-label="Taktik">
             <a href="#/taktik">Üben</a>
             <a href="#/taktik/statistik" aria-current="page">Statistik</a>
+            <a href="#/taktik/themen">Themen</a>
           </nav>
           <h2 class="page-title">Statistik</h2>
 
@@ -220,13 +255,26 @@
             <p>
               20 feste Rätsel von leicht bis schwer, ohne Hinweise und ohne Zeitvorgabe. Das Ergebnis wird mit
               Datum gespeichert, damit du es später mit einer Wiederholung vergleichen kannst. Deine
-              Taktikstärke ändert sich dadurch nicht. Plane etwa 15 bis 25 Minuten ein.
+              Taktikstärke ändert sich dadurch nicht. Plane etwa 15 bis 25 Minuten ein. Es gibt zwei Prüfsets;
+              ihre Ergebnisse werden getrennt gespeichert und nicht miteinander verglichen.
             </p>
             <p id="stat-standort-meldung" class="muted"></p>
-            <div class="stack"><button id="btn-standort" type="button">Standortbestimmung starten</button></div>
-            <h4 class="subhead">Frühere Ergebnisse</h4>
-            <p id="stat-standort-leer" class="muted">Noch keine Ergebnisse.</p>
-            <ul id="stat-standort-liste" class="plain-list"></ul>
+            <div class="pruefset-opt">
+              <p><strong>Prüfset Einsteiger</strong> <span id="empf-einsteiger" class="tag-quiet" hidden>Empfohlen</span></p>
+              <p class="muted">20 Rätsel, Wertung etwa 450 bis 1100.</p>
+              <div class="stack"><button id="btn-standort-einsteiger" type="button">Prüfset Einsteiger starten</button></div>
+            </div>
+            <div class="pruefset-opt">
+              <p><strong>Prüfset Fortgeschritten</strong> <span id="empf-fortgeschritten" class="tag-quiet" hidden>Empfohlen</span></p>
+              <p class="muted">20 Rätsel, Wertung etwa 850 bis 2050.</p>
+              <div class="stack"><button id="btn-standort-fortgeschritten" type="button">Prüfset Fortgeschritten starten</button></div>
+            </div>
+            <h4 class="subhead">Frühere Ergebnisse: Prüfset Einsteiger</h4>
+            <p id="stat-standort-leer-einsteiger" class="muted">Noch keine Ergebnisse.</p>
+            <ul id="stat-standort-liste-einsteiger" class="plain-list"></ul>
+            <h4 class="subhead">Frühere Ergebnisse: Prüfset Fortgeschritten</h4>
+            <p id="stat-standort-leer-fortgeschritten" class="muted">Noch keine Ergebnisse.</p>
+            <ul id="stat-standort-liste-fortgeschritten" class="plain-list"></ul>
           </div>
         </div>
       </div>
@@ -238,9 +286,29 @@
           <nav class="link-list" aria-label="Mehr">
             <button id="btn-einfuehrung" type="button">Einführung</button>
             <a href="#/mehr/darstellung">Darstellung</a>
+            <a href="#/mehr/einstellungen">Einstellungen</a>
             <a href="#/mehr/daten">Daten sichern und wiederherstellen</a>
             <a href="#/mehr/info">Info und Lizenzen</a>
           </nav>
+        </div>
+      </div>
+
+      <!-- Seite: Einstellungen -->
+      <div id="page-einstellungen" class="page" hidden>
+        <div class="page-inner">
+          <p class="back-row"><a class="back-link" href="#/mehr">Zurück</a></p>
+          <h2 class="page-title">Einstellungen</h2>
+          <div class="block">
+            <h3>Denkhilfe</h3>
+            <p>
+              Bei den ersten 10 Rätseln überhaupt (der Einstufung) und solange deine Taktikstärke unter 900 liegt,
+              steht vor dem Rätsel eine Zeile: Was bedroht der Gegner? Welche Figur ist ungedeckt? Sie ist keine
+              Lösungshilfe, sondern erinnert an die wichtigste Prüfung vor jedem Zug.
+            </p>
+            <div class="stack">
+              <button id="set-denkhilfe" type="button" role="switch" aria-checked="true">Denkhilfe: an</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -455,6 +523,20 @@
             Diese App trainiert Taktik und Wiederholung. Für echte Fortschritte gehören auch Partien mit langer
             Bedenkzeit dazu und die Analyse dieser Partien.
           </p>
+        </section>
+        <section class="intro-slide" aria-label="Seite 7">
+          <h2>Der häufigste Fehler: ungedeckte Figuren und übersehene Drohungen</h2>
+          <p>
+            Am Anfang gehen die meisten Partien aus zwei Gründen verloren: Eine Figur steht ungedeckt, oder eine
+            Drohung des Gegners wird übersehen. Stelle dir deshalb vor jedem Zug vier Fragen:
+          </p>
+          <ol class="intro-list">
+            <li>Was hat der Gegner gerade gezogen?</li>
+            <li>Was bedroht er?</li>
+            <li>Ist meine Figur gedeckt?</li>
+            <li>Kann ich Schach, Schlagen oder eine Drohung ausführen?</li>
+          </ol>
+          <p>Bei den ersten Rätseln erinnert dich die App daran. Unter Mehr, Einstellungen kannst du das abschalten.</p>
         </section>
       </div>
       <div class="intro-nav">

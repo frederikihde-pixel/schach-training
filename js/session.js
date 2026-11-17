@@ -22,6 +22,12 @@ function shuffled(list, rng) {
 }
 
 export const DUE_SHARE = 0.3;
+export const BEGINNER_BELOW = 1000;
+
+// Wertungsfenster für neue Rätsel um die Taktikstärke. Anfänger bekommen nach oben weniger Spielraum.
+export function sessionWindow(strength) {
+  return { low: strength - 50, high: strength + (strength < BEGINNER_BELOW ? 100 : 150) };
+}
 
 // due:        fällige Karten ({ stufe, faellig, raetsel }), älteste zuerst
 // candidates: neue Rätsel im passenden Wertungsbereich (bereits ohne schon Gesehene)

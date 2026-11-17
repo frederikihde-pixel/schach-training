@@ -23,8 +23,8 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     const keys = (await (await caches.open(names[0])).keys()).map((k) => new URL(k.url).pathname);
     return keys.filter((k) => k.includes("/data/puzzles/"));
   });
-  r.check("Bänder rund um die Stärke (1300 bis 1700) und das Prüfset sind im Cache", ["band-1300", "band-1400", "band-1500", "band-1600", "band-1700", "pruefset"].every((n) => cached.some((k) => k.includes(n))), cached.map((k) => k.split("/").pop()).join(","));
-  r.check("Nicht benötigte Bänder werden nicht geladen (nicht alle Dateien auf einmal)", cached.length <= 8, `${cached.length} Dateien`);
+  r.check("Bänder rund um die Stärke (1300 bis 1700) und das Prüfset sind im Cache", ["index.json", "band-1300", "band-1400", "band-1500", "band-1600", "band-1700", "pruefset.json", "pruefset-einsteiger.json"].every((n) => cached.some((k) => k.endsWith(n) || k.includes(n))), cached.map((k) => k.split("/").pop()).join(","));
+  r.check("Nicht benötigte Bänder werden nicht geladen (nicht alle Dateien auf einmal)", cached.length <= 10, `${cached.length} Dateien`);
 
   await context.setOffline(true);
   await page.reload();
@@ -46,10 +46,20 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
 
   await page.goto(url + "index.html#/taktik/statistik");
   await page.waitForTimeout(600);
-  r.check("Offline: Standortbestimmung ist verfügbar (Prüfset im Cache)", await page.evaluate(() => !document.getElementById("btn-standort").disabled));
-  await page.click("#btn-standort");
+  r.check("Offline: Standortbestimmung ist verfügbar (Prüfset im Cache)", await page.evaluate(() => !document.getElementById("btn-standort-fortgeschritten").disabled));
+  await page.click("#btn-standort-fortgeschritten");
   await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 10000 });
   r.check("Offline: Standortbestimmung startet mit 20 Rätseln", (await page.textContent("#lauf-fortschritt")) === "Rätsel 1 von 20");
+  await page.click("#btn-beenden");
+  await page.click("#btn-beenden-ja");
+  await page.goto(url + "index.html#/taktik/statistik");
+  await page.waitForTimeout(600);
+  r.check("Offline: auch das Prüfset Einsteiger ist verfügbar und startet mit 20 Rätseln", await (async () => {
+    const enabled = await page.evaluate(() => !document.getElementById("btn-standort-einsteiger").disabled);
+    await page.click("#btn-standort-einsteiger");
+    await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 10000 });
+    return enabled && (await page.textContent("#lauf-fortschritt")) === "Rätsel 1 von 20";
+  })());
   await page.click("#btn-beenden");
   await page.click("#btn-beenden-ja");
 

@@ -6,10 +6,12 @@ import { puzzleStore } from "../puzzles.js";
 import { createRunner, Cancelled } from "../puzzle-runner.js";
 import { placementNextTarget, placementEstimate, PLACEMENT_COUNT, bandsFor } from "../rating.js";
 import { dayKey, dueCards } from "../leitner.js";
-import { buildSession } from "../session.js";
+import { buildSession, sessionWindow } from "../session.js";
 import { weakestThemes } from "../stats.js";
 import { recordAttempt, finishSession, applyPlacement, recordStandort } from "../taktik-state.js";
 import { themeLabel, allThemes } from "../themes.js";
+import { pruefsetName } from "../pruefsets.js";
+import { denkhilfeAktiv, DENKHILFE_TEXT } from "../denkhilfe.js";
 
 const $ = (id) => document.getElementById(id);
 const today = () => dayKey(store.now());
@@ -59,6 +61,8 @@ function renderStart() {
   }
   $("taktik-info").textContent = info;
 
+  $("neu-einstufen-frage").hidden = true;
+  $("btn-neu-einstufen").hidden = false;
   $("taktik-fortsetzen").hidden = !aktiv;
   $("taktik-einstufung").hidden = !!aktiv || t.eingestuft;
   $("taktik-training").hidden = !!aktiv || !t.eingestuft;
@@ -117,14 +121,15 @@ async function planSession(size, filter) {
   const strength = t.staerke;
   const known = new Set([...Object.keys(t.gesehen), ...Object.keys(t.karten)]);
   let candidates = [];
+  const win = sessionWindow(strength);
   for (const widen of [0, 100, 250, 500]) {
-    const all = await puzzleStore.inRange(strength - 50 - widen, strength + 150 + widen);
+    const all = await puzzleStore.inRange(win.low - widen, win.high + widen);
     candidates = all.filter((p) => !known.has(p.id) && (!filter || p.themen.includes(filter)));
     if (candidates.length >= size * 3) break;
   }
   if (candidates.length < size) {
     // Vorrat ausgeschöpft: auch schon gesehene Rätsel zulassen.
-    const all = await puzzleStore.inRange(strength - 150, strength + 250);
+    const all = await puzzleStore.inRange(win.low - 100, win.high + 100);
     candidates = all.filter((p) => !t.karten[p.id] && (!filter || p.themen.includes(filter)));
   }
   const weak = weakestThemes(t.themen, 3).map((x) => x.tag);
@@ -176,8 +181,8 @@ async function startSitzung() {
 }
 
 // Wird von der Statistik-Seite aufgerufen.
-export async function startStandortbestimmung() {
-  const pruefset = await puzzleStore.loadPruefset();
+export async function startStandortbestimmung(id = "fortgeschritten") {
+  const pruefset = await puzzleStore.loadPruefset(id);
   store.update((d) => {
     d.taktik.aktiv = {
       typ: "standort",
@@ -185,6 +190,7 @@ export async function startStandortbestimmung() {
       index: 0,
       ergebnisse: [],
       satz: pruefset.satz,
+      pruefset: pruefset.id,
       start: nowIso(),
     };
   });
@@ -206,7 +212,15 @@ export function practiceTheme(tag) {
 
 // ---------- Ablauf ----------
 
+// Gilt die Denkhilfe jetzt? (Einstellung, erste 10 Rätsel überhaupt, Stärke unter 900)
+function denkhilfeJetzt(typ) {
+  const d = store.get();
+  return denkhilfeAktiv({ einstellung: d.einstellungen.denkhilfe, gesehen: Object.keys(d.taktik.gesehen).length, staerke: d.taktik.staerke, typ });
+}
+
 function beginRun() {
+  // Platz für die Zeile wird zu Beginn des Laufs festgelegt und bleibt, damit das Brett nicht springt.
+  $("lauf-denkhilfe").hidden = !denkhilfeJetzt(taktik().aktiv.typ);
   showView("taktik-lauf");
   $("beenden-bestaetigung").hidden = true;
   running = true;
@@ -261,6 +275,7 @@ async function runLoop() {
       $("lauf-fortschritt").textContent = `Rätsel ${a.index + 1} von ${totalOf(a)}`;
       $("lauf-art").textContent = artText(a, item);
       $("lauf-seite").textContent = "";
+      $("lauf-denkhilfe").textContent = denkhilfeJetzt(a.typ) ? DENKHILFE_TEXT : "";
       $("lauf-meldung").textContent = "";
       $("btn-weiter").hidden = true;
 
@@ -337,6 +352,7 @@ function showSummary(typ, s) {
   if (typ === "standort") {
     $("zus-titel").textContent = "Standortbestimmung abgeschlossen";
     facts([
+      ["Verwendet", pruefsetName(s.pruefset)],
       ["Gelöst", `${s.geloest} von ${s.von}`],
       ["Durchschnittliche Zeit", `${seconds(s.msSchnitt)} je Rätsel`],
       ["Gespeichert am", formatDate(s.datum)],
@@ -367,7 +383,7 @@ async function finishRun() {
     } else if (a.typ === "sitzung") {
       summary = finishSession(t, { typ: a.typ, results: a.ergebnisse, nowIso: nowIso() });
     } else {
-      summary = recordStandort(t, { results: a.ergebnisse, satz: a.satz, nowIso: nowIso() });
+      summary = recordStandort(t, { results: a.ergebnisse, satz: a.satz, pruefset: a.pruefset, nowIso: nowIso() });
     }
     t.aktiv = null;
   });
@@ -437,6 +453,19 @@ export function onShowTaktik() {
 export function initTaktik() {
   $("btn-einstufung").addEventListener("click", startEinstufung);
   $("btn-sitzung").addEventListener("click", startSitzung);
+  $("btn-neu-einstufen").addEventListener("click", () => {
+    $("neu-einstufen-frage").hidden = false;
+    $("btn-neu-einstufen").hidden = true;
+  });
+  $("btn-neu-nein").addEventListener("click", () => {
+    $("neu-einstufen-frage").hidden = true;
+    $("btn-neu-einstufen").hidden = false;
+  });
+  $("btn-neu-ja").addEventListener("click", () => {
+    $("neu-einstufen-frage").hidden = true;
+    $("btn-neu-einstufen").hidden = false;
+    startEinstufung();
+  });
   $("btn-fortsetzen").addEventListener("click", () => guarded(async () => {
     const a = taktik().aktiv;
     if (a.typ === "einstufung" && !a.plan[a.index]) await addPlacementPuzzle(a);

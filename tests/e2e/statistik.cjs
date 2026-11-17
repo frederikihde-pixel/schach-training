@@ -78,8 +78,8 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
       t.versuche = [{id:"x1",t:new Date().toISOString(),ok:true,ms:1000,r:1500}]; t.themen = {fork:{n:1,ok:1,ms:1000}};
     `);
     const before = await state(page);
-    r.check("Standortbestimmung ist anbietbar", await page.evaluate(() => !document.getElementById("btn-standort").disabled));
-    await page.click("#btn-standort");
+    r.check("Standortbestimmung ist anbietbar", await page.evaluate(() => !document.getElementById("btn-standort-fortgeschritten").disabled));
+    await page.click("#btn-standort-fortgeschritten");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
     const t = await state(page);
     const ratings = t.aktiv.plan.map((i) => i.puzzle.rating);
@@ -124,7 +124,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     // Liste früherer Ergebnisse
     await page.click('a[href="#/taktik/statistik"].btn-link-quiet');
     await page.waitForTimeout(400);
-    const items = await page.$$eval("#stat-standort-liste li", (li) => li.map((x) => x.textContent));
+    const items = await page.$$eval("#stat-standort-liste-fortgeschritten li", (li) => li.map((x) => x.textContent));
     r.check("Frühere Ergebnisse als einfache Liste", items.length === 1 && /12\. November 2026: 10 von 20 gelöst, durchschnittlich \d+ Sekunden je Rätsel/.test(items[0]), items.join("|"));
 
     // Erinnerung nach 4 Wochen
@@ -143,7 +143,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     await page.reload(); await page.waitForTimeout(500);
     await page.goto(url + "index.html#/taktik/statistik");
     await page.waitForTimeout(400);
-    await page.click("#btn-standort");
+    await page.click("#btn-standort-fortgeschritten");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
     await page.click("#btn-beenden");
     r.check("Abbrechen fragt nach", /kein Ergebnis gespeichert/.test(await page.textContent("#beenden-text")));

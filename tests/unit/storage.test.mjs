@@ -2,7 +2,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  createStore, defaults, migrate, validate, trim, exportReminderDue, standortReminderDue,
+  createStore, defaults, migrate, validate, trim, exportReminderDue, standortReminderDue, standortReminder,
   DataError, STORAGE_KEY, SCHEMA_VERSION, CAPS,
 } from "../../js/storage.js";
 
@@ -67,7 +67,7 @@ test("Migration 2 auf 3: bisheriger Stand behält Dunkel, Einführung gilt als g
   v2.einstellungen = {};
   v2.taktik.staerke = 1450;
   const m = migrate(structuredClone(v2), { now: t0 });
-  assert.equal(m.version, 3);
+  assert.equal(m.version, SCHEMA_VERSION);
   assert.equal(m.einstellungen.brettDesign, "dunkel");
   assert.equal(m.einstellungen.einfuehrungGesehen, true);
   assert.equal(m.taktik.staerke, 1450);
@@ -79,13 +79,13 @@ test("Migration 2 auf 3: schon gewählte Werte bleiben erhalten", () => {
   v2.version = 2;
   v2.einstellungen = { brettDesign: "gruen", einfuehrungGesehen: false };
   const m = migrate(structuredClone(v2), { now: t0 });
-  assert.deepEqual(m.einstellungen, { brettDesign: "gruen", einfuehrungGesehen: false });
+  assert.deepEqual(m.einstellungen, { brettDesign: "gruen", einfuehrungGesehen: false, denkhilfe: true });
 });
 
 test("Neue Nutzer: Design Klassisch, Einführung noch nicht gesehen", () => {
   const d = createStore({ backend: backend(), now: () => t0 }).get();
   assert.equal(d.version, SCHEMA_VERSION);
-  assert.deepEqual(d.einstellungen, { brettDesign: "klassisch", einfuehrungGesehen: false });
+  assert.deepEqual(d.einstellungen, { brettDesign: "klassisch", einfuehrungGesehen: false, denkhilfe: true });
 });
 
 test("Alte Sicherungsdatei (Version 2) lässt sich importieren und bekommt Dunkel", () => {
@@ -104,7 +104,7 @@ test("Gespeicherter Stand der Version 2 wird beim Laden umgestellt", () => {
   alt.einstellungen = {};
   const b = backend({ [STORAGE_KEY]: JSON.stringify(alt) });
   const d = createStore({ backend: b, now: () => t0 }).get();
-  assert.equal(d.version, 3);
+  assert.equal(d.version, SCHEMA_VERSION);
   assert.equal(d.einstellungen.brettDesign, "dunkel");
 });
 
@@ -199,4 +199,54 @@ test("Erinnerung an die Standortbestimmung: nach 28 Tagen, nur wenn schon eine g
   assert.equal(standortReminderDue(d, new Date(t0.getTime() + 28 * day)), true);
   d.taktik.standort.push({ datum: new Date(t0.getTime() + 30 * day).toISOString(), geloest: 14, von: 20, msSchnitt: 28000 });
   assert.equal(standortReminderDue(d, new Date(t0.getTime() + 40 * day)), false, "zählt ab dem letzten Ergebnis");
+});
+
+test("Migration 3 auf 4: bisherige Standortergebnisse gehören zum Prüfset Fortgeschritten, Denkhilfe an", () => {
+  const v3 = defaults(t0);
+  v3.version = 3;
+  delete v3.einstellungen.denkhilfe;
+  v3.taktik.standort = [
+    { datum: "2026-10-01T10:00:00.000Z", geloest: 11, von: 20, msSchnitt: 30000, satz: "abcd1234" },
+    { datum: "2026-11-01T10:00:00.000Z", geloest: 13, von: 20, msSchnitt: 28000, satz: "abcd1234" },
+  ];
+  v3.taktik.staerke = 1300;
+  const m = migrate(structuredClone(v3), { now: t0 });
+  assert.equal(m.version, 4);
+  assert.deepEqual(m.taktik.standort.map((e) => e.pruefset), ["fortgeschritten", "fortgeschritten"]);
+  assert.equal(m.taktik.standort[1].geloest, 13, "Ergebnisse bleiben unverändert");
+  assert.equal(m.einstellungen.denkhilfe, true);
+  assert.equal(m.taktik.staerke, 1300);
+  validate(m);
+});
+
+test("Migration 3 auf 4: schon gesetzte Werte bleiben, Prüfset wird nicht überschrieben", () => {
+  const v3 = defaults(t0);
+  v3.version = 3;
+  v3.einstellungen.denkhilfe = false;
+  v3.taktik.standort = [{ datum: "2026-11-01T10:00:00.000Z", geloest: 5, von: 20, msSchnitt: 1, satz: "x", pruefset: "einsteiger" }];
+  const m = migrate(structuredClone(v3), { now: t0 });
+  assert.equal(m.einstellungen.denkhilfe, false);
+  assert.equal(m.taktik.standort[0].pruefset, "einsteiger");
+});
+
+test("Prüfung: Ergebnis mit unbekanntem Prüfset und falsche Denkhilfe-Angabe werden abgelehnt", () => {
+  const d = defaults(t0);
+  d.taktik.standort = [{ datum: "2026-11-01T10:00:00.000Z", geloest: 5, von: 20, msSchnitt: 1, satz: "x", pruefset: "unbekannt" }];
+  assert.throws(() => validate(d), DataError);
+  const e = defaults(t0);
+  e.einstellungen.denkhilfe = "ja";
+  assert.throws(() => validate(e), DataError);
+});
+
+test("Erinnerung nach 4 Wochen nennt das Prüfset des letzten Ergebnisses", () => {
+  const d = defaults(t0);
+  d.taktik.standort = [
+    { datum: "2026-09-01T10:00:00.000Z", geloest: 5, von: 20, msSchnitt: 1, satz: "x", pruefset: "fortgeschritten" },
+    { datum: "2026-10-01T10:00:00.000Z", geloest: 6, von: 20, msSchnitt: 1, satz: "y", pruefset: "einsteiger" },
+  ];
+  assert.equal(standortReminder(d, new Date("2026-10-28T09:00:00.000Z")), null, "27 Tage: keine Erinnerung");
+  assert.deepEqual(standortReminder(d, new Date("2026-10-29T10:00:00.000Z")), { pruefset: "einsteiger" });
+  d.taktik.standort.push({ datum: "2026-10-20T10:00:00.000Z", geloest: 7, von: 20, msSchnitt: 1, satz: "x", pruefset: "fortgeschritten" });
+  assert.equal(standortReminder(d, new Date("2026-10-29T10:00:00.000Z")), null, "zählt ab dem letzten Ergebnis");
+  assert.deepEqual(standortReminder(d, new Date("2026-11-17T10:00:00.000Z")), { pruefset: "fortgeschritten" });
 });

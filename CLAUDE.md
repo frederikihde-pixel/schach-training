@@ -48,6 +48,8 @@ eigene Lizenz (siehe `vendor/*/LICENSE`).
 - Rätsel-Daten (`data/puzzles/`) entstehen mit `tools/build_puzzles.py`
   (Lichess, CC0); der erste Zug in `zuege` ist der Gegnerzug. `pruefset.json`
   (20 feste Rätsel für die Standortbestimmung) bleibt bei Neubauten unverändert.
+- Die App liest `data/puzzles/index.json` (vorhandene Bänder, Prüfsets); Prüfsets stehen in `js/pruefsets.js`, ihre
+  Ergebnisse werden getrennt gespeichert (`standort[].pruefset`) und nie vermischt.
 - Jedes Chessground-Brett braucht `keepBoundsFresh(...)` (`js/ui/board-util.js`),
   sonst trifft ein Tipp nach einer Layout-Verschiebung das falsche Feld.
 - Rechenlogik (Elo, Leitner, Auswahl, Statistik) bleibt ohne DOM in eigenen

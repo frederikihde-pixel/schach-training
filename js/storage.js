@@ -2,9 +2,11 @@
 // (nur lokal im Browser, kein Server). Der Aufbau ist versioniert; ältere Stände werden
 // über MIGRATIONS auf die aktuelle Version gebracht.
 
+import { PRUEFSET_IDS, DEFAULT_PRUEFSET } from "./pruefsets.js";
+
 export const APP_ID = "schach-training";
 export const STORAGE_KEY = "schach-training";
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 export const EXPORT_REMINDER_DAYS = 14;
 
 // Begrenzungen, damit die Daten klein bleiben (localStorage hat etwa 5 MB).
@@ -21,6 +23,7 @@ export function defaults(now = new Date()) {
     einstellungen: {
       brettDesign: "klassisch", // neue Nutzer: Klassisch; bisherige behalten Dunkel (Migration)
       einfuehrungGesehen: false,
+      denkhilfe: true, // Hinweiszeile vor den ersten Rätseln (nur Anfänger), abschaltbar
     },
     taktik: {
       staerke: null, // geschätzte Taktikstärke, null bis zur Einstufung
@@ -32,7 +35,7 @@ export function defaults(now = new Date()) {
       gesehen: {}, // bereits gespielte Rätsel-Ids
       sitzungen: [], // abgeschlossene Sitzungen
       verlauf: [], // Verlauf der geschätzten Stärke
-      standort: [], // Ergebnisse der Standortbestimmung (mit Datum)
+      standort: [], // Ergebnisse der Standortbestimmung (mit Datum und Prüfset)
       aktiv: null, // laufende Sitzung
     },
   };
@@ -68,6 +71,18 @@ export const MIGRATIONS = {
       ...data,
       version: 3,
       einstellungen: { ...e, brettDesign: e.brettDesign ?? "dunkel", einfuehrungGesehen: e.einfuehrungGesehen ?? true },
+    };
+  },
+  // Version 4: Es gibt zwei Prüfsets. Bisherige Ergebnisse gehören zum Satz "fortgeschritten".
+  // Neu: Einstellung für die Denkhilfe.
+  3(data) {
+    const e = data.einstellungen || {};
+    const t = data.taktik || {};
+    return {
+      ...data,
+      version: 4,
+      einstellungen: { ...e, denkhilfe: e.denkhilfe ?? true },
+      taktik: { ...t, standort: (Array.isArray(t.standort) ? t.standort : []).map((x) => ({ ...x, pruefset: x.pruefset ?? DEFAULT_PRUEFSET })) },
     };
   },
 };
@@ -113,6 +128,10 @@ export function validate(data) {
   if (data.einstellungen === null || typeof data.einstellungen !== "object") fail("Die Einstellungen sind ungültig.");
   if (typeof data.einstellungen.brettDesign !== "string") fail("Das Brett-Design ist ungültig.");
   if (typeof data.einstellungen.einfuehrungGesehen !== "boolean") fail('Die Angabe zur Einführung ist ungültig.');
+  if (typeof data.einstellungen.denkhilfe !== "boolean") fail('Die Einstellung "Denkhilfe" ist ungültig.');
+  for (const e of t.standort) {
+    if (e === null || typeof e !== "object" || !PRUEFSET_IDS.includes(e.pruefset)) fail("Ein Ergebnis der Standortbestimmung hat kein gültiges Prüfset.");
+  }
   return data;
 }
 
@@ -145,13 +164,19 @@ export function exportReminderDue(state, now = new Date()) {
 
 export const STANDORT_REMINDER_DAYS = 28;
 
-// Ruhige Erinnerung an die Standortbestimmung: vier Wochen nach dem letzten Ergebnis.
+// Ruhige Erinnerung an die Standortbestimmung: vier Wochen nach dem letzten Ergebnis. Gibt das
+// Prüfset dieses letzten Ergebnisses zurück (die Erinnerung nennt es), sonst null.
 // Wer noch keine gemacht hat, wird nicht erinnert.
-export function standortReminderDue(state, now = new Date()) {
+export function standortReminder(state, now = new Date()) {
   const list = state.taktik.standort;
-  if (!list.length) return false;
-  const last = Date.parse(list[list.length - 1].datum);
-  return now.getTime() - last >= STANDORT_REMINDER_DAYS * DAY_MS;
+  if (!list.length) return null;
+  const last = list[list.length - 1];
+  if (now.getTime() - Date.parse(last.datum) < STANDORT_REMINDER_DAYS * DAY_MS) return null;
+  return { pruefset: last.pruefset };
+}
+
+export function standortReminderDue(state, now = new Date()) {
+  return standortReminder(state, now) !== null;
 }
 
 function memoryBackend() {
@@ -254,6 +279,9 @@ export function createStore({ backend = browserBackend(), now = () => new Date()
     },
     standortReminderDue() {
       return standortReminderDue(this.get(), now());
+    },
+    standortReminder() {
+      return standortReminder(this.get(), now());
     },
   };
 }
