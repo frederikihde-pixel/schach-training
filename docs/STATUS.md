@@ -183,6 +183,38 @@ verschobenem Datum, Export/Import, Offline, Standortbestimmung komplett, Erinner
 
 **Offen:** Test auf dem echten Handy (Liste unten).
 
+## Taktik für Einsteiger (Wertung um 440), in Arbeit
+
+Ausgangslage: Die Taktik-Funktionen waren für Spieler um 1000 gebaut (Einstufung ab 1000, Rätsel ab
+Wertung 600, Prüfset 850 bis 2050). Für eine Chess.com-Wertung um 440 ist das zu schwer. Der Umbau läuft in
+Abschnitten; nach jedem Abschnitt wird committet.
+
+### Abschnitt 1: Rätsel-Daten (`tools/build_puzzles.py`), Skript fertig, Daten noch nicht gebaut
+
+- Bänder ab 300 (je 100 Punkte). Bänder unter 600 entstehen nur, wenn mindestens 100 Rätsel die
+  Filter bestehen; sonst steht im Log "Band ... entfällt" und in `index.json` unter `entfalleneBaender`.
+- Filterstufen: überall zuerst streng (Popularity >= 90, NbPlays >= 500, RatingDeviation <= 100).
+  Nur in Bändern unter 700 wird zum Auffüllen gelockert: Stufe 1 NbPlays >= 200; Stufe 2 zusätzlich
+  Popularity >= 80. Strenge Rätsel werden immer zuerst genommen. `index.json` hält je Band fest, wie viele
+  Kandidaten jede Stufe hatte (`kandidaten`), wie viele gewählt wurden (`filter.gewaehlt`) und welche
+  höchste Stufe vorkommt (`filter.hoechsteStufe`).
+- Einsteiger-Themen: In allen Bändern unter 1100 mindestens je 80 Rätsel für `mateIn1`, `mateIn2`,
+  `hangingPiece`, `fork`, `pin` und `oneMove` (nur falls der Rohdatensatz das Schlagwort hat; sonst steht es
+  unter `einsteiger.fehlendeThemen` und im Log). Das Log listet außerdem alle echten Schlagworte der
+  unteren Bänder.
+- Zweites Prüfset `pruefset-einsteiger.json` (20 feste Rätsel, Wertung 450 bis 1100 von leicht nach schwer,
+  10 Themen je zweimal; nur strenge Kandidaten wenn möglich; nicht im Trainingsvorrat; keine
+  Überschneidung mit `pruefset.json`). Vorhandene Prüfsets werden beim Neubau übernommen
+  (`--pruefset-neu`, `--einsteiger-neu` erzwingen eine neue Wahl). `index.json` bekommt `pruefsets`
+  (Fortgeschritten und Einsteiger); der alte Schlüssel `pruefset` bleibt.
+- Zufall: jedes Band, jede Stufe und jedes Thema hat einen eigenen Startwert. Rätsel-Auswahl in hohen
+  Bändern ändert sich daher nicht, wenn untere Bänder dazukommen (getestet).
+- Getestet (Python, künstliche CSV): 31 Tests, alle bestanden. Neu: Bänder ab 400 und Band 300 nur mit
+  genug Rätseln, strenge zuerst und Stufen nur unter 700, Mindestzahl der Themen auch mit gelockerten
+  Rätseln, Prüfset Einsteiger (20, Wertung, Themen, getrennt, fest, Neubau mit Flag), unabhängige Bänder.
+- **Noch offen:** Die echten Zahlen (wie viele Rätsel unter 600, welche Stufe, ob `oneMove` existiert) zeigt
+  erst der Lauf von "Build puzzles" auf GitHub. Der Lichess-Download ist in dieser Umgebung gesperrt.
+
 ## Phase 3 — Eigene Partien analysieren
 
 Noch nicht begonnen (siehe "Nächste Schritte").
