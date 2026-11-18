@@ -26,7 +26,7 @@ Abschnitt aktualisiert. Stand: 18.11.2026.
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
 | Brett-Designs, Einführung, leere Zustände | fertig, gemergt (Pull Request 4), emuliert getestet |
 | Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe, Themen-Seite | fertig, gemergt (Pull Request 5), emuliert getestet |
-| Computergegner, Teil A bis D (Spielen) | in Arbeit (Abschnitt 1 von 6 fertig: Engine) |
+| Computergegner, Teil A bis D (Spielen) | in Arbeit (Abschnitt 2 von 6 fertig: Engine, Stufen) |
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
@@ -310,6 +310,19 @@ Fortschritt mit Zahlen). Keine Gamification.
 - Getestet: 12 Logik-Tests (`tests/unit/engine.test.mjs`, künstlicher Worker) und 14 Browser-Prüfungen mit der echten
   Engine (`tests/e2e/engine.cjs`): lädt nicht beim Start, legale Antwort, Matt in 1 gefunden, MultiPV 3, Abbruch in
   11 ms, Start nach 180 ms, offline nach dem ersten Gebrauch, verständliche Meldung bei fehlender Datei.
+
+### Teil B: Stärkestufen, Logik fertig (Abschnitt 2), Oberfläche kommt mit Abschnitt 3
+
+- `js/stufen.js` (Stufenversion 1, fest und eingefroren), `js/material.js` (ungedeckte Figuren, Materialsumme),
+  `docs/STUFEN.md` mit Zuordnung, Begründung und Messung. Stufen 1 bis 3 mit eigener Fehlerlogik (Skill Level, Knotenzahl,
+  MultiPV-Kandidaten, gewichteter Zufall, Matt-1-Chance), Stufen 4 bis 7 mit `UCI_Elo` 1320, 1500, 1800, 2200 (Bereich aus der
+  Engine), Stufe 8 voll.
+- Gemessen (`tests/e2e/stufen-staerke.cjs`, 168 Partien, echte Engine): jede Stufe schlägt ihren Vorgänger; Stufe 1 verliert
+  22,9 Bauerneinheiten je Partie gegen 8,5 bei Stufe 8, übersieht Matt in 1 in 8 von 18 Fällen (Stufe 8: 0 von 48).
+- **Bekannte Mängel:** Stufe 3 und 4 liegen eng beieinander (4 zu 8). Die Richtwerte ("ungefähr 650") sind Schätzungen, nicht
+  gegen Menschen gemessen. `UCI_Elo` spielt bei kurzer Bedenkzeit schwächer als der Nennwert; Stufen 4 bis 7 übersehen
+  manchmal Matt in 1 (Eigenart der Engine-Begrenzung). Stufen 4 bis 8 hängen von der Geräteleistung ab.
+- Getestet: 13 Logik-Tests (`tests/unit/stufen.test.mjs`).
 
 ## Phase 3 — Eigene Partien analysieren
 

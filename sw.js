@@ -44,6 +44,8 @@ const PRECACHE = [
   "./js/session.js",
   "./js/puzzles.js",
   "./js/engine.js",
+  "./js/stufen.js",
+  "./js/material.js",
   "./vendor/chess.js/chess.js",
   "./vendor/chess.js/LICENSE",
   "./vendor/chessground/chessground.min.js",
