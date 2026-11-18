@@ -21,6 +21,8 @@ const fenInput = document.getElementById("fen-input");
 const btnFenLoad = document.getElementById("btn-fen-load");
 const btnFenCopy = document.getElementById("btn-fen-copy");
 const fenErrorEl = document.getElementById("fen-error");
+const pgnInput = document.getElementById("pgn-input");
+const pgnErrorEl = document.getElementById("pgn-error");
 
 function getHistory() {
   const verbose = game.history({ verbose: true });
@@ -161,6 +163,23 @@ function onAfterMove(orig, dest) {
   renderPosition();
 }
 
+// Lädt eine Partie aus einem PGN-Text (gespeicherte Partien, später auch Chess.com-Partien). Zeigt die
+// Startstellung; mit Zurück und Vor oder in der Zugliste geht man durch die Partie. Wirft bei ungültigem PGN.
+export function ladePgn(pgn, { farbe = null } = {}) {
+  const tmp = new Chess();
+  tmp.loadPgn(pgn);
+  const verbose = tmp.history({ verbose: true });
+  const start = tmp.header().FEN || new Chess().fen();
+  game.load(start);
+  startFen = game.fen();
+  for (const m of verbose) game.move({ from: m.from, to: m.to, promotion: m.promotion });
+  viewIndex = 0;
+  fenErrorEl.hidden = true;
+  if (farbe) cg.set({ orientation: farbe === "b" ? "black" : "white" });
+  renderPosition();
+  return verbose.length;
+}
+
 function loadFen(fen) {
   try {
     game.load(fen);
@@ -232,6 +251,33 @@ btnFenCopy.addEventListener("click", async () => {
     await navigator.clipboard.writeText(fenInput.value);
   } catch (err) {
     fenInput.select();
+    document.execCommand("copy");
+  }
+});
+
+document.getElementById("btn-pgn-load").addEventListener("click", () => {
+  const text = pgnInput.value.trim();
+  if (!text) {
+    pgnErrorEl.textContent = "Bitte zuerst ein PGN einfügen.";
+    pgnErrorEl.hidden = false;
+    return;
+  }
+  try {
+    ladePgn(text);
+    pgnErrorEl.hidden = true;
+  } catch (err) {
+    pgnErrorEl.textContent = "Das PGN konnte nicht gelesen werden. Bitte prüfe, ob der Text vollständig ist.";
+    pgnErrorEl.hidden = false;
+  }
+});
+
+document.getElementById("btn-pgn-copy").addEventListener("click", async () => {
+  const pgn = game.pgn();
+  try {
+    await navigator.clipboard.writeText(pgn);
+  } catch (err) {
+    pgnInput.value = pgn;
+    pgnInput.select();
     document.execCommand("copy");
   }
 });

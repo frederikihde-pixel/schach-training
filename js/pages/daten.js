@@ -144,7 +144,8 @@ export function initDaten() {
       const t = preview.taktik;
       pendingImportText = text;
       $("import-bestaetigung-text").textContent =
-        `Die Datei enthält ${t.versuche.length} gespeicherte Versuche und ${t.sitzungen.length} Sitzungen. ` +
+        `Die Datei enthält ${t.versuche.length} gespeicherte Versuche, ${t.sitzungen.length} Sitzungen, ` +
+        `${preview.spielen.partien.length} Partien und ${preview.spielen.versuche.length} Übungsversuche (Grundmatts, Vorteil). ` +
         "Die bisherigen Daten in diesem Browser werden ersetzt.";
       $("import-bestaetigung").hidden = false;
     } catch (err) {
