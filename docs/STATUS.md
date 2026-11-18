@@ -1,16 +1,15 @@
 # Status
 
 Diese Datei wird zu Beginn jeder Sitzung zuerst gelesen und nach jedem
-Abschnitt aktualisiert. Stand: 17.11.2026.
+Abschnitt aktualisiert. Stand: 18.11.2026.
 
 ## Nächste Schritte
 
-1. **Taktik für Einsteiger auf dem echten Handy prüfen** (Abschnitt "Taktik für Einsteiger" und Liste ganz unten), dann
-   Pull Request 5 mergen.
-2. **Computergegner auf dem Brett:** gegen den Computer spielen, Stärke wählbar. Idee: eine
-   Schach-Engine als WebAssembly (zum Beispiel Stockfish, GPL-3 passt zur Lizenz), sie läuft
-   komplett im Browser, ohne Server. Vorher klären: Größe der Datei (einige MB) und
-   Offline-Cache, Stärkestufen, Bedenkzeit.
+1. **Taktik für Einsteiger auf dem echten Handy prüfen** (Abschnitt "Taktik für Einsteiger" und Liste ganz unten).
+   Pull Request 5 ist gemergt.
+2. **Computergegner und Training mit Partien** (in Arbeit, zwei Pull Requests): Teil A bis D (Engine, Stufen, Spielen,
+   Partien speichern) im ersten, Teil E bis H (Analyse, eigene Fehler als Rätsel, Fortschritt, Einführung) im zweiten.
+   Siehe Abschnitt "Computergegner" weiter unten.
 3. **Phase 3, eigene Partien analysieren mit Chess.com:** Partien nach Benutzername holen
    (öffentliche, nur lesende Chess.com-Schnittstelle ohne Konto; alternativ eine PGN-Datei
    importieren), mit der Engine analysieren, Fehler als Rätsel in die Wiederholung übernehmen.
@@ -26,7 +25,8 @@ Abschnitt aktualisiert. Stand: 17.11.2026.
 | Vorarbeiten: Mängel, Speichern, installierbar, Rätsel-Daten | fertig, gemergt |
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
 | Brett-Designs, Einführung, leere Zustände | fertig, gemergt (Pull Request 4), emuliert getestet |
-| Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe, Themen-Seite | fertig, emuliert getestet (Pull Request 5) |
+| Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe, Themen-Seite | fertig, gemergt (Pull Request 5), emuliert getestet |
+| Computergegner, Teil A bis D (Spielen) | in Arbeit (Abschnitt 1 von 6 fertig: Engine) |
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
@@ -287,6 +287,29 @@ mindestens 44 px. **Nicht** emuliert beurteilbar (bitte auf dem echten Handy pr�
 - Ist die **Denkhilfe** hilfreich oder stört sie? Ist der Text auf dem Handy gut lesbar und hat er genug Abstand zum Brett?
 - Sind die **Erklärungen der Themen** verständlich? Was fehlt oder ist unklar?
 - Ist die Wahl zwischen den zwei **Prüfsets** auf der Statistik-Seite klar genug?
+
+## Computergegner und Training mit Partien (Branch `claude/chess-computer-training-sz5jp1`)
+
+Ziel: Partien gegen den Computer als Trainingsmethode (Spielen, Rückblick, eigene Fehler als Rätsel,
+Fortschritt mit Zahlen). Keine Gamification.
+
+### Teil A: Engine einbinden, fertig (Abschnitt 1)
+
+- `vendor/stockfish/`: Stockfish.js 19.0.1, "lite single-threaded" (`.js` 28 KB, `.wasm` 1,85 MB), `Copying.txt`
+  (GPL-3.0), README mit Version, Quelle, Größe und Prüfsummen.
+- **Lizenz des Netzes unklar:** Das Netz `nn-61e7af4bb97d` (Chris Bao) steckt in der `.wasm`-Datei. Das Paket nennt
+  GPL-3.0 für Engine-Code und Paket, aber keine eigene Lizenz für das Netz. Auf der Info-Seite steht genau das,
+  ohne weitere Behauptung. Offen: bei Bedarf beim Projekt nachfragen.
+- `js/engine.js`: Web Worker mit UCI (uci, isready, setoption, position, go movetime/depth/nodes, bestmove, info mit
+  Centipawn, Matt, MultiPV). Promises, eine Anfrage zur Zeit (Schlange), `stop`, `terminate`, Fehlermeldung
+  "Der Computergegner ist auf diesem Gerät nicht verfügbar." statt Absturz. Lädt erst beim ersten Gebrauch.
+- Optionen kommen aus der Engine: `UCI_Elo` 1320 bis 3190 (also weit über 440 Chess.com-Punkten; Stufen 1 bis 3 brauchen
+  deshalb eine eigene Fehlerlogik), `Skill Level` 0 bis 20, `MultiPV` 1 bis 256, `Threads` nur 1, Hash 16 MB gesetzt.
+- Service Worker: Cache-Version 3. Die Engine steht nicht in der Vorab-Liste, sondern wird beim ersten Gebrauch abgelegt
+  (Netzwerk-zuerst-Zwischenspeicher); `.wasm` wird als `application/wasm` geprüft.
+- Getestet: 12 Logik-Tests (`tests/unit/engine.test.mjs`, künstlicher Worker) und 14 Browser-Prüfungen mit der echten
+  Engine (`tests/e2e/engine.cjs`): lädt nicht beim Start, legale Antwort, Matt in 1 gefunden, MultiPV 3, Abbruch in
+  11 ms, Start nach 180 ms, offline nach dem ersten Gebrauch, verständliche Meldung bei fehlender Datei.
 
 ## Phase 3 — Eigene Partien analysieren
 

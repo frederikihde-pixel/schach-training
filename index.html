@@ -432,12 +432,25 @@
                 <strong>Chessground 9.2.1</strong> (Brett-Anzeige), Lichess, Lizenz GPL-3.0.
               </li>
               <li>
+                <strong>Stockfish.js 19.0.1</strong> (Computergegner und Analyse; Variante "lite", ein Thread),
+                Engine Stockfish 19 der Stockfish-Entwickler, WebAssembly-Fassung von Nathan Rugg (Chess.com),
+                Lizenz GPL-3.0. Die Engine wird erst geladen, wenn du gegen den Computer spielst.
+              </li>
+              <li>
                 <strong>Lichess-Rätsel-Datenbank</strong> (für den Taktik-Trainer), Lizenz CC0.
               </li>
             </ul>
             <nav class="link-list" aria-label="Daten">
               <a href="https://database.lichess.org/#puzzles" rel="noopener">Lichess-Rätsel-Datenbank</a>
+              <a href="https://github.com/nmrugg/stockfish.js" rel="noopener">Stockfish.js (Quellcode)</a>
+              <a href="https://github.com/official-stockfish/Stockfish" rel="noopener">Stockfish (Quellcode)</a>
             </nav>
+            <p class="muted">
+              Zur Engine: Das Paket nennt als Lizenz die GPL-3.0 (Engine-Code und veröffentlichtes Paket). Das
+              neuronale Netz, das die Engine zum Bewerten benutzt (nn-61e7af4bb97d, von Chris Bao), steckt
+              fest in der Engine-Datei. Für dieses Netz nennt das Paket keine eigene Lizenz; wir geben es
+              unverändert so weiter, wie es im Paket steht, und behaupten dazu nichts weiter.
+            </p>
           </div>
 
           <div class="block">
@@ -452,6 +465,10 @@
             </details>
             <details class="license" data-src="vendor/chessground/LICENSE">
               <summary>Chessground (GPL-3.0)</summary>
+              <pre class="license-text">Wird geladen ...</pre>
+            </details>
+            <details class="license" data-src="vendor/stockfish/Copying.txt">
+              <summary>Stockfish.js (GPL-3.0)</summary>
               <pre class="license-text">Wird geladen ...</pre>
             </details>
           </div>

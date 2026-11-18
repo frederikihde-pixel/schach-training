@@ -27,3 +27,12 @@ enthalten. Das Cburnett-Figurenset von Colin M.L. Burnett steht unter der
 CC-BY-SA-3.0-Lizenz (freie Lizenz, verlangt Namensnennung bei
 Weiterverbreitung):
 https://en.wikipedia.org/wiki/User:Cburnett/GFDL_images/Chess_pieces
+
+## Stockfish.js — Version 19.0.1 (lite, single-threaded)
+
+Schach-Engine (WebAssembly) für den Computergegner und die Analyse. Lizenz: GPL-3.0.
+Quelle: npm-Paket `stockfish@19.0.1`, https://github.com/nmrugg/stockfish.js
+
+Dateien: `stockfish/stockfish-19-lite-single.js` und `.wasm` (zusammen etwa 1,8 MB),
+`stockfish/Copying.txt`. Einzelheiten, Prüfsummen und der Hinweis zum eingebetteten
+neuronalen Netz stehen in `stockfish/README.md`.

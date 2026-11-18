@@ -3,8 +3,10 @@
 // CACHE_VERSION erhöhen, wenn Dateien umbenannt oder entfernt werden (alte Caches werden
 // beim Aktivieren gelöscht). Neue Dateien in PRECACHE eintragen; tests/unit/sw.test.mjs
 // prüft, dass die Liste vollständig ist.
+// Die Engine (vendor/stockfish/, etwa 1,8 MB) steht bewusst NICHT in PRECACHE: Sie wird erst beim ersten
+// Gebrauch geladen und dabei vom Netzwerk-zuerst-Zwischenspeicher unten für offline abgelegt.
 
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 3;
 const CACHE_PREFIX = "schach-training-";
 const CACHE_NAME = `${CACHE_PREFIX}v${CACHE_VERSION}`;
 
@@ -41,12 +43,14 @@ const PRECACHE = [
   "./js/stats.js",
   "./js/session.js",
   "./js/puzzles.js",
+  "./js/engine.js",
   "./vendor/chess.js/chess.js",
   "./vendor/chess.js/LICENSE",
   "./vendor/chessground/chessground.min.js",
   "./vendor/chessground/chessground.base.css",
   "./vendor/chessground/chessground.cburnett.css",
   "./vendor/chessground/LICENSE",
+  "./vendor/stockfish/Copying.txt",
   "./icons/icon.svg",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
