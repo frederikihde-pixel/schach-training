@@ -6,11 +6,14 @@ import { PRUEFSET_IDS, DEFAULT_PRUEFSET } from "./pruefsets.js";
 
 export const APP_ID = "schach-training";
 export const STORAGE_KEY = "schach-training";
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 export const EXPORT_REMINDER_DAYS = 14;
 
 // Begrenzungen, damit die Daten klein bleiben (localStorage hat etwa 5 MB).
 export const CAPS = { versuche: 500, verlauf: 500, sitzungen: 200, standort: 100 };
+// Spielen: die letzten 30 Partien und die letzten 100 Versuche (Grundmatts, Vorteil). Eine Partie ist mit
+// PGN etwa 1 bis 3 KB groß; zusammen bleibt das weit unter der Grenze von etwa 5 MB.
+export const SPIELEN_CAPS = { partien: 30, versuche: 100 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -24,6 +27,13 @@ export function defaults(now = new Date()) {
       brettDesign: "klassisch", // neue Nutzer: Klassisch; bisherige behalten Dunkel (Migration)
       einfuehrungGesehen: false,
       denkhilfe: true, // Hinweiszeile vor den ersten Rätseln (nur Anfänger), abschaltbar
+      chesscomWertung: null, // freiwillig, nur lokal: für den Vorschlag der Startstufe
+    },
+    spielen: {
+      partien: [], // abgeschlossene Partien gegen den Computer (höchstens SPIELEN_CAPS.partien)
+      versuche: [], // Versuche in Grundmatts und Vorteil verwerten (höchstens SPIELEN_CAPS.versuche)
+      aktiv: null, // laufende Partie oder Übung (wird nach jedem Zug gespeichert)
+      gestartet: 0, // Zahl aller begonnenen Partien, Grundlage für den Vorschlag der Patzer-Warnung
     },
     taktik: {
       staerke: null, // geschätzte Taktikstärke, null bis zur Einstufung
@@ -85,6 +95,22 @@ export const MIGRATIONS = {
       taktik: { ...t, standort: (Array.isArray(t.standort) ? t.standort : []).map((x) => ({ ...x, pruefset: x.pruefset ?? DEFAULT_PRUEFSET })) },
     };
   },
+  // Version 5: Partien gegen den Computer (Bereich "spielen") und die freiwillige Chess.com-Wertung.
+  4(data) {
+    const e = data.einstellungen || {};
+    const sp = data.spielen || {};
+    return {
+      ...data,
+      version: 5,
+      einstellungen: { ...e, chesscomWertung: e.chesscomWertung ?? null },
+      spielen: {
+        partien: Array.isArray(sp.partien) ? sp.partien : [],
+        versuche: Array.isArray(sp.versuche) ? sp.versuche : [],
+        aktiv: sp.aktiv ?? null,
+        gestartet: typeof sp.gestartet === "number" ? sp.gestartet : 0,
+      },
+    };
+  },
 };
 
 export class DataError extends Error {}
@@ -129,6 +155,15 @@ export function validate(data) {
   if (typeof data.einstellungen.brettDesign !== "string") fail("Das Brett-Design ist ungültig.");
   if (typeof data.einstellungen.einfuehrungGesehen !== "boolean") fail('Die Angabe zur Einführung ist ungültig.');
   if (typeof data.einstellungen.denkhilfe !== "boolean") fail('Die Einstellung "Denkhilfe" ist ungültig.');
+  const w = data.einstellungen.chesscomWertung;
+  if (w !== null && !(typeof w === "number" && Number.isFinite(w))) fail("Die Chess.com-Wertung ist ungültig.");
+  const sp = data.spielen;
+  if (!sp || typeof sp !== "object") fail('In der Datei fehlen die Daten zu den Partien ("spielen").');
+  for (const key of ["partien", "versuche"]) {
+    if (!Array.isArray(sp[key])) fail(`Partien-Daten: "${key}" ist ungültig.`);
+  }
+  if (typeof sp.gestartet !== "number") fail('Partien-Daten: "gestartet" ist ungültig.');
+  if (sp.aktiv !== null && (typeof sp.aktiv !== "object" || Array.isArray(sp.aktiv) || !Array.isArray(sp.aktiv.zuege))) fail("Die laufende Partie ist ungültig.");
   for (const e of t.standort) {
     if (e === null || typeof e !== "object" || !PRUEFSET_IDS.includes(e.pruefset)) fail("Ein Ergebnis der Standortbestimmung hat kein gültiges Prüfset.");
   }
@@ -150,6 +185,12 @@ export function trim(state) {
   const t = state.taktik;
   for (const key of Object.keys(CAPS)) {
     if (t[key].length > CAPS[key]) t[key] = t[key].slice(-CAPS[key]);
+  }
+  const sp = state.spielen;
+  if (sp) {
+    for (const key of Object.keys(SPIELEN_CAPS)) {
+      if (sp[key].length > SPIELEN_CAPS[key]) sp[key] = sp[key].slice(-SPIELEN_CAPS[key]);
+    }
   }
   return state;
 }

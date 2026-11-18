@@ -8,7 +8,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   const { context, page } = await newPage(browser);
   await page.goto(url + "index.html");
   await page.waitForTimeout(800);
-  const loaded = () => Object.keys(hits).filter((k) => /stockfish/.test(k));
+  const loaded = () => Object.keys(hits).filter((k) => /stockfish-19.*\.(js|wasm)$/.test(k));
   r.check("Beim App-Start wird die Engine nicht geladen", loaded().length === 0, loaded().join(","));
 
   const wasm = await page.request.get(url + "vendor/stockfish/stockfish-19-lite-single.wasm");

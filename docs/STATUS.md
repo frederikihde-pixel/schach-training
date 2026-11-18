@@ -26,7 +26,7 @@ Abschnitt aktualisiert. Stand: 18.11.2026.
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
 | Brett-Designs, Einführung, leere Zustände | fertig, gemergt (Pull Request 4), emuliert getestet |
 | Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe, Themen-Seite | fertig, gemergt (Pull Request 5), emuliert getestet |
-| Computergegner, Teil A bis D (Spielen) | in Arbeit (Abschnitt 2 von 6 fertig: Engine, Stufen) |
+| Computergegner, Teil A bis D (Spielen) | in Arbeit (Abschnitt 3 von 6 fertig: Engine, Stufen, Partie spielen) |
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
@@ -323,6 +323,28 @@ Fortschritt mit Zahlen). Keine Gamification.
   gegen Menschen gemessen. `UCI_Elo` spielt bei kurzer Bedenkzeit schwächer als der Nennwert; Stufen 4 bis 7 übersehen
   manchmal Matt in 1 (Eigenart der Engine-Begrenzung). Stufen 4 bis 8 hängen von der Geräteleistung ab.
 - Getestet: 13 Logik-Tests (`tests/unit/stufen.test.mjs`).
+
+### Teil C: Spielen, Abschnitt 3 (Partie) fertig
+
+- Reiter "Spielen" in der unteren Leiste, Startseite mit den drei Wegen (Partie, Grundmatts üben, Vorteil verwerten; die zwei
+  letzten Wege sind in Abschnitt 4 dran). Dateien: `js/pages/spielen.js` (Oberfläche), `js/partie.js` (Spielzustand, Ende,
+  Zurücknehmen, PGN), `js/warnung.js`, `js/empfehlung.js`, `js/uebungen.js`.
+- Partie: Farbe (Weiß, Schwarz, Zufall), Stufe 1 bis 8 mit ungefährer Stärke und ehrlichem Hinweis, freiwillige Chess.com-Wertung
+  (nur lokal, Vorschlag der Startstufe; bei 440 Stufe 2), "Zug zurücknehmen erlauben" (Standard aus, mit Erklärung),
+  Schalter "Patzer-Warnung" (an für die ersten 3 begonnenen Partien, danach aus vorgeschlagen). Keine Uhr, keine
+  Bewertungsleiste, keine Zugvorschläge. "Computer denkt" bei gesperrtem Brett (0,5 bis 2 Sekunden je Stufe), Aufgeben mit
+  Rückfrage, Spielende durch chess.js (Matt, Patt, dreifache Wiederholung, 50 Züge, Material).
+- Gespeichert wird nach jedem Zug (`spielen.aktiv`); nach Neuladen oder App-Wechsel geht es weiter, ein verpasster
+  Computerzug wird nachgeholt. Speicherformat **Version 5** mit Migration (`spielen.partien` höchstens 30, `spielen.versuche`
+  höchstens 100, `spielen.aktiv`, `spielen.gestartet`, `einstellungen.chesscomWertung`); Export und Import nehmen alles mit.
+- Patzer-Warnung (`js/warnung.js`): genaue Prüfung mit chess.js (Matt in 1; Schlag einer Figur ab Springer, auf die man nicht
+  zurückschlagen kann), bei freier Figur fragt die Engine 150 ms nach, ob der Gegner sie wirklich nähme. Frage mit "Ändern"
+  und "Trotzdem", kein Hinweis auf den besseren Zug. Gezählt werden Warnungen und "Trotzdem"; beides wird je Partie gespeichert.
+- Stufenempfehlung (`js/empfehlung.js`) erscheint in den Einstellungen, sobald es mindestens 3 Partien auf der letzten Stufe gibt.
+- Getestet: `tests/e2e/spielen.cjs` (43 Prüfungen, echte Engine, 390 px, Touch), Unit-Tests für Partie, Warnung, Übungen, Speicher
+  (Migration 4 auf 5, Obergrenzen, Export/Import); die alten Browsertests wurden auf Version 5 und drei Reiter angepasst.
+- **Bekannte Mängel:** "Im Brett ansehen" lädt die Partie ins Brett, die Liste "Meine Partien" und das Laden per PGN-Eingabe
+  kommen in Abschnitt 5. Läuft die Engine im Hintergrund nicht weiter (iPhone), erscheint "Erneut versuchen".
 
 ## Phase 3 — Eigene Partien analysieren
 

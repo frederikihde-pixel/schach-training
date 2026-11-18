@@ -185,6 +185,176 @@
         </div>
       </div>
 
+      <!-- Seite: Spielen (Partien gegen den Computer) -->
+      <div id="page-spielen" class="page" hidden>
+        <div id="sp-start" class="page-inner" hidden>
+          <nav class="subnav" aria-label="Spielen">
+            <a href="#/spielen" id="sub-spielen">Spielen</a>
+          </nav>
+          <h2 class="page-title">Spielen</h2>
+          <p class="muted">
+            Partien gegen den Computer sind hier Training: erst spielen, danach zurückschauen. Es gibt keine
+            Uhr, keine Bewertungsleiste und keine Zugvorschläge.
+          </p>
+
+          <div id="sp-letzte" class="block" hidden>
+            <p id="sp-letzte-text"></p>
+            <div class="stack"><a class="btn-link-quiet" href="#/spielen/ende">Ergebnis ansehen</a></div>
+          </div>
+
+          <div id="sp-fortsetzen" class="block" hidden>
+            <p id="sp-fortsetzen-text"></p>
+            <div class="stack">
+              <button id="sp-btn-fortsetzen" type="button">Fortsetzen</button>
+              <button id="sp-btn-verwerfen" type="button" class="btn-quiet">Verwerfen</button>
+            </div>
+            <div id="sp-verwerfen-frage" class="confirm" hidden>
+              <p>Die laufende Partie verwerfen? Sie wird nicht gespeichert und zählt nicht.</p>
+              <div class="stack">
+                <button id="sp-btn-verwerfen-ja" type="button">Verwerfen</button>
+                <button id="sp-btn-verwerfen-nein" type="button">Behalten</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="way-list">
+            <a class="way" id="sp-weg-partie" href="#/spielen/partie">
+              <strong>Partie</strong>
+              <span>Eine ganze Partie gegen den Computer, Stufe und Farbe wählbar.</span>
+            </a>
+            <a class="way" id="sp-weg-grundmatt" href="#/spielen/grundmatt">
+              <strong>Grundmatts üben</strong>
+              <span>Mit Dame oder Turm gegen den blanken König Matt setzen.</span>
+            </a>
+            <a class="way" id="sp-weg-vorteil" href="#/spielen/vorteil">
+              <strong>Vorteil verwerten</strong>
+              <span>Der Computer startet ohne Dame, Turm oder Springer. Kannst du gewinnen?</span>
+            </a>
+          </div>
+        </div>
+
+        <div id="sp-setup" class="page-inner" hidden>
+          <p class="back-row"><a class="back-link" href="#/spielen">Zurück</a></p>
+          <h2 id="sp-setup-titel" class="page-title">Partie</h2>
+          <p id="sp-setup-text" class="muted"></p>
+
+          <div id="sp-feld-art" class="field" hidden>
+            <label for="sp-art">Vorteil</label>
+            <select id="sp-art"></select>
+          </div>
+          <div class="field">
+            <label for="sp-farbe">Meine Farbe</label>
+            <select id="sp-farbe">
+              <option value="w">Weiß</option>
+              <option value="b">Schwarz</option>
+              <option value="z">Zufall</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="sp-stufe">Stufe</label>
+            <select id="sp-stufe"></select>
+            <p id="sp-stufe-info" class="muted"></p>
+            <p id="sp-empfehlung" class="muted" hidden></p>
+          </div>
+          <div class="field">
+            <label for="sp-wertung">Meine Chess.com-Wertung (freiwillig, bleibt nur auf diesem Gerät)</label>
+            <input id="sp-wertung" class="text-input" type="text" inputmode="numeric" autocomplete="off" placeholder="zum Beispiel 440" />
+            <p id="sp-wertung-info" class="muted"></p>
+          </div>
+          <p class="muted">Zu leicht oder zu schwer? Stufe nach zwei bis drei Partien anpassen.</p>
+
+          <div class="block">
+            <h3>Zug zurücknehmen erlauben</h3>
+            <p>Standard: aus. So überlegst du dir deine Züge gründlich, bevor du sie ausführst.</p>
+            <div class="stack"><button id="sp-sw-zurueck" type="button" role="switch" aria-checked="false">Zug zurücknehmen: aus</button></div>
+          </div>
+          <div class="block">
+            <h3>Patzer-Warnung</h3>
+            <p>
+              Vor dem Ausführen prüft die App kurz, ob dein Zug eine Figur kostenlos einstellt oder ein Matt in 1
+              erlaubt. Sie sagt dir nicht, was besser wäre. Für die ersten 3 Partien ist sie an.
+            </p>
+            <p id="sp-warn-info" class="muted"></p>
+            <div class="stack"><button id="sp-sw-warnung" type="button" role="switch" aria-checked="true">Patzer-Warnung: an</button></div>
+          </div>
+
+          <div class="stack"><button id="sp-btn-start" type="button">Partie starten</button></div>
+          <p id="sp-setup-meldung" class="message" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="sp-grundmatt" class="page-inner" hidden>
+          <p class="back-row"><a class="back-link" href="#/spielen">Zurück</a></p>
+          <h2 class="page-title">Grundmatts üben</h2>
+          <p class="muted">
+            Du spielst Weiß und setzt Matt. Der Computer verteidigt mit Stufe 8. Misserfolg: Patt, dreifache
+            Wiederholung, 50-Züge-Regel oder Verlust deiner Figur. Zum Vergleich: Mit Dame und König ist das Matt
+            in höchstens 10 Zügen erzwingbar, mit Turm und König in höchstens 16 Zügen.
+          </p>
+          <div class="field">
+            <label for="gm-art">Figur</label>
+            <select id="gm-art"></select>
+          </div>
+          <div class="field">
+            <label for="gm-stellung">Stellung</label>
+            <select id="gm-stellung"></select>
+          </div>
+          <p id="gm-info" class="muted"></p>
+          <div class="stack"><button id="gm-btn-start" type="button">Übung starten</button></div>
+        </div>
+
+        <div id="sp-lauf" hidden>
+          <div class="run-head">
+            <span id="sp-lauf-titel"></span>
+            <span id="sp-lauf-stufe" class="muted"></span>
+          </div>
+          <p id="sp-lauf-status" class="side-line" role="status" aria-live="polite"></p>
+          <div class="board-row">
+            <div class="board-wrap">
+              <div id="sp-board" class="board"></div>
+            </div>
+          </div>
+          <div class="page-inner">
+            <p id="sp-lauf-meldung" class="run-message" role="status" aria-live="polite"></p>
+            <div id="sp-warnung" class="confirm" role="alertdialog" aria-labelledby="sp-warnung-text" hidden>
+              <p id="sp-warnung-text"></p>
+              <div class="stack">
+                <button id="sp-warn-aendern" type="button">Ändern</button>
+                <button id="sp-warn-trotzdem" type="button">Trotzdem</button>
+              </div>
+            </div>
+            <div id="sp-fehler" class="confirm" hidden>
+              <p id="sp-fehler-text"></p>
+              <div class="stack"><button id="sp-btn-nochmal" type="button">Erneut versuchen</button></div>
+            </div>
+            <div class="controls sp-controls">
+              <button id="sp-btn-zurueck" type="button">Zug zurück</button>
+              <button id="sp-btn-aufgeben" type="button" class="btn-quiet">Aufgeben</button>
+            </div>
+            <div id="sp-aufgeben-frage" class="confirm" hidden>
+              <p id="sp-aufgeben-text">Wirklich aufgeben? Die Partie zählt dann als verloren.</p>
+              <div class="stack">
+                <button id="sp-btn-aufgeben-ja" type="button">Aufgeben</button>
+                <button id="sp-btn-aufgeben-nein" type="button">Weiterspielen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="sp-ende" class="page-inner" hidden>
+          <h2 id="sp-ende-titel" class="page-title"></h2>
+          <p id="sp-ende-text"></p>
+          <dl id="sp-ende-fakten" class="facts"></dl>
+          <p id="sp-ende-hinweis" class="muted" hidden></p>
+          <div class="stack">
+            <a id="sp-ende-ansehen" class="btn-link-quiet" href="#/brett">Im Brett ansehen</a>
+            <button id="sp-ende-pgn" type="button">PGN kopieren</button>
+            <a id="sp-ende-neu" class="btn-link" href="#/spielen/partie">Neue Partie</a>
+            <a id="sp-ende-zurueck" class="btn-link-quiet" href="#/spielen">Zurück zu Spielen</a>
+          </div>
+          <p id="sp-ende-meldung" class="message" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+
       <!-- Seite: Themen -->
       <div id="page-themen" class="page" hidden>
         <div class="page-inner">
@@ -479,6 +649,7 @@
     <nav class="tabbar" aria-label="Hauptnavigation">
       <a id="tab-brett" href="#/brett">Brett</a>
       <a id="tab-taktik" href="#/taktik">Taktik</a>
+      <a id="tab-spielen" href="#/spielen">Spielen</a>
     </nav>
 
     <div id="intro" class="intro" role="dialog" aria-modal="true" aria-labelledby="intro-titel" hidden>

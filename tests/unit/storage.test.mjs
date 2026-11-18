@@ -79,13 +79,13 @@ test("Migration 2 auf 3: schon gewählte Werte bleiben erhalten", () => {
   v2.version = 2;
   v2.einstellungen = { brettDesign: "gruen", einfuehrungGesehen: false };
   const m = migrate(structuredClone(v2), { now: t0 });
-  assert.deepEqual(m.einstellungen, { brettDesign: "gruen", einfuehrungGesehen: false, denkhilfe: true });
+  assert.deepEqual(m.einstellungen, { brettDesign: "gruen", einfuehrungGesehen: false, denkhilfe: true, chesscomWertung: null });
 });
 
 test("Neue Nutzer: Design Klassisch, Einführung noch nicht gesehen", () => {
   const d = createStore({ backend: backend(), now: () => t0 }).get();
   assert.equal(d.version, SCHEMA_VERSION);
-  assert.deepEqual(d.einstellungen, { brettDesign: "klassisch", einfuehrungGesehen: false, denkhilfe: true });
+  assert.deepEqual(d.einstellungen, { brettDesign: "klassisch", einfuehrungGesehen: false, denkhilfe: true, chesscomWertung: null });
 });
 
 test("Alte Sicherungsdatei (Version 2) lässt sich importieren und bekommt Dunkel", () => {
@@ -116,7 +116,7 @@ test("Migration: Kette über mehrere Versionen und Ablehnung neuerer Versionen",
   };
   const out = migrate({ version: 0 }, { migrations, target: 3 });
   assert.deepEqual([out.a, out.b, out.c, out.version], [1, 2, 3, 3]);
-  assert.throws(() => migrate({ version: 5 }), DataError);
+  assert.throws(() => migrate({ version: 99 }), DataError);
   assert.throws(() => migrate({ version: -1 }), DataError);
   assert.throws(() => migrate([]), DataError);
 });
@@ -211,7 +211,7 @@ test("Migration 3 auf 4: bisherige Standortergebnisse gehören zum Prüfset Fort
   ];
   v3.taktik.staerke = 1300;
   const m = migrate(structuredClone(v3), { now: t0 });
-  assert.equal(m.version, 4);
+  assert.equal(m.version, SCHEMA_VERSION);
   assert.deepEqual(m.taktik.standort.map((e) => e.pruefset), ["fortgeschritten", "fortgeschritten"]);
   assert.equal(m.taktik.standort[1].geloest, 13, "Ergebnisse bleiben unverändert");
   assert.equal(m.einstellungen.denkhilfe, true);
@@ -249,4 +249,68 @@ test("Erinnerung nach 4 Wochen nennt das Prüfset des letzten Ergebnisses", () =
   d.taktik.standort.push({ datum: "2026-10-20T10:00:00.000Z", geloest: 7, von: 20, msSchnitt: 1, satz: "x", pruefset: "fortgeschritten" });
   assert.equal(standortReminder(d, new Date("2026-10-29T10:00:00.000Z")), null, "zählt ab dem letzten Ergebnis");
   assert.deepEqual(standortReminder(d, new Date("2026-11-17T10:00:00.000Z")), { pruefset: "fortgeschritten" });
+});
+
+test("Migration 4 auf 5: Bereich spielen und Wertung kommen dazu, alles Bisherige bleibt", () => {
+  const v4 = defaults(t0);
+  v4.version = 4;
+  delete v4.spielen;
+  delete v4.einstellungen.chesscomWertung;
+  v4.taktik.staerke = 777;
+  v4.taktik.standort = [{ datum: "2026-11-01T10:00:00.000Z", geloest: 5, von: 20, msSchnitt: 1, satz: "x", pruefset: "einsteiger" }];
+  const m = migrate(structuredClone(v4), { now: t0 });
+  assert.equal(m.version, 5);
+  assert.deepEqual(m.spielen, { partien: [], versuche: [], aktiv: null, gestartet: 0 });
+  assert.equal(m.einstellungen.chesscomWertung, null);
+  assert.equal(m.taktik.staerke, 777);
+  assert.equal(m.taktik.standort[0].pruefset, "einsteiger");
+  validate(m);
+});
+
+test("Alte Sicherungsdatei (Version 4) lässt sich importieren", () => {
+  const s = createStore({ backend: backend(), now: () => t0 });
+  const alt = defaults(t0);
+  alt.version = 4;
+  delete alt.spielen;
+  delete alt.einstellungen.chesscomWertung;
+  s.importJson(JSON.stringify(alt));
+  assert.equal(s.get().version, SCHEMA_VERSION);
+  assert.deepEqual(s.get().spielen.partien, []);
+});
+
+test("Prüfung: kaputte Partien-Daten werden abgelehnt", () => {
+  const a = defaults(t0);
+  a.spielen.partien = "x";
+  assert.throws(() => validate(a), DataError);
+  const b = defaults(t0);
+  b.spielen.aktiv = { zuege: "nein" };
+  assert.throws(() => validate(b), DataError);
+  const c = defaults(t0);
+  c.einstellungen.chesscomWertung = "440";
+  assert.throws(() => validate(c), DataError);
+  const d = defaults(t0);
+  delete d.spielen;
+  assert.throws(() => validate(d), DataError);
+});
+
+test("Obergrenzen: 30 Partien und 100 Versuche, Export und Import nehmen alles mit", () => {
+  const s = createStore({ backend: backend(), now: () => t0 });
+  const pgn = "[Event \"Training\"]\n\n" + Array.from({ length: 60 }, (_, i) => `${i + 1}. e4 e5`).join(" ");
+  s.update((d) => {
+    for (let i = 0; i < 45; i++) d.spielen.partien.push({ id: "p" + i, pgn });
+    for (let i = 0; i < 130; i++) d.spielen.versuche.push({ id: "v" + i, pgn });
+    d.spielen.aktiv = { zuege: ["e2e4"] };
+  });
+  const d = s.get();
+  assert.equal(d.spielen.partien.length, 30);
+  assert.equal(d.spielen.partien[0].id, "p15", "die ältesten werden verworfen");
+  assert.equal(d.spielen.versuche.length, 100);
+  assert.equal(d.spielen.versuche[99].id, "v129");
+  const json = s.exportJson();
+  const s2 = createStore({ backend: backend(), now: () => t0 });
+  s2.importJson(json);
+  assert.equal(s2.get().spielen.partien.length, 30);
+  assert.equal(s2.get().spielen.versuche.length, 100);
+  assert.deepEqual(s2.get().spielen.aktiv, { zuege: ["e2e4"] });
+  assert.ok(json.length < 500000, "weit unter der Speichergrenze (etwa 5 MB): " + json.length);
 });

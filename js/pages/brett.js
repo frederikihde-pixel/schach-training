@@ -161,6 +161,23 @@ function onAfterMove(orig, dest) {
   renderPosition();
 }
 
+// Lädt eine Partie aus einem PGN-Text (gespeicherte Partien, später auch Chess.com-Partien). Zeigt die
+// Startstellung; mit Zurück und Vor oder in der Zugliste geht man durch die Partie. Wirft bei ungültigem PGN.
+export function ladePgn(pgn, { farbe = null } = {}) {
+  const tmp = new Chess();
+  tmp.loadPgn(pgn);
+  const verbose = tmp.history({ verbose: true });
+  const start = tmp.header().FEN || new Chess().fen();
+  game.load(start);
+  startFen = game.fen();
+  for (const m of verbose) game.move({ from: m.from, to: m.to, promotion: m.promotion });
+  viewIndex = 0;
+  fenErrorEl.hidden = true;
+  if (farbe) cg.set({ orientation: farbe === "b" ? "black" : "white" });
+  renderPosition();
+  return verbose.length;
+}
+
 function loadFen(fen) {
   try {
     game.load(fen);

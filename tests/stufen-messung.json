@@ -1,278 +1,278 @@
 {
  "stufenversion": 1,
- "partienJePaarung": 12,
+ "partienJePaarung": 6,
  "maxHalbzuege": 120,
- "minuten": 7.6,
+ "minuten": 3.9,
  "paarungen": {
   "S1 gegen S3": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 404
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 116
   },
   "S1 gegen S8": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 220
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 132
   },
   "S3 gegen S8": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 276
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 188
   },
   "S1 gegen Zufall": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 529
+   "partien": 3,
+   "zuege": 225
   },
   "S3 gegen Zufall": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 272
+   "partien": 3,
+   "zuege": 119
   },
   "S8 gegen Zufall": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 174
+   "partien": 3,
+   "zuege": 53
   },
   "S2 gegen S1": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 354
+   "partien": 3,
+   "zuege": 161
   },
   "S2 gegen S3": {
-   "weiss": 1,
-   "remis": 1,
-   "schwarz": 4,
-   "partien": 6,
-   "zuege": 663
+   "weiss": 0,
+   "remis": 0,
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 258
   },
   "S2 gegen Zufall": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 244
+   "partien": 3,
+   "zuege": 155
   },
   "S3 gegen S4": {
-   "weiss": 2,
+   "weiss": 0,
    "remis": 0,
-   "schwarz": 4,
-   "partien": 6,
-   "zuege": 454
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 290
   },
   "S4 gegen S5": {
-   "weiss": 2,
-   "remis": 1,
+   "weiss": 0,
+   "remis": 0,
    "schwarz": 3,
-   "partien": 6,
-   "zuege": 564
+   "partien": 3,
+   "zuege": 210
   },
   "S5 gegen S6": {
    "weiss": 1,
    "remis": 1,
-   "schwarz": 4,
-   "partien": 6,
-   "zuege": 525
+   "schwarz": 1,
+   "partien": 3,
+   "zuege": 298
   },
   "S6 gegen S7": {
-   "weiss": 3,
+   "weiss": 0,
    "remis": 0,
    "schwarz": 3,
-   "partien": 6,
-   "zuege": 459
+   "partien": 3,
+   "zuege": 276
   },
   "S7 gegen S8": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 458
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 208
   },
   "S3 gegen S1": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 430
+   "partien": 3,
+   "zuege": 125
   },
   "S8 gegen S1": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 222
+   "partien": 3,
+   "zuege": 111
   },
   "S8 gegen S3": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 358
+   "partien": 3,
+   "zuege": 129
   },
   "Zufall gegen S1": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 522
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 186
   },
   "Zufall gegen S3": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 270
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 132
   },
   "Zufall gegen S8": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 162
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 88
   },
   "S1 gegen S2": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 394
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 234
   },
   "S3 gegen S2": {
-   "weiss": 5,
+   "weiss": 3,
    "remis": 0,
-   "schwarz": 1,
-   "partien": 6,
-   "zuege": 468
+   "schwarz": 0,
+   "partien": 3,
+   "zuege": 205
   },
   "Zufall gegen S2": {
    "weiss": 0,
    "remis": 0,
-   "schwarz": 6,
-   "partien": 6,
-   "zuege": 292
+   "schwarz": 3,
+   "partien": 3,
+   "zuege": 184
   },
   "S4 gegen S3": {
-   "weiss": 4,
+   "weiss": 2,
    "remis": 0,
-   "schwarz": 2,
-   "partien": 6,
-   "zuege": 392
+   "schwarz": 1,
+   "partien": 3,
+   "zuege": 305
   },
   "S5 gegen S4": {
-   "weiss": 5,
-   "remis": 1,
-   "schwarz": 0,
-   "partien": 6,
-   "zuege": 499
-  },
-  "S6 gegen S5": {
-   "weiss": 4,
-   "remis": 1,
-   "schwarz": 1,
-   "partien": 6,
-   "zuege": 552
-  },
-  "S7 gegen S6": {
-   "weiss": 4,
-   "remis": 1,
-   "schwarz": 1,
-   "partien": 6,
-   "zuege": 591
-  },
-  "S8 gegen S7": {
-   "weiss": 6,
+   "weiss": 3,
    "remis": 0,
    "schwarz": 0,
-   "partien": 6,
-   "zuege": 406
+   "partien": 3,
+   "zuege": 241
+  },
+  "S6 gegen S5": {
+   "weiss": 2,
+   "remis": 0,
+   "schwarz": 1,
+   "partien": 3,
+   "zuege": 323
+  },
+  "S7 gegen S6": {
+   "weiss": 2,
+   "remis": 0,
+   "schwarz": 1,
+   "partien": 3,
+   "zuege": 347
+  },
+  "S8 gegen S7": {
+   "weiss": 3,
+   "remis": 0,
+   "schwarz": 0,
+   "partien": 3,
+   "zuege": 159
   }
  },
  "spieler": {
   "S1": {
-   "zuege": 1531,
-   "hing": 270,
-   "mattChance": 18,
-   "mattVerpasst": 8,
-   "verloren": 1099,
-   "partien": 48
+   "zuege": 642,
+   "hing": 121,
+   "mattChance": 13,
+   "mattVerpasst": 7,
+   "verloren": 455,
+   "partien": 24
   },
   "S3": {
-   "zuege": 1997,
-   "hing": 231,
-   "mattChance": 36,
-   "mattVerpasst": 3,
-   "verloren": 1037,
-   "partien": 60
+   "zuege": 936,
+   "hing": 87,
+   "mattChance": 21,
+   "mattVerpasst": 2,
+   "verloren": 464,
+   "partien": 30
   },
   "S8": {
-   "zuege": 1150,
-   "hing": 100,
-   "mattChance": 48,
+   "zuege": 540,
+   "hing": 42,
+   "mattChance": 24,
    "mattVerpasst": 0,
-   "verloren": 408,
-   "partien": 48
+   "verloren": 170,
+   "partien": 24
   },
   "Zufall": {
-   "zuege": 1221,
-   "hing": 350,
+   "zuege": 565,
+   "hing": 166,
    "mattChance": 0,
    "mattVerpasst": 0,
-   "verloren": 1092,
-   "partien": 48
+   "verloren": 532,
+   "partien": 24
   },
   "S2": {
-   "zuege": 1212,
-   "hing": 130,
-   "mattChance": 29,
-   "mattVerpasst": 3,
-   "verloren": 513,
-   "partien": 36
+   "zuege": 600,
+   "hing": 101,
+   "mattChance": 13,
+   "mattVerpasst": 2,
+   "verloren": 283,
+   "partien": 18
   },
   "S4": {
-   "zuege": 954,
-   "hing": 116,
-   "mattChance": 9,
+   "zuege": 522,
+   "hing": 62,
+   "mattChance": 4,
    "mattVerpasst": 0,
-   "verloren": 585,
-   "partien": 24
+   "verloren": 278,
+   "partien": 12
   },
   "S5": {
-   "zuege": 1070,
-   "hing": 122,
+   "zuege": 537,
+   "hing": 46,
    "mattChance": 13,
-   "mattVerpasst": 5,
-   "verloren": 624,
-   "partien": 24
+   "mattVerpasst": 7,
+   "verloren": 276,
+   "partien": 12
   },
   "S6": {
-   "zuege": 1065,
-   "hing": 78,
-   "mattChance": 30,
-   "mattVerpasst": 18,
-   "verloren": 565,
-   "partien": 24
+   "zuege": 622,
+   "hing": 50,
+   "mattChance": 2,
+   "mattVerpasst": 0,
+   "verloren": 351,
+   "partien": 12
   },
   "S7": {
-   "zuege": 954,
-   "hing": 78,
-   "mattChance": 15,
-   "mattVerpasst": 9,
-   "verloren": 645,
-   "partien": 24
+   "zuege": 494,
+   "hing": 45,
+   "mattChance": 6,
+   "mattVerpasst": 3,
+   "verloren": 312,
+   "partien": 12
   }
  },
  "ergebnisse": [
@@ -281,120 +281,64 @@
    "b": "S3",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 58,
-   "diff": -26
+   "plies": 50,
+   "diff": -23
   },
   {
    "w": "S1",
    "b": "S3",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 44,
-   "diff": -15
-  },
-  {
-   "w": "S1",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 74,
-   "diff": -15
+   "plies": 26,
+   "diff": -8
   },
   {
    "w": "S1",
    "b": "S8",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 34,
+   "plies": 32,
    "diff": -18
   },
   {
-   "w": "S1",
+   "w": "S3",
    "b": "S8",
    "e": "0-1",
    "ende": "Matt",
    "plies": 34,
-   "diff": -7
-  },
-  {
-   "w": "S1",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 50,
-   "diff": -19
+   "diff": -12
   },
   {
    "w": "S3",
    "b": "S8",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 40,
-   "diff": -16
-  },
-  {
-   "w": "S3",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 46,
-   "diff": -22
-  },
-  {
-   "w": "S3",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 46,
-   "diff": -20
+   "plies": 84,
+   "diff": -34
   },
   {
    "w": "S1",
    "b": "Zufall",
    "e": "1-0",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": 5
+   "ende": "Matt",
+   "plies": 111,
+   "diff": 29
   },
   {
-   "w": "S1",
+   "w": "S3",
    "b": "Zufall",
    "e": "1-0",
    "ende": "Matt",
    "plies": 65,
-   "diff": 30
-  },
-  {
-   "w": "S1",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 113,
-   "diff": 27
-  },
-  {
-   "w": "S3",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 71,
-   "diff": 32
-  },
-  {
-   "w": "S3",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 41,
-   "diff": 39
-  },
-  {
-   "w": "S3",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 41,
    "diff": 22
+  },
+  {
+   "w": "S3",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 29,
+   "diff": 17
   },
   {
    "w": "S8",
@@ -402,1015 +346,167 @@
    "e": "1-0",
    "ende": "Matt",
    "plies": 13,
-   "diff": 1
-  },
-  {
-   "w": "S8",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 43,
-   "diff": 28
-  },
-  {
-   "w": "S8",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 31,
-   "diff": 13
+   "diff": 3
   },
   {
    "w": "S2",
    "b": "S1",
    "e": "1-0",
    "ende": "Matt",
-   "plies": 49,
-   "diff": 16
+   "plies": 41,
+   "diff": 15
   },
   {
    "w": "S2",
    "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 53,
-   "diff": 19
-  },
-  {
-   "w": "S2",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 45,
-   "diff": 18
-  },
-  {
-   "w": "S2",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": -8
-  },
-  {
-   "w": "S2",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": -7
-  },
-  {
-   "w": "S2",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 90,
-   "diff": -5
-  },
-  {
-   "w": "S2",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 55,
-   "diff": 23
-  },
-  {
-   "w": "S2",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 7,
-   "diff": 1
-  },
-  {
-   "w": "S2",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 49,
-   "diff": 23
-  },
-  {
-   "w": "S3",
-   "b": "S4",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 91,
-   "diff": 18
-  },
-  {
-   "w": "S3",
-   "b": "S4",
-   "e": "0-1",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": -14
-  },
-  {
-   "w": "S3",
-   "b": "S4",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 58,
-   "diff": -19
-  },
-  {
-   "w": "S4",
-   "b": "S5",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 97,
-   "diff": 10
-  },
-  {
-   "w": "S4",
-   "b": "S5",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 114,
-   "diff": -16
-  },
-  {
-   "w": "S4",
-   "b": "S5",
-   "e": "0-1",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": -21
-  },
-  {
-   "w": "S5",
-   "b": "S6",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 93,
-   "diff": 16
-  },
-  {
-   "w": "S5",
-   "b": "S6",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 80,
-   "diff": -22
-  },
-  {
-   "w": "S5",
-   "b": "S6",
-   "e": "1/2-1/2",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": -2
-  },
-  {
-   "w": "S6",
-   "b": "S7",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 84,
-   "diff": -16
-  },
-  {
-   "w": "S6",
-   "b": "S7",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 82,
-   "diff": -10
-  },
-  {
-   "w": "S6",
-   "b": "S7",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 75,
-   "diff": 14
-  },
-  {
-   "w": "S7",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 112,
-   "diff": -21
-  },
-  {
-   "w": "S7",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 60,
-   "diff": -18
-  },
-  {
-   "w": "S7",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 54,
-   "diff": -8
-  },
-  {
-   "w": "S3",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 61,
-   "diff": 23
-  },
-  {
-   "w": "S3",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 91,
-   "diff": 9
-  },
-  {
-   "w": "S3",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 83,
-   "diff": 34
-  },
-  {
-   "w": "S8",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 39,
-   "diff": 37
-  },
-  {
-   "w": "S8",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 29,
-   "diff": 17
-  },
-  {
-   "w": "S8",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 43,
-   "diff": 5
-  },
-  {
-   "w": "S8",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 75,
-   "diff": 11
-  },
-  {
-   "w": "S8",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 35,
-   "diff": 13
-  },
-  {
-   "w": "S8",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 69,
-   "diff": 23
-  },
-  {
-   "w": "Zufall",
-   "b": "S1",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 68,
-   "diff": -16
-  },
-  {
-   "w": "Zufall",
-   "b": "S1",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 92,
-   "diff": -25
-  },
-  {
-   "w": "Zufall",
-   "b": "S1",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 82,
-   "diff": -25
-  },
-  {
-   "w": "Zufall",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 24,
-   "diff": -14
-  },
-  {
-   "w": "Zufall",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 48,
-   "diff": -22
-  },
-  {
-   "w": "Zufall",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 62,
-   "diff": -25
-  },
-  {
-   "w": "Zufall",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 8,
-   "diff": -1
-  },
-  {
-   "w": "Zufall",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 26,
-   "diff": -30
-  },
-  {
-   "w": "Zufall",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 34,
-   "diff": -30
-  },
-  {
-   "w": "S1",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 76,
-   "diff": -8
-  },
-  {
-   "w": "S1",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 58,
-   "diff": -17
-  },
-  {
-   "w": "S1",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 76,
-   "diff": -32
-  },
-  {
-   "w": "S3",
-   "b": "S2",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 35,
-   "diff": 17
-  },
-  {
-   "w": "S3",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 100,
-   "diff": -11
-  },
-  {
-   "w": "S3",
-   "b": "S2",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 103,
-   "diff": 19
-  },
-  {
-   "w": "Zufall",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 58,
-   "diff": -34
-  },
-  {
-   "w": "Zufall",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 32,
-   "diff": -11
-  },
-  {
-   "w": "Zufall",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 60,
-   "diff": -35
-  },
-  {
-   "w": "S4",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 95,
-   "diff": 12
-  },
-  {
-   "w": "S4",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 79,
-   "diff": 19
-  },
-  {
-   "w": "S4",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 34,
-   "diff": 0
-  },
-  {
-   "w": "S5",
-   "b": "S4",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 53,
-   "diff": 19
-  },
-  {
-   "w": "S5",
-   "b": "S4",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 57,
-   "diff": 6
-  },
-  {
-   "w": "S5",
-   "b": "S4",
-   "e": "1/2-1/2",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": 2
-  },
-  {
-   "w": "S6",
-   "b": "S5",
-   "e": "1/2-1/2",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": 0
-  },
-  {
-   "w": "S6",
-   "b": "S5",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 65,
-   "diff": 17
-  },
-  {
-   "w": "S6",
-   "b": "S5",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 63,
-   "diff": 20
-  },
-  {
-   "w": "S7",
-   "b": "S6",
    "e": "1-0",
    "ende": "Matt",
    "plies": 73,
+   "diff": 15
+  },
+  {
+   "w": "S2",
+   "b": "S3",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 120,
+   "diff": -11
+  },
+  {
+   "w": "S2",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 41,
    "diff": 20
   },
   {
-   "w": "S7",
+   "w": "S2",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 89,
+   "diff": 35
+  },
+  {
+   "w": "S3",
+   "b": "S4",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 64,
+   "diff": -8
+  },
+  {
+   "w": "S4",
+   "b": "S5",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 76,
+   "diff": -13
+  },
+  {
+   "w": "S4",
+   "b": "S5",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 92,
+   "diff": -20
+  },
+  {
+   "w": "S5",
    "b": "S6",
    "e": "1-0",
-   "ende": "Matt",
-   "plies": 111,
-   "diff": 18
+   "ende": "Wertung nach Material",
+   "plies": 120,
+   "diff": 9
   },
   {
-   "w": "S7",
-   "b": "S6",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 71,
-   "diff": 10
-  },
-  {
-   "w": "S8",
+   "w": "S6",
    "b": "S7",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 69,
-   "diff": 17
-  },
-  {
-   "w": "S8",
-   "b": "S7",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 71,
-   "diff": 1
-  },
-  {
-   "w": "S8",
-   "b": "S7",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 65,
-   "diff": 18
-  },
-  {
-   "w": "S1",
-   "b": "S3",
    "e": "0-1",
    "ende": "Matt",
    "plies": 106,
-   "diff": -24
+   "diff": -21
   },
   {
-   "w": "S1",
-   "b": "S3",
+   "w": "S6",
+   "b": "S7",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 44,
-   "diff": -26
+   "plies": 50,
+   "diff": -4
   },
   {
-   "w": "S1",
-   "b": "S3",
+   "w": "S7",
+   "b": "S8",
    "e": "0-1",
    "ende": "Matt",
    "plies": 78,
-   "diff": -17
-  },
-  {
-   "w": "S1",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 28,
-   "diff": -14
-  },
-  {
-   "w": "S1",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 44,
-   "diff": -28
-  },
-  {
-   "w": "S1",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 30,
    "diff": -20
   },
   {
    "w": "S3",
-   "b": "S8",
-   "e": "0-1",
+   "b": "S1",
+   "e": "1-0",
    "ende": "Matt",
-   "plies": 56,
-   "diff": -18
+   "plies": 41,
+   "diff": 15
   },
   {
    "w": "S3",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 54,
-   "diff": -14
-  },
-  {
-   "w": "S3",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 34,
-   "diff": -7
-  },
-  {
-   "w": "S1",
-   "b": "Zufall",
+   "b": "S1",
    "e": "1-0",
    "ende": "Matt",
-   "plies": 51,
-   "diff": 5
-  },
-  {
-   "w": "S1",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 119,
-   "diff": 21
-  },
-  {
-   "w": "S1",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 61,
-   "diff": 5
-  },
-  {
-   "w": "S3",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 37,
-   "diff": 28
-  },
-  {
-   "w": "S3",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 29,
-   "diff": 13
-  },
-  {
-   "w": "S3",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 53,
-   "diff": 13
-  },
-  {
-   "w": "S8",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 33,
-   "diff": 24
-  },
-  {
-   "w": "S8",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 17,
-   "diff": 21
-  },
-  {
-   "w": "S8",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 37,
+   "plies": 41,
    "diff": 23
   },
   {
-   "w": "S2",
+   "w": "S8",
    "b": "S1",
    "e": "1-0",
    "ende": "Matt",
-   "plies": 63,
-   "diff": 20
+   "plies": 35,
+   "diff": 30
   },
   {
-   "w": "S2",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 95,
-   "diff": 19
-  },
-  {
-   "w": "S2",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 49,
-   "diff": 10
-  },
-  {
-   "w": "S2",
+   "w": "S8",
    "b": "S3",
-   "e": "0-1",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": -11
-  },
-  {
-   "w": "S2",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 93,
-   "diff": 16
-  },
-  {
-   "w": "S2",
-   "b": "S3",
-   "e": "1/2-1/2",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": 0
-  },
-  {
-   "w": "S2",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 57,
-   "diff": 16
-  },
-  {
-   "w": "S2",
-   "b": "Zufall",
    "e": "1-0",
    "ende": "Matt",
    "plies": 45,
-   "diff": 5
-  },
-  {
-   "w": "S2",
-   "b": "Zufall",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 31,
-   "diff": 23
-  },
-  {
-   "w": "S3",
-   "b": "S4",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 36,
-   "diff": -12
-  },
-  {
-   "w": "S3",
-   "b": "S4",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 60,
-   "diff": -22
-  },
-  {
-   "w": "S3",
-   "b": "S4",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 89,
    "diff": 18
   },
   {
-   "w": "S4",
-   "b": "S5",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 70,
-   "diff": -5
-  },
-  {
-   "w": "S4",
-   "b": "S5",
-   "e": "1/2-1/2",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": 2
-  },
-  {
-   "w": "S4",
-   "b": "S5",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 43,
-   "diff": 13
-  },
-  {
-   "w": "S5",
-   "b": "S6",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 52,
-   "diff": -12
-  },
-  {
-   "w": "S5",
-   "b": "S6",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 92,
-   "diff": -23
-  },
-  {
-   "w": "S5",
-   "b": "S6",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 88,
-   "diff": -24
-  },
-  {
-   "w": "S6",
-   "b": "S7",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 85,
-   "diff": 13
-  },
-  {
-   "w": "S6",
-   "b": "S7",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 63,
-   "diff": 17
-  },
-  {
-   "w": "S6",
-   "b": "S7",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 70,
-   "diff": -17
-  },
-  {
-   "w": "S7",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 68,
-   "diff": -5
-  },
-  {
-   "w": "S7",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 78,
-   "diff": -11
-  },
-  {
-   "w": "S7",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 86,
-   "diff": -16
-  },
-  {
-   "w": "S3",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 59,
-   "diff": 23
-  },
-  {
-   "w": "S3",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 69,
-   "diff": 22
-  },
-  {
-   "w": "S3",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 67,
-   "diff": 14
-  },
-  {
    "w": "S8",
-   "b": "S1",
+   "b": "S3",
    "e": "1-0",
    "ende": "Matt",
    "plies": 47,
-   "diff": 21
-  },
-  {
-   "w": "S8",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 39,
-   "diff": 23
-  },
-  {
-   "w": "S8",
-   "b": "S1",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 25,
    "diff": 16
   },
   {
-   "w": "S8",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 47,
-   "diff": 10
-  },
-  {
-   "w": "S8",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 51,
-   "diff": 18
-  },
-  {
-   "w": "S8",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 81,
-   "diff": 20
-  },
-  {
-   "w": "Zufall",
-   "b": "S1",
-   "e": "0-1",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": -19
-  },
-  {
    "w": "Zufall",
    "b": "S1",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 62,
-   "diff": -24
-  },
-  {
-   "w": "Zufall",
-   "b": "S1",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 98,
-   "diff": -21
+   "plies": 30,
+   "diff": -13
   },
   {
    "w": "Zufall",
    "b": "S3",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 36,
-   "diff": -14
+   "plies": 20,
+   "diff": -11
   },
   {
    "w": "Zufall",
    "b": "S3",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 52,
-   "diff": -3
-  },
-  {
-   "w": "Zufall",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 48,
-   "diff": -30
-  },
-  {
-   "w": "Zufall",
-   "b": "S8",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 32,
-   "diff": -18
+   "plies": 68,
+   "diff": -20
   },
   {
    "w": "Zufall",
@@ -1418,7 +514,327 @@
    "e": "0-1",
    "ende": "Matt",
    "plies": 20,
-   "diff": -21
+   "diff": -5
+  },
+  {
+   "w": "S1",
+   "b": "S2",
+   "e": "0-1",
+   "ende": "Wertung nach Material",
+   "plies": 120,
+   "diff": -9
+  },
+  {
+   "w": "S1",
+   "b": "S2",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 52,
+   "diff": -27
+  },
+  {
+   "w": "S3",
+   "b": "S2",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 81,
+   "diff": 9
+  },
+  {
+   "w": "Zufall",
+   "b": "S2",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 52,
+   "diff": -26
+  },
+  {
+   "w": "Zufall",
+   "b": "S2",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 68,
+   "diff": -34
+  },
+  {
+   "w": "S4",
+   "b": "S3",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 102,
+   "diff": -16
+  },
+  {
+   "w": "S5",
+   "b": "S4",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 63,
+   "diff": 4
+  },
+  {
+   "w": "S5",
+   "b": "S4",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 95,
+   "diff": 15
+  },
+  {
+   "w": "S6",
+   "b": "S5",
+   "e": "0-1",
+   "ende": "Wertung nach Material",
+   "plies": 120,
+   "diff": -3
+  },
+  {
+   "w": "S7",
+   "b": "S6",
+   "e": "0-1",
+   "ende": "Wertung nach Material",
+   "plies": 120,
+   "diff": -4
+  },
+  {
+   "w": "S7",
+   "b": "S6",
+   "e": "1-0",
+   "ende": "Wertung nach Material",
+   "plies": 120,
+   "diff": 21
+  },
+  {
+   "w": "S8",
+   "b": "S7",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 51,
+   "diff": 13
+  },
+  {
+   "w": "S1",
+   "b": "S3",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 40,
+   "diff": -16
+  },
+  {
+   "w": "S1",
+   "b": "S8",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 44,
+   "diff": -33
+  },
+  {
+   "w": "S1",
+   "b": "S8",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 56,
+   "diff": -32
+  },
+  {
+   "w": "S3",
+   "b": "S8",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 70,
+   "diff": -25
+  },
+  {
+   "w": "S1",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 43,
+   "diff": 26
+  },
+  {
+   "w": "S1",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 71,
+   "diff": 27
+  },
+  {
+   "w": "S3",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 25,
+   "diff": 25
+  },
+  {
+   "w": "S8",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 27,
+   "diff": 18
+  },
+  {
+   "w": "S8",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 13,
+   "diff": 9
+  },
+  {
+   "w": "S2",
+   "b": "S1",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 47,
+   "diff": 0
+  },
+  {
+   "w": "S2",
+   "b": "S3",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 86,
+   "diff": -20
+  },
+  {
+   "w": "S2",
+   "b": "S3",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 52,
+   "diff": -9
+  },
+  {
+   "w": "S2",
+   "b": "Zufall",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 25,
+   "diff": 7
+  },
+  {
+   "w": "S3",
+   "b": "S4",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 112,
+   "diff": -14
+  },
+  {
+   "w": "S3",
+   "b": "S4",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 114,
+   "diff": -11
+  },
+  {
+   "w": "S4",
+   "b": "S5",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 42,
+   "diff": -12
+  },
+  {
+   "w": "S5",
+   "b": "S6",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 58,
+   "diff": -2
+  },
+  {
+   "w": "S5",
+   "b": "S6",
+   "e": "1/2-1/2",
+   "ende": "Wertung nach Material",
+   "plies": 120,
+   "diff": -1
+  },
+  {
+   "w": "S6",
+   "b": "S7",
+   "e": "0-1",
+   "ende": "Wertung nach Material",
+   "plies": 120,
+   "diff": -13
+  },
+  {
+   "w": "S7",
+   "b": "S8",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 84,
+   "diff": -19
+  },
+  {
+   "w": "S7",
+   "b": "S8",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 46,
+   "diff": -17
+  },
+  {
+   "w": "S3",
+   "b": "S1",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 43,
+   "diff": 16
+  },
+  {
+   "w": "S8",
+   "b": "S1",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 29,
+   "diff": 11
+  },
+  {
+   "w": "S8",
+   "b": "S1",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 47,
+   "diff": 19
+  },
+  {
+   "w": "S8",
+   "b": "S3",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 37,
+   "diff": 9
+  },
+  {
+   "w": "Zufall",
+   "b": "S1",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 86,
+   "diff": -13
+  },
+  {
+   "w": "Zufall",
+   "b": "S1",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 70,
+   "diff": -38
+  },
+  {
+   "w": "Zufall",
+   "b": "S3",
+   "e": "0-1",
+   "ende": "Matt",
+   "plies": 44,
+   "diff": -18
   },
   {
    "w": "Zufall",
@@ -1429,140 +845,76 @@
    "diff": -24
   },
   {
-   "w": "S1",
-   "b": "S2",
+   "w": "Zufall",
+   "b": "S8",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 42,
-   "diff": -30
-  },
-  {
-   "w": "S1",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 72,
-   "diff": -29
+   "plies": 26,
+   "diff": -15
   },
   {
    "w": "S1",
    "b": "S2",
    "e": "0-1",
    "ende": "Matt",
-   "plies": 70,
-   "diff": -16
+   "plies": 62,
+   "diff": 2
   },
   {
    "w": "S3",
    "b": "S2",
    "e": "1-0",
    "ende": "Matt",
-   "plies": 37,
-   "diff": 18
-  },
-  {
-   "w": "S3",
-   "b": "S2",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 73,
-   "diff": 16
-  },
-  {
-   "w": "S3",
-   "b": "S2",
-   "e": "1-0",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": 11
-  },
-  {
-   "w": "Zufall",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 52,
-   "diff": -21
-  },
-  {
-   "w": "Zufall",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 34,
-   "diff": -25
-  },
-  {
-   "w": "Zufall",
-   "b": "S2",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 56,
-   "diff": -28
-  },
-  {
-   "w": "S4",
-   "b": "S3",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 64,
-   "diff": 5
-  },
-  {
-   "w": "S4",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 71,
-   "diff": 10
-  },
-  {
-   "w": "S4",
-   "b": "S3",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 49,
-   "diff": 16
-  },
-  {
-   "w": "S5",
-   "b": "S4",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 109,
-   "diff": 18
-  },
-  {
-   "w": "S5",
-   "b": "S4",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 85,
-   "diff": 16
-  },
-  {
-   "w": "S5",
-   "b": "S4",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 75,
+   "plies": 65,
    "diff": 21
   },
   {
-   "w": "S6",
-   "b": "S5",
+   "w": "S3",
+   "b": "S2",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 59,
+   "diff": 17
+  },
+  {
+   "w": "Zufall",
+   "b": "S2",
    "e": "0-1",
+   "ende": "Matt",
+   "plies": 64,
+   "diff": -23
+  },
+  {
+   "w": "S4",
+   "b": "S3",
+   "e": "1-0",
    "ende": "Wertung nach Material",
    "plies": 120,
-   "diff": -4
+   "diff": 17
+  },
+  {
+   "w": "S4",
+   "b": "S3",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 83,
+   "diff": 32
+  },
+  {
+   "w": "S5",
+   "b": "S4",
+   "e": "1-0",
+   "ende": "Matt",
+   "plies": 83,
+   "diff": 6
   },
   {
    "w": "S6",
    "b": "S5",
    "e": "1-0",
-   "ende": "Matt",
-   "plies": 101,
-   "diff": 24
+   "ende": "Wertung nach Material",
+   "plies": 120,
+   "diff": 9
   },
   {
    "w": "S6",
@@ -1570,55 +922,31 @@
    "e": "1-0",
    "ende": "Matt",
    "plies": 83,
-   "diff": 20
-  },
-  {
-   "w": "S7",
-   "b": "S6",
-   "e": "0-1",
-   "ende": "Matt",
-   "plies": 96,
-   "diff": -7
+   "diff": 11
   },
   {
    "w": "S7",
    "b": "S6",
    "e": "1-0",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": 12
-  },
-  {
-   "w": "S7",
-   "b": "S6",
-   "e": "1/2-1/2",
-   "ende": "Wertung nach Material",
-   "plies": 120,
-   "diff": 2
+   "ende": "Matt",
+   "plies": 107,
+   "diff": 22
   },
   {
    "w": "S8",
    "b": "S7",
    "e": "1-0",
    "ende": "Matt",
-   "plies": 61,
-   "diff": 14
+   "plies": 39,
+   "diff": 6
   },
   {
    "w": "S8",
    "b": "S7",
    "e": "1-0",
    "ende": "Matt",
-   "plies": 77,
-   "diff": 15
-  },
-  {
-   "w": "S8",
-   "b": "S7",
-   "e": "1-0",
-   "ende": "Matt",
-   "plies": 63,
-   "diff": 15
+   "plies": 69,
+   "diff": 9
   }
  ]
 }

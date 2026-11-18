@@ -17,7 +17,7 @@ const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/tak
     const b = el.getBoundingClientRect();
     return { top: b.top, bottom: b.bottom, h: b.height, pos: getComputedStyle(el).position, labels: [...el.querySelectorAll("a")].map((a) => a.textContent.trim()), ih: innerHeight };
   });
-  r.check("Leiste ist fest und enthält Brett und Taktik", bar.pos === "fixed" && bar.labels.join() === "Brett,Taktik", bar.labels.join());
+  r.check("Leiste ist fest und enthält Brett, Taktik und Spielen", bar.pos === "fixed" && bar.labels.join() === "Brett,Taktik,Spielen", bar.labels.join());
   r.check("Leiste liegt am unteren Rand", Math.abs(bar.bottom - bar.ih) < 1, `bottom=${bar.bottom} innerHeight=${bar.ih}`);
 
   await page.click("#tab-taktik");
