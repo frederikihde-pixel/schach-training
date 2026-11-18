@@ -51,6 +51,7 @@ const PRECACHE = [
   "./js/warnung.js",
   "./js/empfehlung.js",
   "./js/pages/spielen.js",
+  "./js/pages/partien-liste.js",
   "./vendor/chess.js/chess.js",
   "./vendor/chess.js/LICENSE",
   "./vendor/chessground/chessground.min.js",

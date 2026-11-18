@@ -26,7 +26,7 @@ Abschnitt aktualisiert. Stand: 18.11.2026.
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
 | Brett-Designs, Einführung, leere Zustände | fertig, gemergt (Pull Request 4), emuliert getestet |
 | Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe, Themen-Seite | fertig, gemergt (Pull Request 5), emuliert getestet |
-| Computergegner, Teil A bis D (Spielen) | in Arbeit (Abschnitt 4 von 6 fertig: Engine, Stufen, Partie, Grundmatts, Vorteil) |
+| Computergegner, Teil A bis D (Spielen) | Teil A bis D fertig (erster Pull Request); Teil E bis H folgen im zweiten |
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
@@ -364,6 +364,23 @@ Fortschritt mit Zahlen). Keine Gamification.
 - **Bekannte Grenze:** Gegen Menschen (Stufe 8) kann ein Matt länger dauern als die Referenz; die Referenz ist das Maximum bei
   bestem Spiel von beiden Seiten.
 
+### Teil D: Partien speichern, Abschnitt 5 fertig
+
+- Nach Spielende wird gespeichert: Datum, Modus, Farbe, Stufe und Stufenversion, Ergebnis, Grund, PGN, Startstellung, Patzer-Warnung
+  an/aus samt Zahl der Warnungen und "Trotzdem", Zurücknahme erlaubt und wie oft genutzt. Es bleiben die letzten 30 Partien und die
+  letzten 100 Übungsversuche (Grundmatts, Vorteil); die Obergrenze greift beim Speichern. Ein Stand mit 30 Partien und 100 Versuchen
+  ist etwa 100 KB groß (Grenze des Browsers etwa 5 MB).
+- `#/spielen/liste` "Meine Partien" (`js/pages/partien-liste.js`): neueste zuerst, Partien und Übungen getrennt, je Eintrag
+  "Im Brett ansehen" und "PGN kopieren". Die Brett-Seite hat dafür `ladePgn(...)` und einen Bereich "Partie laden (PGN)" mit
+  Fehlermeldung (wird später auch für Chess.com-Partien gebraucht).
+- Export und Import nehmen alles mit (Partien, Versuche, laufende Partie, Wertung); die Import-Vorschau nennt Partien und Übungen.
+
+### Teststand nach Teil A bis D (18.11.2026)
+
+Logik-Tests 110 (alle bestanden), Python 31, Browsertests in den Dateien `engine` (14), `spielen` (43), `uebungen` (23),
+`partien-liste` (20), `spielen-offline` (10), `tippflaechen-spielen` (16) und alle bisherigen (angepasst auf Version 5 und drei
+Reiter). `tests/e2e/stufen-staerke.cjs` (Messung der Stufen, etwa 8 Minuten) gehört zu den langen Tests (`QUICK=1` überspringt ihn).
+
 ## Phase 3 — Eigene Partien analysieren
 
 Noch nicht begonnen (siehe "Nächste Schritte").
@@ -377,6 +394,21 @@ Noch nicht begonnen.
 Noch nicht begonnen.
 
 ## Auf dem echten Handy prüfen (bisher nur emuliert)
+
+Computergegner (Teil A bis D):
+- **Bedenkzeit:** Wie lange dauert der erste Computerzug nach dem Öffnen (Engine laden, etwa 1,8 MB)? Fühlen sich 0,5 bis 2
+  Sekunden je Stufe richtig an, oder ist "Computer denkt" zu lang oder zu kurz? Auf einem langsamen Handy spielen die Stufen 4 bis 8
+  schwächer (feste Zeiten), die Stufen 1 bis 3 nicht (feste Knotenzahl).
+- **Passt die Stufe?** Auf welcher Stufe fühlt sich eine Partie fair an (Richtwert für 440 Punkte: Stufe 2)? Ist Stufe 1 zu leicht?
+  Hängt Stufe 1 bis 3 "glaubhaft" Figuren ein, oder wirken die Züge zufällig?
+- **Wärme und Akku:** Wird das Handy bei einer ganzen Partie (etwa 40 Züge) warm? Wie viel Akku kostet eine Partie?
+- **App-Wechsel auf dem iPhone:** Partie anfangen, in eine andere App wechseln (kurz und mehrere Minuten), zurückkehren: Geht es
+  weiter? Wird ein verpasster Computerzug nachgeholt, oder erscheint "Erneut versuchen"? Nach Neuladen im Safari-Tab dasselbe.
+- **Flugmodus:** Erst online eine Partie beginnen (Engine wird abgelegt), dann Flugmodus und weiterspielen.
+- Brett: Ziehen und Tippen auf dem Spielen-Brett (auch während "Computer denkt" soll nichts passieren), Umwandlung, Schach.
+- **Patzer-Warnung:** Erscheint sie nur, wenn wirklich etwas hängt? Stört sie? Ist die Frage verständlich?
+- Grundmatts: Sind die Stellungen verständlich, sind einige zu leicht oder zu schwer?
+- PGN kopieren auf dem iPhone (Zwischenablage) und PGN einfügen auf der Brett-Seite.
 
 Allgemein und Taktik:
 - "Zum Home-Bildschirm" auf iPhone (Safari: Teilen) und Android (Chrome: App installieren);

@@ -21,6 +21,7 @@ addRoute("spielen/partie", { page: "page-spielen", tab: "spielen", title: "Parti
 addRoute("spielen/grundmatt", { page: "page-spielen", tab: "spielen", title: "Grundmatts üben", onShow: onShowSpielen });
 addRoute("spielen/vorteil", { page: "page-spielen", tab: "spielen", title: "Vorteil verwerten", onShow: onShowSpielen });
 addRoute("spielen/lauf", { page: "page-spielen", tab: "spielen", title: "Partie", onShow: onShowSpielen });
+addRoute("spielen/liste", { page: "page-spielen", tab: "spielen", title: "Meine Partien", onShow: onShowSpielen });
 addRoute("spielen/ende", { page: "page-spielen", tab: "spielen", title: "Ergebnis", onShow: onShowSpielen });
 addRoute("mehr", { page: "page-mehr", title: "Mehr" });
 addRoute("mehr/einstellungen", { page: "page-einstellungen", title: "Einstellungen", onShow: onShowEinstellungen });

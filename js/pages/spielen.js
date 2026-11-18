@@ -12,9 +12,10 @@ import { GRUNDMATT, VORTEIL_ARTEN, vorteilStart } from "../uebungen.js";
 import { pruefeZug } from "../warnung.js";
 import { empfehlung } from "../empfehlung.js";
 import { ladePgn } from "./brett.js";
+import { renderListe } from "./partien-liste.js";
 
 const $ = (id) => document.getElementById(id);
-const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende"];
+const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste"];
 const GRUNDMATT_MS = 700; // kürzeste angezeigte Bedenkzeit bei den Grundmatts
 
 let cg = null;
@@ -45,6 +46,10 @@ export function onShowSpielen(path) {
   if (path === "spielen/ende") {
     if (!letzte) return void (location.hash = "#/spielen");
     return zeigeEnde();
+  }
+  if (path === "spielen/liste") {
+    zeige("sp-liste");
+    return renderListe();
   }
   if (path === "spielen/partie") return zeigeSetup("partie");
   if (path === "spielen/vorteil") return zeigeSetup("vorteil");
