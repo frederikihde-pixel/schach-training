@@ -26,7 +26,7 @@ Abschnitt aktualisiert. Stand: 18.11.2026.
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
 | Brett-Designs, Einführung, leere Zustände | fertig, gemergt (Pull Request 4), emuliert getestet |
 | Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe, Themen-Seite | fertig, gemergt (Pull Request 5), emuliert getestet |
-| Computergegner, Teil A bis D (Spielen) | in Arbeit (Abschnitt 3 von 6 fertig: Engine, Stufen, Partie spielen) |
+| Computergegner, Teil A bis D (Spielen) | in Arbeit (Abschnitt 4 von 6 fertig: Engine, Stufen, Partie, Grundmatts, Vorteil) |
 | Phase 3 bis 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
@@ -345,6 +345,24 @@ Fortschritt mit Zahlen). Keine Gamification.
   (Migration 4 auf 5, Obergrenzen, Export/Import); die alten Browsertests wurden auf Version 5 und drei Reiter angepasst.
 - **Bekannte Mängel:** "Im Brett ansehen" lädt die Partie ins Brett, die Liste "Meine Partien" und das Laden per PGN-Eingabe
   kommen in Abschnitt 5. Läuft die Engine im Hintergrund nicht weiter (iPhone), erscheint "Erneut versuchen".
+
+### Teil C: Grundmatts und Vorteil verwerten, Abschnitt 4 fertig
+
+- **Grundmatts üben** (`#/spielen/grundmatt`): je 10 feste Stellungen für König und Dame sowie König und Turm gegen König
+  (`js/uebungen.js`). Ich spiele Weiß, der Computer verteidigt mit Stufe 8. Matt = Erfolg; Misserfolg bei Patt, dreifacher
+  Wiederholung, 50-Züge-Regel, Aufgabe oder Verlust der Figur. Gespeichert wird je Versuch die Zahl meiner Züge bis zum Matt
+  (`spielen.versuche`, `mattIn`). Die Referenz (Dame höchstens 10, Turm höchstens 16 Züge) steht ruhig auf der Seite. "Nächste
+  Stellung" wählt die am wenigsten geübte.
+- Die Stellungen wurden mit festem Zufallsstartwert erzeugt und mit der Engine nach der Länge des Matts gewählt (Dame Matt in 3
+  bis 8, Turm in 5 bis 14; die Engine meldet eine obere Grenze). Alle Stellungen sind mit chess.js geprüft (Weiß am Zug, Schwarz
+  nicht im Schach, nicht zu Ende, keine hängende Figur).
+- **Vorteil verwerten** (`#/spielen/vorteil`): Grundstellung, der Computer startet ohne Dame, ohne Turm (a-Turm) oder ohne
+  Springer (b-Springer); Farbe und Stufe wählbar, auch Zug zurück und Patzer-Warnung. Es zählt gewonnen, remis, verloren. Die
+  Versuche liegen getrennt von den normalen Partien (`spielen.versuche` mit `modus: "vorteil"`); die Auswertung kommt in Teil G.
+- Getestet: `tests/e2e/uebungen.cjs` (23 Prüfungen, echte Engine: ein Dame-Matt wird vom Test mit Engine-Zügen zu Ende gespielt,
+  Patt, 50 Züge, dreifache Wiederholung, Aufgabe, Vorteil als Weiß und Schwarz, getrennte Zählung), Unit-Tests in `partie.test.mjs`.
+- **Bekannte Grenze:** Gegen Menschen (Stufe 8) kann ein Matt länger dauern als die Referenz; die Referenz ist das Maximum bei
+  bestem Spiel von beiden Seiten.
 
 ## Phase 3 — Eigene Partien analysieren
 

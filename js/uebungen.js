@@ -4,25 +4,27 @@
 
 import { Chess } from "../vendor/chess.js/chess.js";
 
-// Weiß mit Dame beziehungsweise Turm am Zug, Schwarz hat nur den König. Verschiedene Lagen von beiden Königen
-// und der Figur: Rand, Ecke, Mitte; Figur nah und fern. Keine Stellung ist Schach, Matt oder Patt, und keine Figur
-// steht im ersten Zug ungedeckt neben dem schwarzen König.
+// Weiß mit Dame beziehungsweise Turm am Zug, Schwarz hat nur den König. Die Stellungen wurden mit einem festen
+// Zufallsstartwert erzeugt und danach mit der Engine (Stockfish, 2 s je Stellung) nach der Länge des Matts gewählt:
+// von leicht bis schwer, der Kommentar nennt das von der Engine gefundene Matt in N Zügen (eine obere Grenze; das
+// kürzeste Matt kann kürzer sein). Alle liegen unter der Referenz (Dame 10, Turm 16). Keine Stellung ist Schach, Matt
+// oder Patt, und keine Figur steht im ersten Zug ungedeckt.
 export const GRUNDMATT = {
   dame: {
     name: "König und Dame gegen König",
     kurz: "Dame",
     referenz: 10,
     stellungen: [
-      "8/8/8/8/6K1/2Q5/8/7k w - - 0 1",
-      "7k/8/8/2K5/8/8/8/2Q5 w - - 0 1",
-      "1k6/8/8/2K5/8/3Q4/8/8 w - - 0 1",
-      "2K5/8/8/8/8/3Q4/k7/8 w - - 0 1",
-      "8/8/6Q1/8/1k6/8/8/K7 w - - 0 1",
-      "5Q2/1K6/8/8/8/8/3k4/8 w - - 0 1",
-      "8/2K5/4k3/8/8/Q7/8/8 w - - 0 1",
-      "8/6K1/8/8/6Q1/2k5/8/8 w - - 0 1",
-      "8/8/8/7k/8/1K6/3Q4/8 w - - 0 1",
-      "8/5k2/8/8/3K4/8/8/6Q1 w - - 0 1",
+      "5Q2/1k1K4/8/8/8/8/8/8 w - - 0 1", // Matt in 3
+      "8/8/1K1k4/8/Q7/8/8/8 w - - 0 1", // Matt in 4
+      "3K3Q/8/1k6/8/8/8/8/8 w - - 0 1", // Matt in 5
+      "3k2K1/8/8/8/8/8/5Q2/8 w - - 0 1", // Matt in 5
+      "8/8/3K4/8/8/8/4k3/2Q5 w - - 0 1", // Matt in 6
+      "8/8/8/8/8/7Q/8/3k3K w - - 0 1", // Matt in 6
+      "8/6Q1/8/8/8/3k4/6K1/8 w - - 0 1", // Matt in 7
+      "8/7Q/8/K7/8/8/5k2/8 w - - 0 1", // Matt in 7
+      "8/8/6K1/2k5/8/8/8/1Q6 w - - 0 1", // Matt in 8
+      "8/8/2k5/8/8/1Q6/8/1K6 w - - 0 1", // Matt in 8
     ],
   },
   turm: {
@@ -30,16 +32,16 @@ export const GRUNDMATT = {
     kurz: "Turm",
     referenz: 16,
     stellungen: [
-      "8/8/8/8/6K1/6R1/8/7k w - - 0 1",
-      "8/8/8/3K4/8/8/2R5/k7 w - - 0 1",
-      "4K3/7k/8/8/8/8/8/4R3 w - - 0 1",
-      "8/8/6K1/8/k7/8/8/2R5 w - - 0 1",
-      "8/1k6/8/8/K4R2/8/8/8 w - - 0 1",
-      "8/1k6/8/8/2R5/6K1/8/8 w - - 0 1",
-      "8/8/8/3K3R/8/5k2/8/8 w - - 0 1",
-      "5R2/8/2k5/8/8/8/8/K7 w - - 0 1",
-      "8/1K6/3R4/8/8/8/8/1k6 w - - 0 1",
-      "8/3K4/8/1k6/8/4R3/8/8 w - - 0 1",
+      "8/8/1R6/6K1/8/8/7k/8 w - - 0 1", // Matt in 5
+      "8/1k6/8/R7/1K6/8/8/8 w - - 0 1", // Matt in 7
+      "8/8/8/4K3/1k6/4R3/8/8 w - - 0 1", // Matt in 8
+      "8/3k4/8/4R3/4K3/8/8/8 w - - 0 1", // Matt in 9
+      "8/8/8/8/4R3/8/8/1K1k4 w - - 0 1", // Matt in 10
+      "8/3k4/8/8/1K6/8/8/6R1 w - - 0 1", // Matt in 11
+      "4k3/8/8/8/5R2/8/4K3/8 w - - 0 1", // Matt in 12
+      "2K5/8/8/8/8/1R6/3k4/8 w - - 0 1", // Matt in 13
+      "6R1/8/K7/8/8/8/5k2/8 w - - 0 1", // Matt in 14
+      "8/8/5k2/8/R7/8/K7/8 w - - 0 1", // Matt in 14
     ],
   },
 };
