@@ -9,6 +9,7 @@ import { onShowEinstellungen, initEinstellungen } from "./pages/einstellungen.js
 import { onShowDarstellung } from "./pages/darstellung.js";
 import { initSpielen, onShowSpielen } from "./pages/spielen.js";
 import { initRueckblick } from "./pages/rueckblick.js";
+import { initFortschritt } from "./pages/fortschritt.js";
 import { rueckblick } from "./rueckblick.js";
 import { initDesign } from "./design.js";
 import { initEinfuehrung } from "./pages/einfuehrung.js";
@@ -25,6 +26,7 @@ addRoute("spielen/vorteil", { page: "page-spielen", tab: "spielen", title: "Vort
 addRoute("spielen/lauf", { page: "page-spielen", tab: "spielen", title: "Partie", onShow: onShowSpielen });
 addRoute("spielen/liste", { page: "page-spielen", tab: "spielen", title: "Meine Partien", onShow: onShowSpielen });
 addRoute("spielen/rueckblick", { page: "page-spielen", tab: "spielen", title: "Rückblick", onShow: onShowSpielen, prefix: true });
+addRoute("spielen/fortschritt", { page: "page-spielen", tab: "spielen", title: "Fortschritt", onShow: onShowSpielen });
 addRoute("spielen/ende", { page: "page-spielen", tab: "spielen", title: "Ergebnis", onShow: onShowSpielen });
 addRoute("mehr", { page: "page-mehr", title: "Mehr" });
 addRoute("mehr/einstellungen", { page: "page-einstellungen", title: "Einstellungen", onShow: onShowEinstellungen });
@@ -45,6 +47,7 @@ initDaten();
 initTaktik();
 initSpielen();
 initRueckblick();
+initFortschritt();
 initStatistik();
 initEinstellungen();
 startRouter();

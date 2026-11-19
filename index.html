@@ -206,9 +206,10 @@
       <!-- Seite: Spielen (Partien gegen den Computer) -->
       <div id="page-spielen" class="page" hidden>
         <div id="sp-start" class="page-inner" hidden>
-          <nav class="subnav" aria-label="Spielen">
+          <nav class="subnav subnav-3" aria-label="Spielen">
             <a href="#/spielen" id="sub-spielen">Spielen</a>
             <a href="#/spielen/liste">Meine Partien</a>
+            <a href="#/spielen/fortschritt">Fortschritt</a>
           </nav>
           <h2 class="page-title">Spielen</h2>
           <p class="muted">
@@ -252,10 +253,82 @@
           </div>
         </div>
 
+        <div id="sp-fortschritt" class="page-inner" hidden>
+          <nav class="subnav subnav-3" aria-label="Spielen">
+            <a href="#/spielen">Spielen</a>
+            <a href="#/spielen/liste">Meine Partien</a>
+            <a href="#/spielen/fortschritt" aria-current="page">Fortschritt</a>
+          </nav>
+          <h2 class="page-title">Fortschritt</h2>
+          <p class="muted">
+            Zahlen aus deinen Partien gegen den Computer. Der Zufall in einzelnen Partien ist groß; aussagekräftig werden
+            die Zahlen erst nach 10 oder mehr Partien. Der Computer spielt anders als Menschen: Die Zahlen zeigen deine
+            Entwicklung gegen ihn, nicht deine Wertung gegen Menschen.
+          </p>
+          <p id="fs-version" class="muted"></p>
+
+          <div class="field">
+            <label for="fs-gruppe">Anzeigen</label>
+            <select id="fs-gruppe">
+              <option value="ohne">Partien ohne Patzer-Warnung</option>
+              <option value="mit">Partien mit Patzer-Warnung</option>
+            </select>
+            <p class="muted">Partien mit eingeschalteter Patzer-Warnung werden getrennt gezählt, damit der Vergleich ehrlich bleibt.</p>
+          </div>
+
+          <div id="fs-empfehlung" class="block">
+            <h3>Stufe</h3>
+            <p id="fs-empfehlung-text"></p>
+          </div>
+
+          <div id="fs-partien" class="block">
+            <h3>Partien</h3>
+            <p id="fs-anzahl"></p>
+            <dl id="fs-stufen" class="facts"></dl>
+          </div>
+
+          <div id="fs-analyse" class="block">
+            <h3>Rückblick-Zahlen</h3>
+            <p id="fs-analyse-text"></p>
+            <div id="fs-analyse-inhalt">
+              <p class="subhead">Patzer pro Partie (Mittel der letzten 5)</p>
+              <div id="fs-diagramm" class="chart"></div>
+              <p id="fs-diagramm-hinweis" class="muted"></p>
+              <dl id="fs-zahlen" class="facts"></dl>
+              <p class="subhead">Patzer nach Spielphase</p>
+              <dl id="fs-phasen" class="facts"></dl>
+              <p class="subhead">Art der Fehler</p>
+              <dl id="fs-arten" class="facts"></dl>
+            </div>
+          </div>
+
+          <div id="fs-eigene" class="block">
+            <h3>Eigene Rätsel</h3>
+            <dl id="fs-eigene-zahlen" class="facts"></dl>
+          </div>
+
+          <div id="fs-grundmatt" class="block">
+            <h3>Grundmatts</h3>
+            <dl id="fs-grundmatt-zahlen" class="facts"></dl>
+          </div>
+
+          <div id="fs-vorteil" class="block">
+            <h3>Vorteil verwerten</h3>
+            <dl id="fs-vorteil-zahlen" class="facts"></dl>
+          </div>
+
+          <div id="fs-aeltere" class="block" hidden>
+            <h3>Frühere Stufenversionen</h3>
+            <p class="muted">Diese Partien wurden mit anderen Stufeneinstellungen gespielt. Sie werden getrennt gezählt und nicht in die Zahlen oben einbezogen.</p>
+            <dl id="fs-aeltere-zahlen" class="facts"></dl>
+          </div>
+        </div>
+
         <div id="sp-liste" class="page-inner" hidden>
-          <nav class="subnav" aria-label="Spielen">
+          <nav class="subnav subnav-3" aria-label="Spielen">
             <a href="#/spielen">Spielen</a>
             <a href="#/spielen/liste" aria-current="page">Meine Partien</a>
+            <a href="#/spielen/fortschritt">Fortschritt</a>
           </nav>
           <h2 class="page-title">Meine Partien</h2>
           <p class="muted">

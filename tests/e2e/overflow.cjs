@@ -1,7 +1,7 @@
 // Prüft: kein seitliches Überlaufen (scrollWidth == Fensterbreite) auf allen Seiten.
 const { startServer, launch, newPage, reporter } = require("./lib.cjs");
 
-const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/taktik/themen,#/spielen,#/spielen/liste,#/spielen/partie,#/spielen/grundmatt,#/spielen/vorteil,#/mehr,#/mehr/darstellung,#/mehr/einstellungen,#/mehr/daten,#/mehr/info").split(",");
+const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/taktik/themen,#/spielen,#/spielen/liste,#/spielen/fortschritt,#/spielen/partie,#/spielen/grundmatt,#/spielen/vorteil,#/mehr,#/mehr/darstellung,#/mehr/einstellungen,#/mehr/daten,#/mehr/info").split(",");
 
 (async () => {
   const r = reporter("Seitenüberlauf");

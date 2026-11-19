@@ -434,6 +434,26 @@ Reiter). `tests/e2e/stufen-staerke.cjs` (Messung der Stufen, etwa 8 Minuten) geh
 - Getestet: 10 Logik-Tests `eigene.test.mjs`, `tests/e2e/eigene-raetsel.cjs` (21 Prüfungen: Rätsel entsteht, richtig und falsch im Trainer
   gelöst, Leitner 1/3, Stärke unverändert, 2 bis 3 von 10 in der Sitzung, Statistik, nicht eindeutig).
 
+### Abschnitt 9: Fortschritt (Teil G, fertig)
+
+- `#/spielen/fortschritt` (`js/pages/fortschritt.js`, Rechnung in `js/fortschritt.js`; Unterreiter neben "Spielen" und "Meine Partien"):
+  Zahl der Partien, Ergebnisse je Stufe, Patzer pro Partie als einfaches Liniendiagramm (Mittel der letzten 5), durchschnittlicher
+  Verlust pro Zug, Verteilung der Patzer auf Eröffnung (Zug 1 bis 10), Mittelspiel und Endspiel (höchstens 6 Figuren ohne Könige und
+  Bauern), Verteilung der Fehlerarten (Figur eingestellt, Drohung übersehen, Chance verpasst, dazu "Sonstige Fehler"; ein erlaubtes
+  Matt zählt als "Drohung übersehen"), Zahl der eigenen Rätsel und Lösungsquote.
+- Alles erst ab **mindestens 5 Partien** (die Rückblick-Zahlen ab 5 Partien mit Rückblick), sonst "zu wenig Daten". Ehrliche Hinweise auf
+  der Seite: Zufall in einzelnen Partien ist groß, aussagekräftig erst ab 10 oder mehr Partien, der Computer spielt anders als Menschen.
+- **Nur gleiche Stufenversion (Zusatz 2):** Es zählen nur Partien (und Übungen) mit der aktuellen Stufenversion, das gilt auch für die
+  Stufenempfehlung und die Übungszahlen. Frühere Versionen stehen getrennt im Block "Frühere Stufenversionen" und werden nicht
+  eingerechnet (getestet mit Version 0 und 1).
+- **Patzer-Warnung getrennt:** Auswahl "Partien ohne Patzer-Warnung" (Standard) und "Partien mit Patzer-Warnung"; beide werden
+  nie vermischt.
+- Stufenempfehlung als ruhiger Satz (3 von 5 gewonnen: eine Stufe höher; 4 von 5 verloren: eine tiefer; sonst bleiben). Grundmatts:
+  Mittel der Züge bis zum Matt der letzten 5 Versuche und Quote der erfolgreichen, je Figur, mit Referenz. Vorteil verwerten: Quote
+  gewonnen, gesamt und je Vorteil.
+- Getestet: 9 Logik-Tests `fortschritt.test.mjs`, `tests/e2e/fortschritt.cjs` (25 Prüfungen: leer, Beispieldaten mit 8 Partien, zwei
+  Stufenversionen, Gruppe mit Warnung, Überlauf, Tippflächen).
+
 ## Phase 3 — Eigene Partien analysieren
 
 Noch nicht begonnen (siehe "Nächste Schritte").

@@ -134,7 +134,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     await page.goto(url + "index.html#/taktik/statistik");
     await page.waitForTimeout(700);
     const s = await state(page);
-    r.check("Version 3 wird auf die aktuelle Version 5 umgestellt; altes Ergebnis gehört zu 'fortgeschritten'", s.version === 5 && s.taktik.standort[0].pruefset === "fortgeschritten" && s.einstellungen.denkhilfe === true && s.taktik.standort[0].geloest === 13);
+    r.check("Version 3 wird auf die aktuelle Version 6 umgestellt; altes Ergebnis gehört zu 'fortgeschritten'", s.version === 6 && s.taktik.standort[0].pruefset === "fortgeschritten" && s.einstellungen.denkhilfe === true && s.taktik.standort[0].geloest === 13);
     r.check("Das alte Ergebnis steht in der Liste Fortgeschritten, Einsteiger bleibt leer", (await page.$$eval("#stat-standort-liste-fortgeschritten li", (l) => l.length)) === 1 && (await page.$$eval("#stat-standort-liste-einsteiger li", (l) => l.length)) === 0);
     r.check("keine Skriptfehler (Umstellung)", page.__errors.length === 0, page.__errors.join("; "));
   }

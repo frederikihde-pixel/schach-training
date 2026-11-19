@@ -14,9 +14,10 @@ import { empfehlung } from "../empfehlung.js";
 import { ladePgn } from "./brett.js";
 import { renderListe } from "./partien-liste.js";
 import { zeigeRueckblick } from "./rueckblick.js";
+import { onShowFortschritt } from "./fortschritt.js";
 
 const $ = (id) => document.getElementById(id);
-const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste", "sp-rueckblick"];
+const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste", "sp-rueckblick", "sp-fortschritt"];
 const GRUNDMATT_MS = 700; // kürzeste angezeigte Bedenkzeit bei den Grundmatts
 
 let cg = null;
@@ -51,6 +52,10 @@ export function onShowSpielen(path) {
   if (path.startsWith("spielen/rueckblick/")) {
     zeige("sp-rueckblick");
     return zeigeRueckblick(path.slice("spielen/rueckblick/".length));
+  }
+  if (path === "spielen/fortschritt") {
+    zeige("sp-fortschritt");
+    return onShowFortschritt();
   }
   if (path === "spielen/liste") {
     zeige("sp-liste");
