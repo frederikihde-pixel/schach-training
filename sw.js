@@ -50,6 +50,8 @@ const PRECACHE = [
   "./js/uebungen.js",
   "./js/warnung.js",
   "./js/empfehlung.js",
+  "./js/analyse.js",
+  "./js/rueckblick.js",
   "./js/pages/spielen.js",
   "./js/pages/partien-liste.js",
   "./vendor/chess.js/chess.js",

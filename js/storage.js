@@ -6,14 +6,16 @@ import { PRUEFSET_IDS, DEFAULT_PRUEFSET } from "./pruefsets.js";
 
 export const APP_ID = "schach-training";
 export const STORAGE_KEY = "schach-training";
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 export const EXPORT_REMINDER_DAYS = 14;
 
 // Begrenzungen, damit die Daten klein bleiben (localStorage hat etwa 5 MB).
 export const CAPS = { versuche: 500, verlauf: 500, sitzungen: 200, standort: 100 };
 // Spielen: die letzten 30 Partien und die letzten 100 Versuche (Grundmatts, Vorteil). Eine Partie ist mit
 // PGN etwa 1 bis 3 KB groß; zusammen bleibt das weit unter der Grenze von etwa 5 MB.
-export const SPIELEN_CAPS = { partien: 30, versuche: 100 };
+// Analysen: höchstens 50 fertige Rückblicke (je etwa 2 bis 5 KB); eigene Rätsel: höchstens 300 (Kurzangaben, die
+// Rätsel selbst liegen als Karten im Wiederholungssystem).
+export const SPIELEN_CAPS = { partien: 30, versuche: 100, analysen: 50, eigene: 300 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -34,6 +36,9 @@ export function defaults(now = new Date()) {
       versuche: [], // Versuche in Grundmatts und Vorteil verwerten (höchstens SPIELEN_CAPS.versuche)
       aktiv: null, // laufende Partie oder Übung (wird nach jedem Zug gespeichert)
       gestartet: 0, // Zahl aller begonnenen Partien, Grundlage für den Vorschlag der Patzer-Warnung
+      analysen: [], // fertige Rückblicke (js/analyse.js), je Partie einer
+      analyseLauf: null, // laufende Analyse mit den bisherigen Ergebnissen (wird nach jeder Stellung gespeichert)
+      eigene: [], // Kurzangaben zu eigenen Rätseln aus Fehlern (Herkunft, Datum); die Rätsel liegen in taktik.karten
     },
     taktik: {
       staerke: null, // geschätzte Taktikstärke, null bis zur Einstufung
@@ -111,6 +116,20 @@ export const MIGRATIONS = {
       },
     };
   },
+  // Version 6: Analysen (Rückblick) und eigene Rätsel aus Fehlern.
+  5(data) {
+    const sp = data.spielen || {};
+    return {
+      ...data,
+      version: 6,
+      spielen: {
+        ...sp,
+        analysen: Array.isArray(sp.analysen) ? sp.analysen : [],
+        analyseLauf: sp.analyseLauf ?? null,
+        eigene: Array.isArray(sp.eigene) ? sp.eigene : [],
+      },
+    };
+  },
 };
 
 export class DataError extends Error {}
@@ -159,9 +178,10 @@ export function validate(data) {
   if (w !== null && !(typeof w === "number" && Number.isFinite(w))) fail("Die Chess.com-Wertung ist ungültig.");
   const sp = data.spielen;
   if (!sp || typeof sp !== "object") fail('In der Datei fehlen die Daten zu den Partien ("spielen").');
-  for (const key of ["partien", "versuche"]) {
+  for (const key of ["partien", "versuche", "analysen", "eigene"]) {
     if (!Array.isArray(sp[key])) fail(`Partien-Daten: "${key}" ist ungültig.`);
   }
+  if (sp.analyseLauf !== null && (typeof sp.analyseLauf !== "object" || Array.isArray(sp.analyseLauf) || !Array.isArray(sp.analyseLauf.ergebnisse))) fail("Die laufende Analyse ist ungültig.");
   if (typeof sp.gestartet !== "number") fail('Partien-Daten: "gestartet" ist ungültig.');
   if (sp.aktiv !== null && (typeof sp.aktiv !== "object" || Array.isArray(sp.aktiv) || !Array.isArray(sp.aktiv.zuege))) fail("Die laufende Partie ist ungültig.");
   for (const e of t.standort) {

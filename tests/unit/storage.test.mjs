@@ -259,8 +259,8 @@ test("Migration 4 auf 5: Bereich spielen und Wertung kommen dazu, alles Bisherig
   v4.taktik.staerke = 777;
   v4.taktik.standort = [{ datum: "2026-11-01T10:00:00.000Z", geloest: 5, von: 20, msSchnitt: 1, satz: "x", pruefset: "einsteiger" }];
   const m = migrate(structuredClone(v4), { now: t0 });
-  assert.equal(m.version, 5);
-  assert.deepEqual(m.spielen, { partien: [], versuche: [], aktiv: null, gestartet: 0 });
+  assert.equal(m.version, SCHEMA_VERSION);
+  assert.deepEqual(m.spielen, { partien: [], versuche: [], aktiv: null, gestartet: 0, analysen: [], analyseLauf: null, eigene: [] });
   assert.equal(m.einstellungen.chesscomWertung, null);
   assert.equal(m.taktik.staerke, 777);
   assert.equal(m.taktik.standort[0].pruefset, "einsteiger");
@@ -313,4 +313,37 @@ test("Obergrenzen: 30 Partien und 100 Versuche, Export und Import nehmen alles m
   assert.equal(s2.get().spielen.versuche.length, 100);
   assert.deepEqual(s2.get().spielen.aktiv, { zuege: ["e2e4"] });
   assert.ok(json.length < 500000, "weit unter der Speichergrenze (etwa 5 MB): " + json.length);
+});
+
+test("Migration 5 auf 6: Analysen, laufende Analyse und eigene Rätsel kommen dazu, Partien bleiben", () => {
+  const v5 = defaults(t0);
+  v5.version = 5;
+  delete v5.spielen.analysen;
+  delete v5.spielen.analyseLauf;
+  delete v5.spielen.eigene;
+  v5.spielen.partien.push({ id: "p1", pgn: "1. e4 e5" });
+  v5.spielen.gestartet = 4;
+  const m = migrate(structuredClone(v5), { now: t0 });
+  assert.equal(m.version, 6);
+  assert.deepEqual([m.spielen.analysen, m.spielen.analyseLauf, m.spielen.eigene], [[], null, []]);
+  assert.equal(m.spielen.partien[0].id, "p1");
+  assert.equal(m.spielen.gestartet, 4);
+  validate(m);
+});
+
+test("Obergrenzen 50 Analysen und 300 eigene Rätsel; kaputte Analyse-Daten werden abgelehnt", () => {
+  const s = createStore({ backend: backend(), now: () => t0 });
+  s.update((d) => {
+    for (let i = 0; i < 60; i++) d.spielen.analysen.push({ id: "a" + i });
+    for (let i = 0; i < 320; i++) d.spielen.eigene.push({ id: "e" + i });
+  });
+  assert.equal(s.get().spielen.analysen.length, 50);
+  assert.equal(s.get().spielen.analysen[0].id, "a10");
+  assert.equal(s.get().spielen.eigene.length, 300);
+  const d = defaults(t0);
+  d.spielen.analyseLauf = { ergebnisse: "x" };
+  assert.throws(() => validate(d), DataError);
+  const e = defaults(t0);
+  e.spielen.eigene = "x";
+  assert.throws(() => validate(e), DataError);
 });

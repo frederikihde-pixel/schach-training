@@ -381,6 +381,24 @@ Logik-Tests 110 (alle bestanden), Python 31, Browsertests in den Dateien `engine
 `partien-liste` (20), `spielen-offline` (10), `tippflaechen-spielen` (16) und alle bisherigen (angepasst auf Version 5 und drei
 Reiter). `tests/e2e/stufen-staerke.cjs` (Messung der Stufen, etwa 8 Minuten) gehört zu den langen Tests (`QUICK=1` überspringt ihn).
 
+## Teil E bis H: Analyse, eigene Fehler als Rätsel, Fortschritt, Einführung (zweiter Pull Request, in Arbeit)
+
+### Abschnitt 6: Analyse (fertig, ohne Oberfläche)
+
+- `js/analyse.js` (quellenunabhängig: PGN oder Züge plus Farbe des Spielers), `js/rueckblick.js` (Steuerung: speichert nach jeder
+  Stellung, geht nach Neuladen weiter), `docs/ANALYSE.md` (Schwellen, Genauigkeit, Messung). Speicherformat **Version 6**
+  (`spielen.analysen` höchstens 50, `spielen.analyseLauf`, `spielen.eigene` höchstens 300) mit Migration.
+- Schwellen: Bewertung auf plus/minus 1000 Centipawn gedeckelt; Patzer ab 300 Verlust, Fehler 150 bis 299, verpasste Chance
+  (Verlust ab 300, Stellung danach nicht schlechter als minus 150); Ungenauigkeiten unter 150 werden nicht angezeigt.
+- Erklärungen in einfachem Deutsch (erlaubtes Matt, ungedeckte Figur, verpasstes Matt, sonst Bauerneinheiten und besserer Zug).
+- **Messung der Dauer (Zusatz 1):** 81 Stellungen (40 Züge) bei 0,3 s je Stellung in 23,2 Sekunden in Chromium (287 ms je Stellung);
+  bei 0,6 s 46 s. Geschätzt für ein durchschnittliches Handy 30 bis 40 Sekunden (Suchzeit ist fest, ein langsames Handy sucht
+  nur weniger tief), also **unter 90 Sekunden: Die Suchzeit ist nicht einstellbar**, Standard 0,3 s. Auf dem echten Handy zu
+  prüfen; zeigt sich dort mehr als 90 Sekunden, kommt "schnell/normal/genau" (0,15/0,3/0,6 s, Standard normal).
+- Ehrlich: Patzer bleiben bei anderer Suchzeit gleich (1), die Zahl kleiner Fehler schwankt (2, 4, 6 bei 0,15, 0,3, 0,6 s).
+- Getestet: 16 Logik-Tests Analyse, 4 Tests der Steuerung (Fortsetzen, Abbruch, Obergrenze), `tests/e2e/analyse.cjs` (13 Prüfungen,
+  echte Engine: eingestellte Dame wird als Patzer gefunden, Fortsetzen nach Neuladen), `tests/e2e/analyse-dauer.cjs` (Messung).
+
 ## Phase 3 — Eigene Partien analysieren
 
 Noch nicht begonnen (siehe "Nächste Schritte").

@@ -247,9 +247,12 @@ export function createEngine({ url = ENGINE_URL, makeWorker = (u) => new Worker(
     },
     // Sucht in einer Stellung. { fen, moves (UCI), movetime (ms) | depth | nodes, multipv, searchmoves }
     // Ergebnis: { best, ponder, lines: [{ multipv, depth, score, pv }], stopped }
-    search({ fen = "startpos", moves = [], movetime = null, depth = null, nodes = null, multipv = 1, searchmoves = null } = {}) {
+    // options: Engine-Optionen, die in derselben Aufgabe unmittelbar vor der Suche gesetzt werden (kein anderer
+    // Aufruf kann dazwischen kommen).
+    search({ fen = "startpos", moves = [], movetime = null, depth = null, nodes = null, multipv = 1, searchmoves = null, options: opts = null } = {}) {
       return enqueue(async () => {
         await start();
+        if (opts) for (const [name, value] of Object.entries(opts)) applyOption(name, value);
         applyOption("MultiPV", multipv);
         send("isready");
         await waitLine((l) => (l === "readyok" ? true : undefined), START_TIMEOUT_MS, "isready");
