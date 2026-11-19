@@ -13,9 +13,10 @@ import { pruefeZug } from "../warnung.js";
 import { empfehlung } from "../empfehlung.js";
 import { ladePgn } from "./brett.js";
 import { renderListe } from "./partien-liste.js";
+import { zeigeRueckblick } from "./rueckblick.js";
 
 const $ = (id) => document.getElementById(id);
-const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste"];
+const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste", "sp-rueckblick"];
 const GRUNDMATT_MS = 700; // kürzeste angezeigte Bedenkzeit bei den Grundmatts
 
 let cg = null;
@@ -46,6 +47,10 @@ export function onShowSpielen(path) {
   if (path === "spielen/ende") {
     if (!letzte) return void (location.hash = "#/spielen");
     return zeigeEnde();
+  }
+  if (path.startsWith("spielen/rueckblick/")) {
+    zeige("sp-rueckblick");
+    return zeigeRueckblick(path.slice("spielen/rueckblick/".length));
   }
   if (path === "spielen/liste") {
     zeige("sp-liste");
@@ -569,6 +574,9 @@ function zeigeEnde() {
       meldung("sp-ende-meldung", "Kopieren ist hier nicht möglich.");
     }
   };
+  const rb = $("sp-ende-rueckblick");
+  rb.hidden = grundmatt;
+  $("sp-ende-rueckblick-link").setAttribute("href", `#/spielen/rueckblick/${e.id}`);
   const neu = $("sp-ende-neu");
   neu.textContent = { partie: "Neue Partie", vorteil: "Neue Übung", grundmatt: "Nächste Übung" }[e.modus];
   neu.setAttribute("href", { partie: "#/spielen/partie", vorteil: "#/spielen/vorteil", grundmatt: "#/spielen/grundmatt" }[e.modus]);

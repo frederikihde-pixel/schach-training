@@ -2,6 +2,10 @@
 // App-Wechsel weiter), meldet den Fortschritt und legt das Ergebnis ab. Kein DOM; die Seite hört auf die Meldungen.
 
 import { analysiere, analyseEintrag, leseEingabe, SUCHZEIT_MS, stellungen } from "./analyse.js";
+import { store as appStore } from "./storage.js";
+import { getEngine as appEngine } from "./engine.js";
+import { ausAnalyse } from "./eigene.js";
+import { dayKey } from "./leitner.js";
 
 // store: js/storage.js, engine: js/engine.js (getEngine()), movetime: Suchzeit je Stellung.
 export function createRueckblick({ store, getEngine, movetime = SUCHZEIT_MS, nachAnalyse = null }) {
@@ -134,3 +138,10 @@ export function createRueckblick({ store, getEngine, movetime = SUCHZEIT_MS, nac
     },
   };
 }
+
+// Die Analyse der App: Nach jeder fertigen Analyse werden Patzer und verpasste Chancen zu eigenen Rätseln.
+export const rueckblick = createRueckblick({
+  store: appStore,
+  getEngine: appEngine,
+  nachAnalyse: (d, e) => ausAnalyse(d, e, { today: dayKey(appStore.now()), nowIso: appStore.now().toISOString() }),
+});

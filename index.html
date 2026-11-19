@@ -269,6 +269,71 @@
           <ul id="liste-versuche" class="game-list"></ul>
         </div>
 
+        <div id="sp-rueckblick" hidden>
+          <div class="page-inner">
+            <p class="back-row"><a class="back-link" id="rb-zurueck" href="#/spielen/liste">Zurück</a></p>
+            <h2 class="page-title">Rückblick</h2>
+            <p id="rb-kopf" class="muted"></p>
+
+            <div id="rb-fortschritt" class="block" hidden>
+              <p id="rb-fortschritt-text" role="status" aria-live="polite"></p>
+              <progress id="rb-balken" class="rb-balken" max="1" value="0"></progress>
+              <p class="muted">
+                Die Analyse läuft im Hintergrund. Wechselst du die App oder lädst neu, geht sie bei der nächsten Stellung
+                weiter.
+              </p>
+              <div class="stack"><button id="rb-btn-abbrechen" type="button" class="btn-quiet">Analyse abbrechen</button></div>
+            </div>
+            <div id="rb-fehler" class="confirm" hidden>
+              <p id="rb-fehler-text"></p>
+              <div class="stack"><button id="rb-btn-nochmal" type="button">Erneut versuchen</button></div>
+            </div>
+            <p id="rb-andere" class="muted" hidden>
+              Es läuft gerade die Analyse einer anderen Partie.
+              <a id="rb-andere-link" href="#/spielen">Zu dieser Analyse</a>
+            </p>
+
+            <div id="rb-ergebnis" hidden>
+              <p id="rb-zusammen" class="strength"></p>
+              <p id="rb-leer" class="muted" hidden></p>
+              <ul id="rb-liste" class="game-list"></ul>
+              <p class="muted">
+                Die Analyse läuft mit einer kleinen Engine auf dem Handy. Grobe Fehler zeigt sie zuverlässig, kleine
+                Unterschiede nur ungefähr. Kleinere Ungenauigkeiten (unter 1,5 Bauerneinheiten) werden nicht angezeigt.
+              </p>
+            </div>
+          </div>
+
+          <div id="rb-detail" hidden>
+            <div class="run-head">
+              <span id="rb-detail-titel"></span>
+              <span id="rb-detail-art" class="muted"></span>
+            </div>
+            <div class="board-row">
+              <div class="board-wrap">
+                <div id="rb-board" class="board"></div>
+              </div>
+            </div>
+            <div class="page-inner">
+              <p id="rb-legende" class="muted"></p>
+              <p id="rb-text" class="run-message"></p>
+              <div class="controls sp-controls">
+                <button id="rb-btn-vor" type="button">Vor dem Zug</button>
+                <button id="rb-btn-nach" type="button">Nach meinem Zug</button>
+              </div>
+              <div class="stack">
+                <button id="rb-btn-raetsel" type="button">Als Rätsel üben</button>
+              </div>
+              <div class="controls sp-controls">
+                <button id="rb-btn-zurueck-stelle" type="button">Vorige Stelle</button>
+                <button id="rb-btn-weiter-stelle" type="button">Nächste Stelle</button>
+              </div>
+              <div class="stack"><button id="rb-btn-liste" type="button" class="btn-quiet">Zur Übersicht</button></div>
+              <p id="rb-meldung" class="message" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+
         <div id="sp-setup" class="page-inner" hidden>
           <p class="back-row"><a class="back-link" href="#/spielen">Zurück</a></p>
           <h2 id="sp-setup-titel" class="page-title">Partie</h2>
@@ -380,7 +445,10 @@
           <h2 id="sp-ende-titel" class="page-title"></h2>
           <p id="sp-ende-text"></p>
           <dl id="sp-ende-fakten" class="facts"></dl>
-          <p id="sp-ende-hinweis" class="muted" hidden></p>
+          <div id="sp-ende-rueckblick" class="block" hidden>
+            <p>Wenn du magst, schau dir die Partie noch einmal an. Die App zeigt dir die größten Fehler.</p>
+            <div class="stack"><a id="sp-ende-rueckblick-link" class="btn-link-quiet" href="#/spielen/liste">Rückblick ansehen (ca. 3 Minuten)</a></div>
+          </div>
           <div class="stack">
             <a id="sp-ende-ansehen" class="btn-link-quiet" href="#/brett">Im Brett ansehen</a>
             <button id="sp-ende-pgn" type="button">PGN kopieren</button>

@@ -198,6 +198,15 @@ export async function startStandortbestimmung(id = "fortgeschritten") {
   location.hash = "#/taktik";
 }
 
+// Wird vom Rückblick aufgerufen: ein einzelnes eigenes Rätsel üben.
+export function startEigenesRaetsel(puzzle) {
+  store.update((d) => {
+    d.taktik.aktiv = { typ: "sitzung", plan: [{ art: "wiederholung", puzzle }], index: 0, ergebnisse: [], filter: "", start: nowIso() };
+  });
+  autoRun = true;
+  location.hash = "#/taktik";
+}
+
 // Wird von der Statistik-Seite aufgerufen (leerer Zustand): Einstufung oder Sitzung starten.
 export function startFromStatistik(kind) {
   pendingStart = kind;
@@ -257,6 +266,7 @@ function waitForWeiter() {
 function artText(a, item) {
   if (a.typ === "einstufung") return "Einstufung";
   if (a.typ === "standort") return "Standortbestimmung";
+  if (item.puzzle.eigen) return `Eigener Fehler (Zug ${item.puzzle.nr})`;
   return item.art === "wiederholung" ? "Wiederholung" : "";
 }
 

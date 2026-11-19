@@ -399,6 +399,41 @@ Reiter). `tests/e2e/stufen-staerke.cjs` (Messung der Stufen, etwa 8 Minuten) geh
 - Getestet: 16 Logik-Tests Analyse, 4 Tests der Steuerung (Fortsetzen, Abbruch, Obergrenze), `tests/e2e/analyse.cjs` (13 Prüfungen,
   echte Engine: eingestellte Dame wird als Patzer gefunden, Fortsetzen nach Neuladen), `tests/e2e/analyse-dauer.cjs` (Messung).
 
+### Abschnitt 7: Rückblick-Seite (fertig)
+
+- `#/spielen/rueckblick/<id>` (`js/pages/rueckblick.js`, Router kennt jetzt Pfade mit Parameter): Fortschritt "Stellung 23 von 80"
+  mit Balken, die Analyse läuft im Hintergrund und geht nach App-Wechsel oder Neuladen weiter (auch ohne die Seite offen zu haben:
+  `rueckblick.fortsetzen()` beim App-Start und beim Zurückkehren in die App); bei einem Fehler "Erneut versuchen".
+- Ergebnis: "1 Patzer, 3 Fehler, 0 verpasste Chancen", Liste der Stellen (Zug, Art, Erklärung). Antippen: Brett mit der Stellung vor dem
+  Zug, rotem Pfeil (gespielter Zug) und grünem Pfeil (besserer Zug), Legende, Erklärung; "Nach meinem Zug" und "Vor dem Zug",
+  vorige und nächste Stelle, "Als Rätsel üben".
+- **Gleiches Brett und gleiche Designs (Zusatz 3):** Das Rückblick-Brett ist dasselbe Chessground-Brett in demselben Behälter
+  (`board-wrap`, `board`) wie Brett, Taktik und Spielen, ohne eigene Farben; die Designs wirken über die Variablen der Seite. Test
+  `rueckblick.cjs`: in allen drei Designs gleiche Feld- und Figurenfarben wie auf der Brett-Seite, gleiche Klassen, quadratisch.
+- Nach einer Partie steht auf der Endseite der ruhige Hinweis "Rückblick ansehen (ca. 3 Minuten)"; in "Meine Partien" gibt es den
+  Knopf "Rückblick". Nichts startet von selbst.
+- **Fehler gefunden und behoben:** Wurde das Rückblick-Brett nach dem Verlassen der Seite erneut geöffnet, rechnete Chessground die
+  Pfeile mit einer veralteten Brettgröße (ungültige Koordinaten). Das Brett wird jetzt bei jedem Öffnen der Stelle neu aufgebaut.
+- Getestet: `tests/e2e/rueckblick.cjs` (27 Prüfungen, echte Engine).
+
+### Abschnitt 8: Eigene Fehler als Rätsel (Teil F, fertig)
+
+- `js/eigene.js`: Nach jeder fertigen Analyse werden Patzer und verpasste Chancen zu Rätseln (Stellung vor dem Zug als FEN `zugFen`,
+  richtige Züge, kurze Hauptvariante bis 3 Halbzüge). Fehler (150 bis 299) werden auf Wunsch ("Als Rätsel üben") zum Rätsel.
+- **Richtig** sind alle Züge, die höchstens 50 Centipawn schlechter sind als der beste (MultiPV 3). **Eindeutig** (sonst kein Rätsel):
+  Der beste Zug außerhalb dieser Gruppe ist mindestens 150 Centipawn schlechter; sind alle drei Kandidaten gleich gut, ist unbekannt,
+  ob andere Züge schlecht sind, und es gibt kein Rätsel. Folge: **Viele Patzer in der Eröffnung ergeben kein Rätsel**, weil dort viele
+  Züge gleich gut sind (so im Beispiel mit der Dame im 3. Zug); Rätsel entstehen vor allem bei verpassten Gewinnen, Matt in 1 und
+  freien Figuren. Der Rückblick sagt das bei "Als Rätsel üben" ruhig.
+- Wiederholungssystem: Karte Stufe 1, fällig am nächsten Tag, danach 3, 7 und 21 Tage; nicht gelöst: zurück auf Stufe 1. Art
+  "wiederholung": Die **Taktikstärke und der Rätselzähler ändern sich nie** (getestet).
+- Sitzungen (`js/session.js`): bis zu 25 Prozent eigene Fehler (bei 10 Rätseln 2 bis 3), solange welche fällig sind; im Trainer steht
+  "Eigener Fehler (Zug N)". In der Statistik ist "Eigener Fehler" ein eigenes Thema (zählt nicht zu den schwächsten Themen); das
+  Thema lässt sich auf der Taktik-Seite auch als Filter wählen. Obergrenze 300 gespeicherte eigene Rätsel (die ältesten fallen samt
+  Karte weg). Der Rätsel-Lauf akzeptiert bei diesen Rätseln jeden richtigen Zug (`richtig`).
+- Getestet: 10 Logik-Tests `eigene.test.mjs`, `tests/e2e/eigene-raetsel.cjs` (21 Prüfungen: Rätsel entsteht, richtig und falsch im Trainer
+  gelöst, Leitner 1/3, Stärke unverändert, 2 bis 3 von 10 in der Sitzung, Statistik, nicht eindeutig).
+
 ## Phase 3 — Eigene Partien analysieren
 
 Noch nicht begonnen (siehe "Nächste Schritte").

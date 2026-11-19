@@ -50,6 +50,7 @@ const NAMES = {
   knightEndgame: "Springerendspiel",
   queenEndgame: "Damenendspiel",
   queenRookEndgame: "Dame-und-Turm-Endspiel",
+  eigenerFehler: "Eigener Fehler",
 };
 
 export function themeLabel(tag) {
@@ -111,6 +112,7 @@ const INFO = {
   knightEndgame: "Ein Endspiel mit Springern (und Bauern).",
   queenEndgame: "Ein Endspiel mit Damen (und Bauern).",
   queenRookEndgame: "Ein Endspiel mit Damen und Türmen.",
+  eigenerFehler: "Eine Stelle aus einer deiner Partien, an der du einen Patzer oder eine große Chance ausgelassen hast. Sie kommt nach 1, 3, 7 und 21 Tagen wieder.",
 };
 
 export function themeInfo(tag) {

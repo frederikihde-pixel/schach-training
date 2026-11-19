@@ -22,6 +22,7 @@ function shuffled(list, rng) {
 }
 
 export const DUE_SHARE = 0.3;
+export const OWN_SHARE = 0.25; // Anteil eigener Fehler (Rätsel aus eigenen Partien), solange welche fällig sind
 export const BEGINNER_BELOW = 1000;
 
 // Wertungsfenster für neue Rätsel um die Taktikstärke. Anfänger bekommen nach oben weniger Spielraum.
@@ -35,12 +36,15 @@ export function sessionWindow(strength) {
 // themeFilter: nur Rätsel mit diesem Thema (dann keine Aufteilung nach schwachen Themen)
 export function buildSession({ size = 10, due = [], candidates = [], weakThemes = [], themeFilter = null, rng = Math.random }) {
   const wanted = (p) => !themeFilter || p.themen.includes(themeFilter);
-  const dueUse = due.filter((c) => wanted(c.raetsel));
+  const dueAll = due.filter((c) => wanted(c.raetsel));
+  const dueOwn = dueAll.filter((c) => c.raetsel.eigen);
+  const dueUse = dueAll.filter((c) => !c.raetsel.eigen);
+  const nOwn = Math.min(dueOwn.length, Math.round(size * OWN_SHARE));
   const nDue = Math.min(dueUse.length, Math.round(size * DUE_SHARE));
-  const items = dueUse.slice(0, nDue).map((c) => ({ art: "wiederholung", puzzle: c.raetsel }));
+  const items = [...dueOwn.slice(0, nOwn), ...dueUse.slice(0, nDue)].map((c) => ({ art: "wiederholung", puzzle: c.raetsel }));
   const used = new Set(items.map((i) => i.puzzle.id));
 
-  const nNew = size - nDue;
+  const nNew = size - nOwn - nDue;
   const pool = shuffled(candidates.filter((p) => wanted(p) && !used.has(p.id)), rng);
   const picked = [];
   const take = (p) => {
@@ -71,7 +75,7 @@ export function buildSession({ size = 10, due = [], candidates = [], weakThemes 
   items.push(...picked);
 
   // Fehlen neue Rätsel, werden weitere fällige Karten aufgefüllt.
-  for (const c of dueUse.slice(nDue)) {
+  for (const c of [...dueOwn.slice(nOwn), ...dueUse.slice(nDue)]) {
     if (items.length >= size) break;
     items.push({ art: "wiederholung", puzzle: c.raetsel });
   }

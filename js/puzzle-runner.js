@@ -20,6 +20,14 @@ const PAUSE_OPPONENT = 450; // bis der Gegner antwortet
 const PAUSE_WRONG = 800; // so lange bleibt ein falscher Zug sichtbar
 const PAUSE_SOLUTION = 1000; // zwischen den Zügen der gezeigten Lösung
 
+// Rätsel aus eigenen Partien ("eigen"): Der erste Zug ist der Gegnerzug, danach genügt EIN richtiger Zug des Spielers
+// (jeder Zug aus "richtig"). Die längere Hauptvariante wird nur beim Zeigen der Lösung benutzt.
+function loeseZuege(puzzle) {
+  const moves = splitMoves(puzzle);
+  return puzzle.eigen ? moves.slice(0, 2) : moves;
+}
+const istRichtig = (puzzle, uci) => !!puzzle.eigen && Array.isArray(puzzle.richtig) && puzzle.richtig.includes(uci);
+
 const parseUci = (uci) => ({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] || undefined });
 
 // Zeit, in der die Seite sichtbar ist; Pausen im Hintergrund zählen nicht.
@@ -170,7 +178,7 @@ export function createRunner(boardEl) {
     // Erster Lösungsversuch. Ergebnis: { solved, ms, wrongMove }.
     async solve(puzzle, { onReady } = {}) {
       const id = ++runId;
-      const moves = splitMoves(puzzle);
+      const moves = loeseZuege(puzzle);
       const { color } = await setup(puzzle, id);
       if (onReady) onReady({ color });
       render({ interactive: true, lastMove: lastMoveOf(moves[0]) });
@@ -186,7 +194,7 @@ export function createRunner(boardEl) {
           }
           const uci = attempt.from + attempt.to + (attempt.promotion || "");
           const mates = wouldMate(attempt);
-          if (uci === moves[idx] || mates) {
+          if (uci === moves[idx] || mates || istRichtig(puzzle, uci)) {
             game.move(attempt);
             render({ lastMove: [attempt.from, attempt.to] });
             if (mates || idx === moves.length - 1) return { solved: true, ms: timer.stop() };
@@ -238,7 +246,7 @@ export function createRunner(boardEl) {
     // und zählen nicht; nach dem zweiten Fehlversuch zeigt ein Pfeil den richtigen Zug.
     async replay(puzzle, { onWrong } = {}) {
       const id = ++runId;
-      const moves = splitMoves(puzzle);
+      const moves = loeseZuege(puzzle);
       ensureBoard();
       game = new Chess(puzzle.fen);
       solverColor = game.turn() === "w" ? "black" : "white";
@@ -253,7 +261,7 @@ export function createRunner(boardEl) {
         const attempt = await userMove(id);
         check(id);
         const uci = attempt.from + attempt.to + (attempt.promotion || "");
-        if (isLegal(attempt) && (uci === moves[idx] || wouldMate(attempt))) {
+        if (isLegal(attempt) && (uci === moves[idx] || wouldMate(attempt) || istRichtig(puzzle, uci))) {
           const done = wouldMate(attempt) || idx === moves.length - 1;
           game.move(attempt);
           cg.setAutoShapes([]);

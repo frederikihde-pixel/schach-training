@@ -4,18 +4,27 @@
 const routes = new Map();
 let current = null;
 
-export function addRoute(path, { page, tab = null, title, onShow = null }) {
-  routes.set(path, { page, tab, title, onShow });
+// prefix: Die Route gilt auch für Pfade darunter (z. B. "spielen/rueckblick/<id>"); onShow bekommt den ganzen Pfad.
+export function addRoute(path, { page, tab = null, title, onShow = null, prefix = false }) {
+  routes.set(path, { page, tab, title, onShow, prefix });
 }
 
 function currentPath() {
   const raw = location.hash.replace(/^#\/?/, "").replace(/\/$/, "");
-  return routes.has(raw) ? raw : "brett";
+  if (routes.has(raw)) return raw;
+  for (const [key, route] of routes) if (route.prefix && raw.startsWith(key + "/")) return raw;
+  return "brett";
+}
+
+function routeOf(path) {
+  if (routes.has(path)) return routes.get(path);
+  for (const [key, route] of routes) if (route.prefix && path.startsWith(key + "/")) return route;
+  return routes.get("brett");
 }
 
 function show() {
   const path = currentPath();
-  const route = routes.get(path);
+  const route = routeOf(path);
 
   for (const el of document.querySelectorAll(".page")) {
     el.hidden = el.id !== route.page;
