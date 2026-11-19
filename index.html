@@ -217,6 +217,18 @@
             Uhr, keine Bewertungsleiste und keine Zugvorschläge.
           </p>
 
+          <div id="sp-hinweise" class="block">
+            <div class="hint-row">
+              <span id="sp-hinweis-rueckblick">Offene Rückblicke: 0</span>
+              <button id="sp-hinweis-rueckblick-btn" type="button">Ansehen</button>
+            </div>
+            <div class="hint-row">
+              <span id="sp-hinweis-raetsel">Fällige eigene Rätsel: 0</span>
+              <button id="sp-hinweis-raetsel-btn" type="button">Üben</button>
+            </div>
+            <p id="sp-hinweis-meldung" class="muted" role="status" aria-live="polite"></p>
+          </div>
+
           <div id="sp-letzte" class="block" hidden>
             <p id="sp-letzte-text"></p>
             <div class="stack"><a class="btn-link-quiet" href="#/spielen/ende">Ergebnis ansehen</a></div>
@@ -840,6 +852,7 @@
           <ul class="intro-list">
             <li><strong>Brett:</strong> frei spielen, beide Seiten ziehen und Stellungen prüfen.</li>
             <li><strong>Taktik:</strong> Rätsel lösen, die sich an dich anpassen.</li>
+            <li><strong>Spielen:</strong> Partien gegen den Computer, danach der Rückblick auf deine Fehler.</li>
             <li><strong>Standortbestimmung:</strong> 20 feste Rätsel, die zeigen, wo du stehst.</li>
             <li><strong>Statistik:</strong> dein Verlauf und deine schwächsten Themen.</li>
             <li><strong>Daten sichern:</strong> alles bleibt auf deinem Gerät, du kannst es exportieren.</li>
@@ -885,8 +898,8 @@
             <li>Füge die App zum Home-Bildschirm hinzu, dann startet sie wie eine normale App.</li>
           </ul>
           <p class="intro-note">
-            Diese App trainiert Taktik und Wiederholung. Für echte Fortschritte gehören auch Partien mit langer
-            Bedenkzeit dazu und die Analyse dieser Partien.
+            Diese App trainiert Taktik, Wiederholung und Partien gegen den Computer. Partien gegen Menschen mit langer
+            Bedenkzeit ersetzt sie nicht; auch sie gehören zu echten Fortschritten.
           </p>
         </section>
         <section class="intro-slide" aria-label="Seite 7">
@@ -902,6 +915,22 @@
             <li>Kann ich Schach, Schlagen oder eine Drohung ausführen?</li>
           </ol>
           <p>Bei den ersten Rätseln erinnert dich die App daran. Unter Mehr, Einstellungen kannst du das abschalten.</p>
+        </section>
+        <section class="intro-slide" aria-label="Seite 8">
+          <h2>Wie Partien dir helfen</h2>
+          <p>Rätsel trainieren das Erkennen. Partien trainieren, es in einer echten Stellung auch zu tun. Empfohlen pro Woche:</p>
+          <ul class="intro-list">
+            <li>Zwei bis drei ganze Partien gegen den Computer, ohne Zug zurücknehmen. Danach jeweils den Rückblick ansehen.</li>
+            <li>Die Rätsel mit deinen eigenen Fehlern kommen in der täglichen Sitzung von selbst dazu.</li>
+            <li>Grundmatts regelmäßig üben, bis sie in unter 20 Zügen sitzen.</li>
+          </ul>
+          <p>Und vor jedem Zug, in Partien wie in Rätseln, die vier Fragen:</p>
+          <ol class="intro-list">
+            <li>Was hat der Gegner gerade gezogen?</li>
+            <li>Was bedroht er?</li>
+            <li>Ist meine Figur gedeckt?</li>
+            <li>Kann ich Schach, Schlagen oder eine Drohung ausführen?</li>
+          </ol>
         </section>
       </div>
       <div class="intro-nav">

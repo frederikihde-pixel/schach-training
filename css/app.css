@@ -1099,3 +1099,15 @@ body.intro-open {
   font-size: 0.92rem;
   text-align: center;
 }
+
+.hint-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.hint-row button {
+  flex: 0 0 auto;
+}

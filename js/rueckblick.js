@@ -139,6 +139,14 @@ export function createRueckblick({ store, getEngine, movetime = SUCHZEIT_MS, nac
   };
 }
 
+// Partien und Übungen (nicht Grundmatts) ohne fertigen Rückblick, neueste zuerst. Eine laufende Analyse zählt als offen.
+export function offeneRueckblicke(spielen) {
+  const fertig = new Set(spielen.analysen.map((a) => a.id));
+  return [...spielen.partien, ...spielen.versuche]
+    .filter((e) => (e.modus === "partie" || e.modus === "vorteil") && !fertig.has(e.id))
+    .sort((a, b) => (a.datum < b.datum ? 1 : a.datum > b.datum ? -1 : 0));
+}
+
 // Die Analyse der App: Nach jeder fertigen Analyse werden Patzer und verpasste Chancen zu eigenen Rätseln.
 export const rueckblick = createRueckblick({
   store: appStore,

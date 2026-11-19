@@ -207,6 +207,23 @@ export function startEigenesRaetsel(puzzle) {
   location.hash = "#/taktik";
 }
 
+// Wird von der Startseite "Spielen" aufgerufen: die fälligen eigenen Rätsel üben (auch ohne Einstufung). Gibt false zurück,
+// wenn keins fällig ist oder schon eine Sitzung läuft.
+export function startFaelligeEigene() {
+  if (taktik().aktiv) return false;
+  const plan = dueCards(taktik().karten, today())
+    .filter((c) => c.raetsel.eigen)
+    .slice(0, 10)
+    .map((c) => ({ art: "wiederholung", puzzle: c.raetsel }));
+  if (!plan.length) return false;
+  store.update((d) => {
+    d.taktik.aktiv = { typ: "sitzung", plan, index: 0, ergebnisse: [], filter: "eigenerFehler", start: nowIso() };
+  });
+  autoRun = true;
+  location.hash = "#/taktik";
+  return true;
+}
+
 // Wird von der Statistik-Seite aufgerufen (leerer Zustand): Einstufung oder Sitzung starten.
 export function startFromStatistik(kind) {
   pendingStart = kind;
