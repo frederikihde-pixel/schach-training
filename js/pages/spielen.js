@@ -13,9 +13,15 @@ import { pruefeZug } from "../warnung.js";
 import { empfehlung } from "../empfehlung.js";
 import { ladePgn } from "./brett.js";
 import { renderListe } from "./partien-liste.js";
+import { zeigeRueckblick } from "./rueckblick.js";
+import { onShowFortschritt } from "./fortschritt.js";
+import { offeneRueckblicke } from "../rueckblick.js";
+import { eigeneZahlen } from "../eigene.js";
+import { dayKey } from "../leitner.js";
+import { startFaelligeEigene } from "./taktik.js";
 
 const $ = (id) => document.getElementById(id);
-const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste"];
+const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste", "sp-rueckblick", "sp-fortschritt"];
 const GRUNDMATT_MS = 700; // kürzeste angezeigte Bedenkzeit bei den Grundmatts
 
 let cg = null;
@@ -47,6 +53,14 @@ export function onShowSpielen(path) {
     if (!letzte) return void (location.hash = "#/spielen");
     return zeigeEnde();
   }
+  if (path.startsWith("spielen/rueckblick/")) {
+    zeige("sp-rueckblick");
+    return zeigeRueckblick(path.slice("spielen/rueckblick/".length));
+  }
+  if (path === "spielen/fortschritt") {
+    zeige("sp-fortschritt");
+    return onShowFortschritt();
+  }
   if (path === "spielen/liste") {
     zeige("sp-liste");
     return renderListe();
@@ -64,8 +78,23 @@ function aktivText(a) {
   return `Es läuft eine Übung: ${modus}, du spielst ${farbName(a.farbe)}, ${a.zuege.length} Halbzüge gespielt.`;
 }
 
+let offenerRueckblickZiel = "#/spielen/liste";
+
+// Kleiner Hinweis auf der Startseite: offene Rückblicke und fällige eigene Rätsel, je mit Knopf.
+function hinweiseAktualisieren() {
+  const offen = offeneRueckblicke(store.get().spielen);
+  $("sp-hinweis-rueckblick").textContent = `Offene Rückblicke: ${offen.length}`;
+  $("sp-hinweis-rueckblick-btn").disabled = offen.length === 0;
+  offenerRueckblickZiel = offen.length === 1 ? `#/spielen/rueckblick/${offen[0].id}` : "#/spielen/liste";
+  const faellig = eigeneZahlen(store.get(), dayKey(store.now())).faellig;
+  $("sp-hinweis-raetsel").textContent = `Fällige eigene Rätsel: ${faellig}`;
+  $("sp-hinweis-raetsel-btn").disabled = faellig === 0;
+  meldung("sp-hinweis-meldung", "");
+}
+
 function zeigeStart() {
   zeige("sp-start");
+  hinweiseAktualisieren();
   const a = store.get().spielen.aktiv;
   $("sp-fortsetzen").hidden = !a;
   $("sp-verwerfen-frage").hidden = true;
@@ -569,6 +598,9 @@ function zeigeEnde() {
       meldung("sp-ende-meldung", "Kopieren ist hier nicht möglich.");
     }
   };
+  const rb = $("sp-ende-rueckblick");
+  rb.hidden = grundmatt;
+  $("sp-ende-rueckblick-link").setAttribute("href", `#/spielen/rueckblick/${e.id}`);
   const neu = $("sp-ende-neu");
   neu.textContent = { partie: "Neue Partie", vorteil: "Neue Übung", grundmatt: "Nächste Übung" }[e.modus];
   neu.setAttribute("href", { partie: "#/spielen/partie", vorteil: "#/spielen/vorteil", grundmatt: "#/spielen/grundmatt" }[e.modus]);
@@ -591,6 +623,12 @@ export function initSpielen() {
     $("sp-verwerfen-frage").hidden = true;
   });
   $("sp-btn-verwerfen-ja").addEventListener("click", verwerfen);
+  $("sp-hinweis-rueckblick-btn").addEventListener("click", () => {
+    location.hash = offenerRueckblickZiel;
+  });
+  $("sp-hinweis-raetsel-btn").addEventListener("click", () => {
+    if (!startFaelligeEigene()) meldung("sp-hinweis-meldung", "Es läuft gerade eine Sitzung. Beende oder verwirf sie zuerst auf der Seite Taktik.");
+  });
   document.addEventListener("daten-geaendert", () => {
     sitz = null;
   });

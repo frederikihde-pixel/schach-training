@@ -1,20 +1,21 @@
 # Status
 
 Diese Datei wird zu Beginn jeder Sitzung zuerst gelesen und nach jedem
-Abschnitt aktualisiert. Stand: 18.11.2026.
+Abschnitt aktualisiert. Stand: 19.11.2026.
 
 ## Nächste Schritte
 
-1. **Taktik für Einsteiger auf dem echten Handy prüfen** (Abschnitt "Taktik für Einsteiger" und Liste ganz unten).
-   Pull Request 5 ist gemergt.
-2. **Computergegner und Training mit Partien** (in Arbeit, zwei Pull Requests): Teil A bis D (Engine, Stufen, Spielen,
-   Partien speichern) im ersten, Teil E bis H (Analyse, eigene Fehler als Rätsel, Fortschritt, Einführung) im zweiten.
-   Siehe Abschnitt "Computergegner" weiter unten.
-3. **Phase 3, eigene Partien analysieren mit Chess.com:** Partien nach Benutzername holen
-   (öffentliche, nur lesende Chess.com-Schnittstelle ohne Konto; alternativ eine PGN-Datei
-   importieren), mit der Engine analysieren, Fehler als Rätsel in die Wiederholung übernehmen.
-   Vorher klären: Der Benutzername verlässt das Gerät nur für die Abfrage; wie viele Partien
-   werden gespeichert (Speichergrenze etwa 5 MB).
+1. **Pull Request 7 prüfen und mergen** (Teil E bis H: Analyse, Rückblick, eigene Fehler als Rätsel, Fortschritt, Einführung;
+   Pull Request 6 mit Teil A bis D ist gemergt, Pull Request 5 ebenfalls). Danach **auf dem echten Handy prüfen** (Liste ganz
+   unten, Abschnitte "Computergegner" und "Analyse und Rückblick"): Stufen, Bedenkzeit, Wärme und Akku, App-Wechsel auf dem iPhone,
+   Dauer der Analyse (Schätzung 30 bis 40 Sekunden für 80 Stellungen, Grenze 90 Sekunden).
+2. **Stufen und Analyse nach dem Handytest nachstellen**, falls nötig: Stufenwerte (Stufenversion erhöhen, `docs/STUFEN.md` anpassen),
+   Suchzeit der Analyse (dann einstellbar machen: schnell 0,15 s, normal 0,3 s, genau 0,6 s).
+3. **Phase 3, Partien von Chess.com holen:** Partien nach Benutzername holen (öffentliche, nur lesende Chess.com-Schnittstelle
+   ohne Konto; alternativ eine PGN-Datei importieren, das Laden per PGN auf der Brett-Seite gibt es schon). Die **Analyse
+   (`js/analyse.js`, `js/rueckblick.js`) ist quellenunabhängig und wartet darauf**: Eingabe PGN und Farbe des Spielers genügen, Fehler
+   werden dann wie bei eigenen Partien zu Rätseln. Vorher klären: Der Benutzername verlässt das Gerät nur für die Abfrage; wie
+   viele Partien werden gespeichert (Speichergrenze etwa 5 MB; eine Analyse braucht etwa 2 bis 5 KB, 50 Stück sind erlaubt).
 4. Danach Phase 4 (Eröffnung und Endspiel) und Phase 5 (Tagesplan).
 
 ## Stand auf einen Blick
@@ -26,12 +27,14 @@ Abschnitt aktualisiert. Stand: 18.11.2026.
 | Phase 2: Taktik-Training mit Statistik und Standortbestimmung | fertig, gemergt (Rätsel-Daten und Prüfset liegen auf `main`) |
 | Brett-Designs, Einführung, leere Zustände | fertig, gemergt (Pull Request 4), emuliert getestet |
 | Taktik für Einsteiger (Wertung um 440): leichtere Bänder, Prüfset Einsteiger, Einstufung ab 700, Denkhilfe, Themen-Seite | fertig, gemergt (Pull Request 5), emuliert getestet |
-| Computergegner, Teil A bis D (Spielen) | Teil A bis D fertig (erster Pull Request); Teil E bis H folgen im zweiten |
-| Phase 3 bis 5 | nicht begonnen |
+| Computergegner, Teil A bis D: Engine, 8 Stufen, Spielen, Grundmatts, Vorteil verwerten, Partien speichern | fertig, gemergt (Pull Request 6), emuliert getestet |
+| Computergegner, Teil E bis H: Analyse, Rückblick, eigene Fehler als Rätsel, Fortschritt, Einführung | fertig, emuliert getestet (Pull Request 7, noch nicht gemergt) |
+| Phase 3 (Partien von Chess.com holen) | nicht begonnen; die Analyse dafür ist fertig und quellenunabhängig |
+| Phase 4 und 5 | nicht begonnen |
 
 Alle Tests: `tests/run-all.sh` (Logik, Python, Browser mit 390 px und Touch-Emulation;
-`QUICK=1` überspringt die langen Sitzungstests, sonst etwa 20 Minuten). Stand 17.11.2026: 70 Logik-Tests
-(davon 10 Kontrast-Tests), 31 Python-Tests und 335 Browser-Prüfungen in 17 Dateien, alle bestanden.
+`QUICK=1` überspringt die langen Tests, sonst etwa 40 Minuten). Stand 19.11.2026: 151 Logik-Tests
+(davon 10 Kontrast-Tests), 31 Python-Tests und 575 Browser-Prüfungen in 30 Dateien, alle bestanden.
 Screenshots der Designs: `node tests/e2e/screenshots.cjs` (schreibt nach `tests/screenshots/`).
 
 ## Phase 1 — Ein Brett, auf dem ich beide Seiten spielen kann
@@ -60,8 +63,8 @@ Zug zurück und vor, Drehen, FEN laden, Zug nach "Schach." (`tests/e2e/brett.cjs
 **Fertig:**
 - Seite ist bei 390 px genau 390 px breit; Zoom erlaubt, Doppeltipp-Zoom auf dem Brett
   verhindert (`touch-action: manipulation`).
-- Hash-Router (`#/brett`, `#/taktik`, `#/taktik/statistik`, `#/mehr/...`), feste untere Leiste
-  (Brett, Taktik), Knopf "Mehr" oben rechts, Info-Seite mit Namensnennung Cburnett (CC BY-SA 3.0)
+- Hash-Router (`#/brett`, `#/taktik`, `#/taktik/statistik`, `#/spielen/...`, `#/mehr/...`; Stand 19.11.2026: Pfade mit Parameter wie
+  `#/spielen/rueckblick/<id>` möglich), feste untere Leiste (Brett, Taktik, Spielen), Knopf "Mehr" oben rechts, Info-Seite mit Namensnennung Cburnett (CC BY-SA 3.0)
   und den Lizenzen.
 - Zentrale Speicherung `js/storage.js`: ein Schlüssel (`schach-training`) mit Versionsnummer und
   Migrationskette, Schutz vor unlesbaren Ständen, `navigator.storage.persist()` bei jedem Start.
@@ -335,7 +338,7 @@ Fortschritt mit Zahlen). Keine Gamification.
   Bewertungsleiste, keine Zugvorschläge. "Computer denkt" bei gesperrtem Brett (0,5 bis 2 Sekunden je Stufe), Aufgeben mit
   Rückfrage, Spielende durch chess.js (Matt, Patt, dreifache Wiederholung, 50 Züge, Material).
 - Gespeichert wird nach jedem Zug (`spielen.aktiv`); nach Neuladen oder App-Wechsel geht es weiter, ein verpasster
-  Computerzug wird nachgeholt. Speicherformat **Version 5** mit Migration (`spielen.partien` höchstens 30, `spielen.versuche`
+  Computerzug wird nachgeholt. Speicherformat **Version 5** (seit Teil E aktuell Version 6) mit Migration (`spielen.partien` höchstens 30, `spielen.versuche`
   höchstens 100, `spielen.aktiv`, `spielen.gestartet`, `einstellungen.chesscomWertung`); Export und Import nehmen alles mit.
 - Patzer-Warnung (`js/warnung.js`): genaue Prüfung mit chess.js (Matt in 1; Schlag einer Figur ab Springer, auf die man nicht
   zurückschlagen kann), bei freier Figur fragt die Engine 150 ms nach, ob der Gegner sie wirklich nähme. Frage mit "Ändern"
@@ -343,8 +346,8 @@ Fortschritt mit Zahlen). Keine Gamification.
 - Stufenempfehlung (`js/empfehlung.js`) erscheint in den Einstellungen, sobald es mindestens 3 Partien auf der letzten Stufe gibt.
 - Getestet: `tests/e2e/spielen.cjs` (43 Prüfungen, echte Engine, 390 px, Touch), Unit-Tests für Partie, Warnung, Übungen, Speicher
   (Migration 4 auf 5, Obergrenzen, Export/Import); die alten Browsertests wurden auf Version 5 und drei Reiter angepasst.
-- **Bekannte Mängel:** "Im Brett ansehen" lädt die Partie ins Brett, die Liste "Meine Partien" und das Laden per PGN-Eingabe
-  kommen in Abschnitt 5. Läuft die Engine im Hintergrund nicht weiter (iPhone), erscheint "Erneut versuchen".
+- **Bekannte Mängel:** Läuft die Engine im Hintergrund nicht weiter (iPhone), erscheint "Erneut versuchen". (Die Liste "Meine Partien"
+  und das Laden per PGN-Eingabe sind inzwischen fertig, siehe Teil D.)
 
 ### Teil C: Grundmatts und Vorteil verwerten, Abschnitt 4 fertig
 
@@ -381,9 +384,104 @@ Logik-Tests 110 (alle bestanden), Python 31, Browsertests in den Dateien `engine
 `partien-liste` (20), `spielen-offline` (10), `tippflaechen-spielen` (16) und alle bisherigen (angepasst auf Version 5 und drei
 Reiter). `tests/e2e/stufen-staerke.cjs` (Messung der Stufen, etwa 8 Minuten) gehört zu den langen Tests (`QUICK=1` überspringt ihn).
 
-## Phase 3 — Eigene Partien analysieren
+## Teil E bis H: Analyse, eigene Fehler als Rätsel, Fortschritt, Einführung (zweiter Pull Request, Pull Request 7)
 
-Noch nicht begonnen (siehe "Nächste Schritte").
+### Abschnitt 6: Analyse (fertig, ohne Oberfläche)
+
+- `js/analyse.js` (quellenunabhängig: PGN oder Züge plus Farbe des Spielers), `js/rueckblick.js` (Steuerung: speichert nach jeder
+  Stellung, geht nach Neuladen weiter), `docs/ANALYSE.md` (Schwellen, Genauigkeit, Messung). Speicherformat **Version 6**
+  (`spielen.analysen` höchstens 50, `spielen.analyseLauf`, `spielen.eigene` höchstens 300) mit Migration.
+- Schwellen: Bewertung auf plus/minus 1000 Centipawn gedeckelt; Patzer ab 300 Verlust, Fehler 150 bis 299, verpasste Chance
+  (Verlust ab 300, Stellung danach nicht schlechter als minus 150); Ungenauigkeiten unter 150 werden nicht angezeigt.
+- Erklärungen in einfachem Deutsch (erlaubtes Matt, ungedeckte Figur, verpasstes Matt, sonst Bauerneinheiten und besserer Zug).
+- **Messung der Dauer (Zusatz 1):** 81 Stellungen (40 Züge) bei 0,3 s je Stellung in 23,2 Sekunden in Chromium (287 ms je Stellung);
+  bei 0,6 s 46 s. Geschätzt für ein durchschnittliches Handy 30 bis 40 Sekunden (Suchzeit ist fest, ein langsames Handy sucht
+  nur weniger tief), also **unter 90 Sekunden: Die Suchzeit ist nicht einstellbar**, Standard 0,3 s. Auf dem echten Handy zu
+  prüfen; zeigt sich dort mehr als 90 Sekunden, kommt "schnell/normal/genau" (0,15/0,3/0,6 s, Standard normal).
+- Ehrlich: Patzer bleiben bei anderer Suchzeit gleich (1), die Zahl kleiner Fehler schwankt (2, 4, 6 bei 0,15, 0,3, 0,6 s).
+- Getestet: 16 Logik-Tests Analyse, 4 Tests der Steuerung (Fortsetzen, Abbruch, Obergrenze), `tests/e2e/analyse.cjs` (13 Prüfungen,
+  echte Engine: eingestellte Dame wird als Patzer gefunden, Fortsetzen nach Neuladen), `tests/e2e/analyse-dauer.cjs` (Messung).
+
+### Abschnitt 7: Rückblick-Seite (fertig)
+
+- `#/spielen/rueckblick/<id>` (`js/pages/rueckblick.js`, Router kennt jetzt Pfade mit Parameter): Fortschritt "Stellung 23 von 80"
+  mit Balken, die Analyse läuft im Hintergrund und geht nach App-Wechsel oder Neuladen weiter (auch ohne die Seite offen zu haben:
+  `rueckblick.fortsetzen()` beim App-Start und beim Zurückkehren in die App); bei einem Fehler "Erneut versuchen".
+- Ergebnis: "1 Patzer, 3 Fehler, 0 verpasste Chancen", Liste der Stellen (Zug, Art, Erklärung). Antippen: Brett mit der Stellung vor dem
+  Zug, rotem Pfeil (gespielter Zug) und grünem Pfeil (besserer Zug), Legende, Erklärung; "Nach meinem Zug" und "Vor dem Zug",
+  vorige und nächste Stelle, "Als Rätsel üben".
+- **Gleiches Brett und gleiche Designs (Zusatz 3):** Das Rückblick-Brett ist dasselbe Chessground-Brett in demselben Behälter
+  (`board-wrap`, `board`) wie Brett, Taktik und Spielen, ohne eigene Farben; die Designs wirken über die Variablen der Seite. Test
+  `rueckblick.cjs`: in allen drei Designs gleiche Feld- und Figurenfarben wie auf der Brett-Seite, gleiche Klassen, quadratisch.
+- Nach einer Partie steht auf der Endseite der ruhige Hinweis "Rückblick ansehen (ca. 3 Minuten)"; in "Meine Partien" gibt es den
+  Knopf "Rückblick". Nichts startet von selbst.
+- **Fehler gefunden und behoben:** Wurde das Rückblick-Brett nach dem Verlassen der Seite erneut geöffnet, rechnete Chessground die
+  Pfeile mit einer veralteten Brettgröße (ungültige Koordinaten). Das Brett wird jetzt bei jedem Öffnen der Stelle neu aufgebaut.
+- Getestet: `tests/e2e/rueckblick.cjs` (27 Prüfungen, echte Engine).
+
+### Abschnitt 8: Eigene Fehler als Rätsel (Teil F, fertig)
+
+- `js/eigene.js`: Nach jeder fertigen Analyse werden Patzer und verpasste Chancen zu Rätseln (Stellung vor dem Zug als FEN `zugFen`,
+  richtige Züge, kurze Hauptvariante bis 3 Halbzüge). Fehler (150 bis 299) werden auf Wunsch ("Als Rätsel üben") zum Rätsel.
+- **Richtig** sind alle Züge, die höchstens 50 Centipawn schlechter sind als der beste (MultiPV 3). **Eindeutig** (sonst kein Rätsel):
+  Der beste Zug außerhalb dieser Gruppe ist mindestens 150 Centipawn schlechter; sind alle drei Kandidaten gleich gut, ist unbekannt,
+  ob andere Züge schlecht sind, und es gibt kein Rätsel. Folge: **Viele Patzer in der Eröffnung ergeben kein Rätsel**, weil dort viele
+  Züge gleich gut sind (so im Beispiel mit der Dame im 3. Zug); Rätsel entstehen vor allem bei verpassten Gewinnen, Matt in 1 und
+  freien Figuren. Der Rückblick sagt das bei "Als Rätsel üben" ruhig.
+- Wiederholungssystem: Karte Stufe 1, fällig am nächsten Tag, danach 3, 7 und 21 Tage; nicht gelöst: zurück auf Stufe 1. Art
+  "wiederholung": Die **Taktikstärke und der Rätselzähler ändern sich nie** (getestet).
+- Sitzungen (`js/session.js`): bis zu 25 Prozent eigene Fehler (bei 10 Rätseln 2 bis 3), solange welche fällig sind; im Trainer steht
+  "Eigener Fehler (Zug N)". In der Statistik ist "Eigener Fehler" ein eigenes Thema (zählt nicht zu den schwächsten Themen); das
+  Thema lässt sich auf der Taktik-Seite auch als Filter wählen. Obergrenze 300 gespeicherte eigene Rätsel (die ältesten fallen samt
+  Karte weg). Der Rätsel-Lauf akzeptiert bei diesen Rätseln jeden richtigen Zug (`richtig`).
+- Getestet: 10 Logik-Tests `eigene.test.mjs`, `tests/e2e/eigene-raetsel.cjs` (21 Prüfungen: Rätsel entsteht, richtig und falsch im Trainer
+  gelöst, Leitner 1/3, Stärke unverändert, 2 bis 3 von 10 in der Sitzung, Statistik, nicht eindeutig).
+
+### Abschnitt 9: Fortschritt (Teil G, fertig)
+
+- `#/spielen/fortschritt` (`js/pages/fortschritt.js`, Rechnung in `js/fortschritt.js`; Unterreiter neben "Spielen" und "Meine Partien"):
+  Zahl der Partien, Ergebnisse je Stufe, Patzer pro Partie als einfaches Liniendiagramm (Mittel der letzten 5), durchschnittlicher
+  Verlust pro Zug, Verteilung der Patzer auf Eröffnung (Zug 1 bis 10), Mittelspiel und Endspiel (höchstens 6 Figuren ohne Könige und
+  Bauern), Verteilung der Fehlerarten (Figur eingestellt, Drohung übersehen, Chance verpasst, dazu "Sonstige Fehler"; ein erlaubtes
+  Matt zählt als "Drohung übersehen"), Zahl der eigenen Rätsel und Lösungsquote.
+- Alles erst ab **mindestens 5 Partien** (die Rückblick-Zahlen ab 5 Partien mit Rückblick), sonst "zu wenig Daten". Ehrliche Hinweise auf
+  der Seite: Zufall in einzelnen Partien ist groß, aussagekräftig erst ab 10 oder mehr Partien, der Computer spielt anders als Menschen.
+- **Nur gleiche Stufenversion (Zusatz 2):** Es zählen nur Partien (und Übungen) mit der aktuellen Stufenversion, das gilt auch für die
+  Stufenempfehlung und die Übungszahlen. Frühere Versionen stehen getrennt im Block "Frühere Stufenversionen" und werden nicht
+  eingerechnet (getestet mit Version 0 und 1).
+- **Patzer-Warnung getrennt:** Auswahl "Partien ohne Patzer-Warnung" (Standard) und "Partien mit Patzer-Warnung"; beide werden
+  nie vermischt.
+- Stufenempfehlung als ruhiger Satz (3 von 5 gewonnen: eine Stufe höher; 4 von 5 verloren: eine tiefer; sonst bleiben). Grundmatts:
+  Mittel der Züge bis zum Matt der letzten 5 Versuche und Quote der erfolgreichen, je Figur, mit Referenz. Vorteil verwerten: Quote
+  gewonnen, gesamt und je Vorteil.
+- Getestet: 9 Logik-Tests `fortschritt.test.mjs`, `tests/e2e/fortschritt.cjs` (25 Prüfungen: leer, Beispieldaten mit 8 Partien, zwei
+  Stufenversionen, Gruppe mit Warnung, Überlauf, Tippflächen).
+
+### Abschnitt 10: Einführung und Startseite (Teil H, fertig)
+
+- Einführung hat jetzt **8 Seiten**: Seite 1 nennt auch "Spielen", Seite 6 sagt ehrlich, dass die App Partien gegen Menschen mit langer
+  Bedenkzeit nicht ersetzt, neu ist Seite 8 "Wie Partien dir helfen": zwei bis drei ganze Partien pro Woche ohne Zug zurücknehmen, jede
+  mit Rückblick, die Rätsel mit eigenen Fehlern in der täglichen Sitzung, Grundmatts üben, bis sie in unter 20 Zügen sitzen, und der
+  Vier-Fragen-Check vor jedem Zug (die vier Fragen stehen auch auf Seite 7).
+- Startseite "Spielen": ein kleiner Hinweis mit "Offene Rückblicke: N" (Partien und Vorteil-Übungen ohne fertigen Rückblick, nicht
+  Grundmatts; bei genau einem öffnet der Knopf ihn direkt, sonst "Meine Partien") und "Fällige eigene Rätsel: N" (Knopf "Üben" startet
+  eine Sitzung nur mit diesen Rätseln, auch ohne Einstufung). Bei 0 sind die Knöpfe gesperrt, kein Effekt, keine Zahl-Blase.
+- Getestet: `tests/e2e/spielen-hinweise.cjs` (12 Prüfungen), `tests/e2e/einfuehrung.cjs` (46 Prüfungen, auf 8 Seiten angepasst).
+
+### Teststand nach Teil E bis H (19.11.2026)
+
+Vollständiger Lauf von `tests/run-all.sh` (mit den langen Tests, etwa 40 Minuten): **151 Logik-Tests, 31 Python-Tests und 575
+Browser-Prüfungen in 30 Dateien, alle bestanden.** Neu in Teil E bis H: `analyse` (13, echte Engine), `rueckblick` (27),
+`eigene-raetsel` (21), `fortschritt` (25), `spielen-hinweise` (12), `analyse-dauer` (Messung, 2), Logik-Tests `analyse`, `rueckblick`,
+`eigene`, `fortschritt`; angepasst wurden `einfuehrung` (8 Seiten), `daten`, `pruefsets`, `storage` (Speicherformat 6) und `denkhilfe`
+(Wartezeit im Test: Der Seitenwechsel kam nach dem Klick erst im nächsten Schritt).
+Die Messungen `stufen-staerke.cjs` (etwa 8 Minuten) und `analyse-dauer.cjs` (etwa 3 Minuten) gehören zu den langen Tests.
+
+## Phase 3 — Eigene Partien analysieren (Chess.com)
+
+Die **Analyse eigener Partien ist fertig** (Teil E bis G, siehe oben; sie nimmt PGN und Farbe des Spielers und ist nicht an die
+Quelle gebunden). Es fehlt noch das **Holen der Partien von Chess.com** (Benutzername, öffentliche Schnittstelle) und die
+Anzeige dieser Partien; danach laufen Rückblick und eigene Rätsel unverändert. Siehe "Nächste Schritte".
 
 ## Phase 4 — Eröffnung und Endspiel
 
@@ -409,6 +507,22 @@ Computergegner (Teil A bis D):
 - **Patzer-Warnung:** Erscheint sie nur, wenn wirklich etwas hängt? Stört sie? Ist die Frage verständlich?
 - Grundmatts: Sind die Stellungen verständlich, sind einige zu leicht oder zu schwer?
 - PGN kopieren auf dem iPhone (Zwischenablage) und PGN einfügen auf der Brett-Seite.
+
+Analyse, Rückblick, eigene Rätsel, Fortschritt (Teil E bis H):
+- **Analysedauer:** Wie lange braucht der Rückblick einer Partie mit etwa 40 Zügen (80 Stellungen) auf dem Handy? Erwartet sind 30 bis 40
+  Sekunden (Chromium am PC: 23 Sekunden); die Grenze ist 90 Sekunden. Zeigt es sich länger, wird die Suchzeit einstellbar
+  (schnell 0,15 s, normal 0,3 s, genau 0,6 s, Standard normal). Wird das Handy dabei warm, was kostet es an Akku?
+- **App-Wechsel mitten in der Analyse (iPhone):** In eine andere App wechseln und zurückkehren, danach Safari-Tab neu laden: Geht es bei
+  "Stellung N von 80" weiter, oder erscheint "Erneut versuchen"?
+- **Rückblick-Brett:** Sind der rote und der grüne Pfeil gut zu unterscheiden (draußen, in allen drei Designs)? Ist die Legende klar?
+  Sind die Erklärungen verständlich ("Die Dame auf e5 war danach ungedeckt ...")? Stimmen die gefundenen Patzer mit deinem Gefühl überein,
+  werden zu viele oder zu wenige "Fehler" angezeigt (kleine Fehler schwanken je nach Suchzeit)?
+- **Eigene Rätsel:** Entstehen genug Rätsel aus deinen Partien (viele Eröffnungsfehler ergeben keins, weil dort viele Züge gleich gut
+  sind)? Fühlt sich der Anteil von 2 bis 3 eigenen Fehlern in einer Sitzung richtig an? Ist "Eigener Fehler (Zug N)" verständlich?
+- **Fortschritt:** Sind die Zahlen verständlich und ruhig, oder verwirrt etwas (Auswahl "mit/ohne Patzer-Warnung", "Frühere
+  Stufenversionen")? Passt der Satz zur Stufenempfehlung?
+- **Startseite Spielen:** Sind "Offene Rückblicke" und "Fällige eigene Rätsel" hilfreich oder aufdringlich?
+- **Einführung:** Ist die neue Seite 8 "Wie Partien dir helfen" verständlich, passt der empfohlene Wochenablauf?
 
 Allgemein und Taktik:
 - "Zum Home-Bildschirm" auf iPhone (Safari: Teilen) und Android (Chrome: App installieren);

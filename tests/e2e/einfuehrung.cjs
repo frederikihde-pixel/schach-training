@@ -21,8 +21,8 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   await page.goto(url + "index.html#/brett");
   await page.waitForTimeout(600);
   r.check("Erster Start: Einführung erscheint automatisch", await visible(page));
-  r.check("Anzeige 'Seite 1 von 7'", (await seite(page)) === "Seite 1 von 7");
-  r.check("Sieben Seiten (die neue Seite zum häufigsten Fehler ist die siebte)", (await page.$$("#intro-slides .intro-slide")).length === 7);
+  r.check("Anzeige 'Seite 1 von 8'", (await seite(page)) === "Seite 1 von 8");
+  r.check("Acht Seiten (Seite 7: häufigster Fehler, Seite 8: Wie Partien dir helfen)", (await page.$$("#intro-slides .intro-slide")).length === 8);
   r.check("Zurück ist auf der ersten Seite gesperrt", await page.evaluate(() => document.getElementById("intro-zurueck").disabled));
   r.check("Kein seitlicher Überlauf", await page.evaluate(() => document.documentElement.scrollWidth === window.innerWidth));
 
@@ -44,7 +44,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     ["Daten regelmäßig exportieren", /Exportiere deine Daten regelmäßig/],
     ["immer denselben Link", /immer denselben Link/],
     ["Home-Bildschirm", /Home-Bildschirm/],
-    ["ehrlicher Hinweis: Partien mit langer Bedenkzeit und Analyse", /Partien mit langer Bedenkzeit dazu und die Analyse/],
+    ["ehrlicher Hinweis: Partien gegen Menschen mit langer Bedenkzeit gehören dazu", /Partien gegen Menschen mit langer\s+Bedenkzeit ersetzt sie nicht/],
   ];
   for (const [name, re] of noetig) r.check(`Inhalt: ${name}`, re.test(text));
   r.check("Keine Emojis", !EMOJI.test(text));
@@ -70,10 +70,10 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   // Weiter und Zurück
   await page.click("#intro-weiter");
   await page.waitForTimeout(250);
-  r.check("Weiter: Seite 2 von 7, Zurück ist frei", (await seite(page)) === "Seite 2 von 7" && !(await page.evaluate(() => document.getElementById("intro-zurueck").disabled)));
+  r.check("Weiter: Seite 2 von 8, Zurück ist frei", (await seite(page)) === "Seite 2 von 8" && !(await page.evaluate(() => document.getElementById("intro-zurueck").disabled)));
   await page.click("#intro-zurueck");
   await page.waitForTimeout(250);
-  r.check("Zurück: wieder Seite 1", (await seite(page)) === "Seite 1 von 7");
+  r.check("Zurück: wieder Seite 1", (await seite(page)) === "Seite 1 von 8");
 
   // Wischen (Touch)
   const client = await page.context().newCDPSession(page);
@@ -87,18 +87,23 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     await page.waitForTimeout(600);
   };
   await swipe(330, 40);
-  r.check("Wischen nach links: Seite 2", (await seite(page)) === "Seite 2 von 7", await seite(page));
+  r.check("Wischen nach links: Seite 2", (await seite(page)) === "Seite 2 von 8", await seite(page));
   await swipe(330, 40);
-  r.check("Nochmal wischen: Seite 3", (await seite(page)) === "Seite 3 von 7", await seite(page));
+  r.check("Nochmal wischen: Seite 3", (await seite(page)) === "Seite 3 von 8", await seite(page));
   await swipe(40, 330);
-  r.check("Wischen nach rechts: zurück auf Seite 2", (await seite(page)) === "Seite 2 von 7", await seite(page));
+  r.check("Wischen nach rechts: zurück auf Seite 2", (await seite(page)) === "Seite 2 von 8", await seite(page));
 
   // Bis zum Ende
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     await page.click("#intro-weiter");
     await page.waitForTimeout(200);
   }
-  r.check("Letzte Seite: Knopf heißt 'Fertig'", (await seite(page)) === "Seite 7 von 7" && (await page.textContent("#intro-weiter")) === "Fertig", await seite(page));
+  r.check("Letzte Seite: Knopf heißt 'Fertig'", (await seite(page)) === "Seite 8 von 8" && (await page.textContent("#intro-weiter")) === "Fertig", await seite(page));
+  r.check("Seite 8: Wie Partien dir helfen (Wochenablauf, Rückblick, eigene Fehler, Grundmatts unter 20 Zügen, vier Fragen)", await page.evaluate(() => {
+    const el = document.querySelectorAll("#intro-slides .intro-slide")[7];
+    const t = el.innerText;
+    return /Wie Partien dir helfen/.test(t) && /Zwei bis drei ganze Partien gegen den Computer, ohne Zug zurücknehmen/.test(t) && /Rückblick/.test(t) && /eigenen Fehlern/.test(t) && /in unter 20 Zügen/.test(t) && /Was hat der Gegner gerade gezogen\?/.test(t) && /Was bedroht er\?/.test(t) && /Ist meine Figur gedeckt\?/.test(t) && /Kann ich Schach, Schlagen oder eine Drohung ausführen\?/.test(t) && el.querySelectorAll("ol li").length === 4;
+  }));
   r.check("Seite 7: häufigster Fehler mit den vier Fragen", await page.evaluate(() => {
     const el = document.querySelectorAll("#intro-slides .intro-slide")[6];
     const t = el.innerText;
@@ -121,7 +126,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   }));
   await page.click("#btn-einfuehrung");
   await page.waitForTimeout(200);
-  r.check("Mehr > Einführung öffnet sie jederzeit wieder (Seite 1)", (await visible(page)) && (await seite(page)) === "Seite 1 von 7");
+  r.check("Mehr > Einführung öffnet sie jederzeit wieder (Seite 1)", (await visible(page)) && (await seite(page)) === "Seite 1 von 8");
   await page.click("#intro-ueberspringen");
   r.check("Überspringen schließt sie wieder", !(await visible(page)));
   r.check("keine Skriptfehler (erster Start)", page.__errors.length === 0, page.__errors.join("; "));

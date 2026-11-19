@@ -2,6 +2,7 @@
 import { dayKey, addDays } from "./leitner.js";
 
 export const MIN_ATTEMPTS = 5; // darunter: "zu wenig Daten"
+export const EIGENER_FEHLER = "eigenerFehler"; // Thema der Rätsel aus eigenen Partien
 export const MS_CAP = 120000; // längere Zeiten (z. B. Pause) zählen als 120 Sekunden
 
 export function cappedMs(ms) {
@@ -31,8 +32,9 @@ export function themeStats(themen) {
 
 // Die schwächsten Themen (mindestens MIN_ATTEMPTS Versuche): niedrigste Trefferquote zuerst.
 export function weakestThemes(themen, count = 3) {
+  // Das Thema "Eigener Fehler" zählt hier nicht: Es lässt sich nicht gezielt aus dem Rätselvorrat üben.
   return themeStats(themen)
-    .filter((t) => t.enough)
+    .filter((t) => t.enough && t.tag !== EIGENER_FEHLER)
     .sort((a, b) => a.rate - b.rate || b.n - a.n || (a.tag < b.tag ? -1 : 1))
     .slice(0, count);
 }

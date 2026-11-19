@@ -58,7 +58,15 @@ function eintragElement(e, meldung) {
       meldung("Kopieren ist hier nicht möglich.");
     }
   });
-  buttons.append(ansehen, kopieren);
+  buttons.append(ansehen);
+  if (e.modus !== "grundmatt") {
+    const rb = document.createElement("a");
+    rb.className = "btn-link-quiet";
+    rb.href = `#/spielen/rueckblick/${e.id}`;
+    rb.textContent = "Rückblick";
+    buttons.append(rb);
+  }
+  buttons.append(kopieren);
   li.append(p, buttons);
   return li;
 }

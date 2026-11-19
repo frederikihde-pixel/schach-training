@@ -37,8 +37,17 @@ eigene Lizenz (siehe `vendor/*/LICENSE`).
 - `chess.js` liefert die Schachregeln und den Spielzustand.
 - `chessground` zeigt das Brett an und nimmt Eingaben entgegen; es kennt
   selbst keine Schachregeln.
-- Seiten laufen über Hash-Routen (`#/brett`, `#/taktik`, `#/mehr/...`), siehe
-  `js/router.js`; eine Seite pro `<div class="page">` in `index.html`.
+- Seiten laufen über Hash-Routen (`#/brett`, `#/taktik`, `#/spielen/...`, `#/mehr/...`), siehe
+  `js/router.js` (Routen mit `prefix: true` nehmen auch Pfade mit Parameter an, z. B.
+  `#/spielen/rueckblick/<id>`); eine Seite pro `<div class="page">` in `index.html`.
+- Der Computergegner ist Stockfish.js (`vendor/stockfish/`, Hülle `js/engine.js`). Die Engine
+  lädt erst beim ersten Gebrauch und steht bewusst nicht in `PRECACHE` (der Service Worker legt
+  sie beim ersten Gebrauch ab). Die Stärkestufen in `js/stufen.js` sind fest und versioniert:
+  Wer sie ändert, erhöht `STUFENVERSION` und passt `docs/STUFEN.md` an. Statistiken zählen nur
+  Partien der aktuellen Stufenversion, Partien mit Patzer-Warnung getrennt.
+- Die Analyse (`js/analyse.js`, Steuerung `js/rueckblick.js`) ist quellenunabhängig (PGN oder
+  Züge plus Farbe des Spielers); Schwellen und Genauigkeit stehen in `docs/ANALYSE.md`. Eigene
+  Fehler als Rätsel (`js/eigene.js`) laufen im Leitner-System und ändern die Taktikstärke nie.
 - Alle gespeicherten Daten gehen ausschließlich über `js/storage.js` (ein
   Schlüssel mit Versionsnummer und Migration). Kein direktes `localStorage`
   anderswo. Neue Felder: Standardwerte in `defaults()` ergänzen, bei Formatänderung

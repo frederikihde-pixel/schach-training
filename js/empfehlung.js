@@ -4,13 +4,14 @@
 // zuletzt gespielten Partie. Es braucht mindestens 3 Partien auf dieser Stufe. Zusatz (Entscheidung des
 // Autors): Wurden genau 3 Partien auf der Stufe gespielt und alle verloren, wird ebenfalls N-1 empfohlen.
 
-import { STUFEN } from "./stufen.js";
+import { STUFEN, STUFENVERSION } from "./stufen.js";
 
 export const MIN_PARTIEN = 3;
 export const FENSTER = 5;
 
-export function empfehlung(partien) {
-  const echte = partien.filter((p) => p.modus === "partie");
+// Es zählen nur Partien mit der aktuellen Stufenversion (frühere Stufen waren anders eingestellt).
+export function empfehlung(partien, stufenversion = STUFENVERSION) {
+  const echte = partien.filter((p) => p.modus === "partie" && (p.stufenversion ?? 1) === stufenversion);
   if (!echte.length) return null;
   const N = echte[echte.length - 1].stufe;
   const auf = echte.filter((p) => p.stufe === N).slice(-FENSTER);

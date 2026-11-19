@@ -7,7 +7,7 @@ node --test "tests/unit/*.test.mjs" 2>&1 | grep -E "^# (tests|pass|fail)" || fai
 echo "== Python (Rätsel-Skript)"
 python3 -m unittest discover -s tests/python 2>&1 | tail -3 || fail=1
 # QUICK=1 überspringt die langen Browsertests (mehrere Minuten, spielen ganze Sitzungen durch).
-SLOW="taktik.cjs taktik-session.cjs statistik.cjs stufen-staerke.cjs"
+SLOW="taktik.cjs taktik-session.cjs statistik.cjs stufen-staerke.cjs analyse-dauer.cjs"
 for t in tests/e2e/*.cjs; do
   [ "$(basename "$t")" = "lib.cjs" ] && continue
   [ "$(basename "$t")" = "screenshots.cjs" ] && continue  # erzeugt Bilder, ist kein Test

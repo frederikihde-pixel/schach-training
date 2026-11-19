@@ -1,0 +1,46 @@
+{
+ "halbzuege": 80,
+ "stellungen": 81,
+ "startMs": 327,
+ "varianten": {
+  "movetime150": {
+   "gesamtSek": 11.9,
+   "proStellungMs": 147,
+   "langsteMs": 157,
+   "patzer": 1,
+   "fehler": 2,
+   "chancen": 0
+  },
+  "movetime300": {
+   "gesamtSek": 23.2,
+   "proStellungMs": 287,
+   "langsteMs": 306,
+   "patzer": 1,
+   "fehler": 4,
+   "chancen": 0
+  },
+  "movetime600": {
+   "gesamtSek": 46,
+   "proStellungMs": 568,
+   "langsteMs": 606,
+   "patzer": 1,
+   "fehler": 6,
+   "chancen": 0
+  },
+  "tiefe10": {
+   "gesamtSek": 0.8,
+   "proStellungMs": 10,
+   "langsteMs": 51
+  },
+  "tiefe12": {
+   "gesamtSek": 1.8,
+   "proStellungMs": 22,
+   "langsteMs": 97
+  }
+ },
+ "tiefeBei300ms": {
+  "mittel": 36.9,
+  "min": 14,
+  "max": 245
+ }
+}
