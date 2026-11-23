@@ -477,7 +477,7 @@ Browser-Prüfungen in 30 Dateien, alle bestanden.** Neu in Teil E bis H: `analys
 (Wartezeit im Test: Der Seitenwechsel kam nach dem Klick erst im nächsten Schritt).
 Die Messungen `stufen-staerke.cjs` (etwa 8 Minuten) und `analyse-dauer.cjs` (etwa 3 Minuten) gehören zu den langen Tests.
 
-## Oberfläche vereinfachen (Pull Request 8, in Arbeit, keine neuen Funktionen)
+## Oberfläche vereinfachen (Pull Request 8, fertig, keine neuen Funktionen)
 
 Ziel: weniger Orte, weniger Auswahl vor dem Start, keine doppelten Wege. Daten und Logik bleiben; einzige Datenänderung: drei neue
 Standardwerte in den Einstellungen (Speicherformat Version 7, nur zusätzliche Felder). Plan und Skizzen standen im Chat; die Regeln für
@@ -589,6 +589,28 @@ die Startseite stehen in `docs/HEUTE.md`.
 - Tote Stile entfernt (`.way`, `.way-list`, `.subnav-3`, `.back-row`).
 - Diagramme niedriger (Taktik-Verlauf 130, Patzer-Verlauf 120): Fortschritt hat jetzt 2,42 Bildschirmhöhen statt 2,48 (Grenze 2,5).
 - Keine Testanpassung nötig; schnelle Testreihe grün.
+
+### Abschnitt 9: Messziele, Screenshots, Abschluss (fertig)
+
+- Neuer Test `tests/e2e/messziele.cjs` (390 px, Touch): vom Start bis zur Rätsel-Sitzung 1 Tipp (Ziel höchstens 2), bis zur laufenden Partie
+  2 Tipps (Ziel höchstens 3); jede Hauptseite höchstens 2,5 Bildschirmhöhen (eingeklappte Listen zählen nicht), kein seitlicher Überlauf, alle
+  Tippflächen mindestens 44 x 44 px, höchstens ein ausgefüllter Hauptknopf je Seite.
+- Vorher/Nachher-Screenshots und Maße: `tests/screenshots/vorher/` und `tests/screenshots/nachher/` (`messung.json`). Neu erzeugen:
+  `node tests/e2e/seiten-messen.cjs vorher|nachher`. Die längste Seite ist Fortschritt mit 2,42 Bildschirmhöhen.
+- Weiterleitungen: alle alten Adressen (`#/brett`, `#/spielen/partie`, `#/mehr/...`, `#/taktik/statistik`, `#/spielen/fortschritt`,
+  `#/spielen/liste`) führen auf die neuen Seiten; getestet in `tests/e2e/weiterleitungen.cjs`.
+- Testreihe: `tests/run-all.sh` (Logik, Python, Browser) läuft vollständig durch.
+
+**Auf dem echten Handy prüfen (Oberfläche):**
+- Heute: Ist der Vorschlag am Morgen nachvollziehbar? Stimmt die Reihenfolge (fällige Wiederholungen vor "Partie spielen")?
+- Reicht ein Tipp auf den Hauptknopf; wirkt der Knopf der unteren Leiste (Heute, Taktik, Spielen, Fortschritt) nah genug am Daumen?
+- Zahnrad oben rechts und Zurück-Pfeil oben links: gut zu treffen, auch mit Hülle? Safe-Area (Notch, Home-Balken) unten und oben.
+- Spielen: Große Schalter für Farbe und Stufe: eindeutig, welche gewählt ist? Ist "Zufall" als Standard für die Farbe gewollt?
+- "Mehr Optionen" und "Weitere Zahlen": Findest du alles wieder, was früher auf der Hauptseite stand? Fehlt etwas Wichtiges?
+- Fortschritt: Ist die lange Seite beim Scrollen übersichtlich? Sind die eingeklappten Listen ("Alle anzeigen") gut zu finden?
+- Schrift: Ist 16 px überall gut lesbar, ohne dass Texte zu groß wirken? Alle drei Brett-Designs im dunklen Stil prüfen.
+- Alte Lesezeichen und Home-Bildschirm-Verknüpfung: Führen sie auf die richtige neue Seite?
+- Datensicherung: Sicherung aus der alten Version importieren (Speicherformat 7 ergänzt nur neue Felder).
 
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 
