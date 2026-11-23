@@ -615,45 +615,67 @@
         </div>
       </div>
 
-      <!-- Seite: Mehr -->
-      <div id="page-mehr" class="page" hidden>
-        <div class="page-inner">
-          <nav class="link-list" aria-label="Mehr">
-            <button id="btn-einfuehrung" type="button">Einführung</button>
-            <a href="#/einstellungen/brett">Freies Brett</a>
-            <a href="#/mehr/darstellung">Darstellung</a>
-            <a href="#/mehr/einstellungen">Einstellungen</a>
-            <a href="#/einstellungen/daten">Daten sichern und wiederherstellen</a>
-            <a href="#/einstellungen/info">Info und Lizenzen</a>
-          </nav>
-        </div>
-      </div>
-
-      <!-- Seite: Einstellungen -->
+      <!-- Seite: Einstellungen (Zahnrad) -->
       <div id="page-einstellungen" class="page" hidden>
         <div class="page-inner">
-          <div class="block">
-            <h3>Denkhilfe</h3>
-            <p>
-              Bei den ersten 10 Rätseln überhaupt (der Einstufung) und solange deine Taktikstärke unter 900 liegt,
-              steht vor dem Rätsel eine Zeile: Was bedroht der Gegner? Welche Figur ist ungedeckt? Sie ist keine
-              Lösungshilfe, sondern erinnert an die wichtigste Prüfung vor jedem Zug.
-            </p>
-            <div class="stack">
-              <button id="set-denkhilfe" type="button" role="switch" aria-checked="true">Denkhilfe: an</button>
+          <div class="set-section">
+            <h2 class="set-titel">Darstellung</h2>
+            <p class="muted">Brett-Design. Die App selbst bleibt dunkel.</p>
+            <div id="design-liste" class="design-list" role="group" aria-label="Brett-Design"></div>
+          </div>
+
+          <div class="set-section">
+            <h2 class="set-titel">Training</h2>
+            <div class="set-row">
+              <span class="set-label"><strong>Denkhilfe</strong><span class="muted">Erinnerung vor den ersten Rätseln</span></span>
+              <button id="set-denkhilfe" type="button" role="switch" aria-checked="true" aria-label="Denkhilfe">an</button>
+            </div>
+            <details class="info">
+              <summary>Info zur Denkhilfe</summary>
+              <p>
+                Bei den ersten 10 Rätseln überhaupt und solange deine Taktikstärke unter 900 liegt, steht vor dem Rätsel eine Zeile:
+                Was bedroht der Gegner? Welche Figur ist ungedeckt? Sie ist keine Lösungshilfe.
+              </p>
+            </details>
+            <div class="set-row">
+              <span class="set-label"><strong>Zug zurücknehmen</strong><span class="muted">Standard für neue Partien</span></span>
+              <button id="set-zuruecknahme" type="button" role="switch" aria-checked="false" aria-label="Zug zurücknehmen erlauben">aus</button>
+            </div>
+            <details class="info">
+              <summary>Info zum Zurücknehmen</summary>
+              <p>Standard: aus. So überlegst du dir deine Züge gründlich, bevor du sie ausführst. Vor jeder Partie lässt es sich ändern.</p>
+            </details>
+            <div class="set-row">
+              <span class="set-label"><strong>Patzer-Warnung</strong><span id="set-warnung-info" class="muted">Standard für neue Partien</span></span>
+              <button id="set-warnung" type="button" role="switch" aria-checked="true" aria-label="Patzer-Warnung">an</button>
+            </div>
+            <details class="info">
+              <summary>Info zur Patzer-Warnung</summary>
+              <p>
+                Vor dem Ausführen prüft die App kurz, ob dein Zug eine Figur kostenlos einstellt oder ein Matt in 1 erlaubt. Sie sagt dir
+                nicht, was besser wäre. Solange du nichts änderst, ist sie für die ersten 3 Partien an.
+              </p>
+            </details>
+            <div class="field">
+              <label for="set-wertung">Meine Chess.com-Wertung (freiwillig, bleibt nur auf diesem Gerät)</label>
+              <input id="set-wertung" class="text-input" type="text" inputmode="numeric" autocomplete="off" placeholder="zum Beispiel 440" />
+              <p id="set-wertung-info" class="muted"></p>
+            </div>
+            <div class="field">
+              <span class="field-label" id="set-pruefset-label">Prüfset der Standortbestimmung</span>
+              <div id="set-pruefset" class="choice-group" role="group" aria-labelledby="set-pruefset-label"></div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Seite: Darstellung -->
-      <div id="page-darstellung" class="page" hidden>
-        <div class="page-inner">
-          <p class="muted">
-            So sieht das Brett aus. Die App selbst bleibt dunkel. Die Wahl gilt für alle Bretter (Brett, Taktik,
-            Standortbestimmung).
-          </p>
-          <div id="design-liste" class="design-list" role="group" aria-label="Brett-Design"></div>
+          <div class="set-section">
+            <h2 class="set-titel">Weiteres</h2>
+            <nav class="link-list" aria-label="Weiteres">
+              <a href="#/einstellungen/daten">Daten sichern und wiederherstellen</a>
+              <button id="btn-einfuehrung" type="button">Einführung ansehen</button>
+              <a href="#/einstellungen/brett">Freies Brett</a>
+              <a href="#/einstellungen/info">Info und Lizenzen</a>
+            </nav>
+          </div>
         </div>
       </div>
 

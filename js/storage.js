@@ -6,7 +6,7 @@ import { PRUEFSET_IDS, DEFAULT_PRUEFSET } from "./pruefsets.js";
 
 export const APP_ID = "schach-training";
 export const STORAGE_KEY = "schach-training";
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 export const EXPORT_REMINDER_DAYS = 14;
 
 // Begrenzungen, damit die Daten klein bleiben (localStorage hat etwa 5 MB).
@@ -30,6 +30,9 @@ export function defaults(now = new Date()) {
       einfuehrungGesehen: false,
       denkhilfe: true, // Hinweiszeile vor den ersten Rätseln (nur Anfänger), abschaltbar
       chesscomWertung: null, // freiwillig, nur lokal: für den Vorschlag der Startstufe
+      zuruecknahme: false, // Standard für "Zug zurücknehmen erlauben" bei neuen Partien
+      patzerWarnung: null, // Standard der Patzer-Warnung: null = automatisch (an für die ersten 3 Partien), sonst true/false
+      pruefset: null, // Prüfset der Standortbestimmung: null = automatisch (nach Taktikstärke), sonst "einsteiger" oder "fortgeschritten"
     },
     spielen: {
       partien: [], // abgeschlossene Partien gegen den Computer (höchstens SPIELEN_CAPS.partien)
@@ -130,6 +133,16 @@ export const MIGRATIONS = {
       },
     };
   },
+  // Version 7: Standardwerte aus den Einstellungen (nur zusätzliche Felder; das bisherige Verhalten bleibt: Warnung und Prüfset
+  // "automatisch", Zug zurücknehmen aus).
+  6(data) {
+    const e = data.einstellungen || {};
+    return {
+      ...data,
+      version: 7,
+      einstellungen: { ...e, zuruecknahme: e.zuruecknahme ?? false, patzerWarnung: e.patzerWarnung ?? null, pruefset: e.pruefset ?? null },
+    };
+  },
 };
 
 export class DataError extends Error {}
@@ -174,6 +187,10 @@ export function validate(data) {
   if (typeof data.einstellungen.brettDesign !== "string") fail("Das Brett-Design ist ungültig.");
   if (typeof data.einstellungen.einfuehrungGesehen !== "boolean") fail('Die Angabe zur Einführung ist ungültig.');
   if (typeof data.einstellungen.denkhilfe !== "boolean") fail('Die Einstellung "Denkhilfe" ist ungültig.');
+  const ein = data.einstellungen;
+  if (typeof ein.zuruecknahme !== "boolean") fail('Die Einstellung "Zug zurücknehmen" ist ungültig.');
+  if (ein.patzerWarnung !== null && typeof ein.patzerWarnung !== "boolean") fail('Die Einstellung "Patzer-Warnung" ist ungültig.');
+  if (ein.pruefset !== null && !PRUEFSET_IDS.includes(ein.pruefset)) fail('Die Einstellung "Prüfset" ist ungültig.');
   const w = data.einstellungen.chesscomWertung;
   if (w !== null && !(typeof w === "number" && Number.isFinite(w))) fail("Die Chess.com-Wertung ist ungültig.");
   const sp = data.spielen;

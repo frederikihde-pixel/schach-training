@@ -5,7 +5,9 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
 const TABELLE = [
   ["#/brett", "#/einstellungen/brett", "page-brett", "Freies Brett"],
   ["#/taktik/statistik", "#/fortschritt", "page-statistik", "Fortschritt"],
-  ["#/mehr", "#/einstellungen", "page-mehr", "Einstellungen"],
+  ["#/mehr", "#/einstellungen", "page-einstellungen", "Einstellungen"],
+  ["#/mehr/einstellungen", "#/einstellungen", "page-einstellungen", "Einstellungen"],
+  ["#/mehr/darstellung", "#/einstellungen", "page-einstellungen", "Einstellungen"],
   ["#/mehr/daten", "#/einstellungen/daten", "page-daten", "Daten"],
   ["#/mehr/info", "#/einstellungen/info", "page-info", "Info und Lizenzen"],
   ["#/gibtesnicht", "#/gibtesnicht", "page-heute", "Heute"],

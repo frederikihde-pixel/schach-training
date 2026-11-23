@@ -19,6 +19,7 @@ import { offeneRueckblicke } from "../rueckblick.js";
 import { eigeneZahlen } from "../eigene.js";
 import { dayKey } from "../leitner.js";
 import { startFaelligeEigene } from "./taktik.js";
+import { warnungStandard, warnungIstAutomatisch, zuruecknahmeStandard } from "../standards.js";
 
 const $ = (id) => document.getElementById(id);
 const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste", "sp-rueckblick", "sp-fortschritt"];
@@ -111,10 +112,6 @@ function zeigeStart() {
 
 // ---------- Einstellungen: Partie und Vorteil ----------
 
-function warnungStandard() {
-  return store.get().spielen.gestartet < 3;
-}
-
 function stufenOptionen(select, gewaehlt) {
   select.innerHTML = "";
   for (const s of STUFEN) {
@@ -153,13 +150,12 @@ function zeigeSetup(modus) {
   $("sp-wertung").value = wert ? String(wert) : "";
   aktualisiereStufeInfo();
   aktualisiereWertungInfo();
-  setupZurueck = false;
-  setupWarnung = warnungStandard();
+  setupZurueck = zuruecknahmeStandard(d);
+  setupWarnung = warnungStandard(d);
   setSwitch($("sp-sw-zurueck"), setupZurueck, "Zug zurücknehmen: an", "Zug zurücknehmen: aus");
   setSwitch($("sp-sw-warnung"), setupWarnung, "Patzer-Warnung: an", "Patzer-Warnung: aus");
-  $("sp-warn-info").textContent = warnungStandard()
-    ? ""
-    : "Du hast schon 3 Partien begonnen. Deshalb ist die Warnung zunächst aus. Du kannst sie einschalten.";
+  $("sp-warn-info").textContent =
+    warnungIstAutomatisch(d) && !warnungStandard(d) ? "Du hast schon 3 Partien begonnen. Deshalb ist die Warnung zunächst aus. Du kannst sie einschalten." : "";
   meldung("sp-setup-meldung", "");
 }
 

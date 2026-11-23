@@ -499,7 +499,7 @@ die Startseite stehen in `docs/HEUTE.md`.
 - Router (`js/router.js`): Routen haben `parent`, Weiterleitungen mit `addRedirect`. Schon umgeleitet: `#/brett` nach
   `#/einstellungen/brett`, `#/taktik/statistik` nach `#/fortschritt`, `#/mehr` nach `#/einstellungen`, `#/mehr/daten` nach
   `#/einstellungen/daten`, `#/mehr/info` nach `#/einstellungen/info`.
-- **Vorläufig** (bis zu den Abschnitten 3, 4, 7): `#/heute` ist ein Platzhalter, `#/einstellungen` zeigt noch das alte Mehr-Menü,
+- **Vorläufig** (bis zu den Abschnitten 3, 4, 7): `#/heute` ist ein Platzhalter, `#/einstellungen` zeigt (seit Abschnitt 3) die neue Seite,
   `#/fortschritt` zeigt noch die alte Statistik, "Meine Partien" und die Partien-Zahlen sind über zwei Links auf der Spielen-Seite
   erreichbar.
 - Das freie Brett wird versteckt aufgebaut und beim Öffnen neu gemessen (`onShowBrett`).
@@ -509,6 +509,23 @@ die Startseite stehen in `docs/HEUTE.md`.
   (Zurück-Pfeil), `pwa` (Offline-Prüfung öffnet das freie Brett über die Adresse), `fortschritt` (Reiter und Unterreiter-Prüfungen durch
   Prüfung des Reiters Fortschritt und des Pfeils ersetzt, Neuladen statt gleicher Adresse), `themen` (Link "Themen-Übersicht" statt
   Unterreiter). Neu: `weiterleitungen.cjs` (19 Prüfungen).
+
+### Abschnitt 3: Einstellungen und Speicherformat Version 7 (fertig)
+
+- Eine Seite `#/einstellungen` (Zahnrad) mit drei Abschnitten: **Darstellung** (Brett-Design), **Training** (Denkhilfe, Zug zurücknehmen,
+  Patzer-Warnung, Chess.com-Wertung, Prüfset der Standortbestimmung; längere Erklärungen hinter einem kleinen "Info") und **Weiteres**
+  (Daten sichern und wiederherstellen, Einführung ansehen, Freies Brett, Info und Lizenzen). Daten, Freies Brett und Info sind Unterseiten
+  mit Zurück-Pfeil, damit die Einstellungen nicht länger als zwei Bildschirme werden. `#/mehr/einstellungen` und `#/mehr/darstellung`
+  führen hierher. Die Chess.com-Wertung gibt es nur hier (in den Partie-Einstellungen steht sie noch bis Abschnitt 6).
+- **Speicherformat Version 7** (einzige Datenänderung, nur zusätzliche Felder): `einstellungen.zuruecknahme` (aus), `einstellungen.patzerWarnung`
+  (null = automatisch: an für die ersten 3 Partien, danach aus; sonst ausdrücklich an oder aus) und `einstellungen.pruefset` (null =
+  automatisch nach Taktikstärke). Die Migration setzt genau das bisherige Verhalten. `js/standards.js` liefert die wirksamen Standardwerte.
+  Beim Start einer Partie gelten die Standardwerte und lassen sich für diese eine Partie ändern. Das Prüfset wird in Abschnitt 7 an die
+  Standortbestimmung angeschlossen.
+- **Anpassungen an alten Tests:** `denkhilfe` (Schalter heißt jetzt "an"/"aus" statt "Denkhilfe: an"/"aus", die Einstellungen sind ein
+  Hauptort ohne Zurück-Pfeil), `design` (die Design-Karten stehen direkt auf der Einstellungsseite), `navigation` (Einstellungen über das
+  Zahnrad), `daten`, `pruefsets`, `storage` (Version 7), Unit-Test `storage` (neue Felder in den Standardwerten). Neu: `einstellungen.cjs`
+  (21 Prüfungen), Unit-Tests `standards` (4) und Migration 6 auf 7 (3).
 
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 

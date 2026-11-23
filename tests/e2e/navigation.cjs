@@ -25,7 +25,7 @@ const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/tak
   r.check("Taktik-Seite sichtbar, Reiter markiert", (await page.evaluate(() => !document.getElementById("page-taktik").hidden && document.getElementById("tab-taktik").getAttribute("aria-current") === "page")));
   await page.click("#link-einstellungen");
   await page.waitForTimeout(150);
-  r.check("Mehr-Seite über Knopf oben rechts", await page.evaluate(() => !document.getElementById("page-mehr").hidden));
+  r.check("Einstellungen über das Zahnrad oben rechts", await page.evaluate(() => !document.getElementById("page-einstellungen").hidden));
   await page.click('a[href="#/einstellungen/info"]');
   await page.waitForTimeout(150);
   r.check("Info-Seite erreichbar", await page.evaluate(() => !document.getElementById("page-info").hidden));
@@ -37,7 +37,7 @@ const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/tak
   r.check("Lizenztext chess.js wird geladen", /BSD|Redistribution/.test(lic), lic.slice(0, 40));
   await page.click("#btn-zurueck");
   await page.waitForTimeout(150);
-  r.check("Zurück führt zu Mehr", await page.evaluate(() => !document.getElementById("page-mehr").hidden));
+  r.check("Der Zurück-Pfeil führt von Info zu Einstellungen", await page.evaluate(() => !document.getElementById("page-einstellungen").hidden));
   await page.goto(url + "index.html#/gibtesnicht");
   await page.waitForTimeout(200);
   r.check("Unbekannte Adresse zeigt die Startseite Heute", await page.evaluate(() => !document.getElementById("page-heute").hidden));

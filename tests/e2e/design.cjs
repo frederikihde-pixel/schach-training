@@ -25,7 +25,6 @@ const COLORS = {
 
   // ---- Auswahl über Mehr > Darstellung ----
   await page.click("#link-einstellungen");
-  await page.click('a[href="#/mehr/darstellung"]');
   await page.waitForSelector("#design-liste .design-card");
   const cards = await page.$$eval(".design-card", (c) => c.map((x) => ({ name: x.querySelector("strong").textContent, h: x.getBoundingClientRect().height, w: x.getBoundingClientRect().width, pressed: x.getAttribute("aria-pressed") })));
   r.check("Drei Karten: Klassisch, Dunkel, Grün", cards.map((c) => c.name).join() === "Klassisch,Dunkel,Grün", cards.map((c) => c.name).join());
@@ -74,7 +73,7 @@ const COLORS = {
   await page.click("#btn-beenden-ja");
 
   // Wechsel zu Grün und Klassisch, zurück auf die Darstellung
-  await page.goto(url + "index.html#/mehr/darstellung");
+  await page.goto(url + "index.html#/einstellungen");
   await page.waitForSelector(".design-card");
   await page.locator(".design-card").nth(2).click();
   await page.waitForTimeout(100);

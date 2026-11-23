@@ -6,7 +6,6 @@ import { initTaktik, onShowTaktik } from "./pages/taktik.js";
 import { initStatistik, onShowStatistik } from "./pages/statistik.js";
 import { onShowThemen } from "./pages/themen.js";
 import { onShowEinstellungen, initEinstellungen } from "./pages/einstellungen.js";
-import { onShowDarstellung } from "./pages/darstellung.js";
 import { initSpielen, onShowSpielen } from "./pages/spielen.js";
 import { initRueckblick } from "./pages/rueckblick.js";
 import { initFortschritt } from "./pages/fortschritt.js";
@@ -31,17 +30,17 @@ addRoute("spielen/fortschritt", { page: "page-spielen", tab: "fortschritt", titl
 addRoute("spielen/rueckblick", { page: "page-spielen", tab: "fortschritt", title: "Rückblick", onShow: onShowSpielen, prefix: true, parent: "fortschritt" });
 addRoute("fortschritt", { page: "page-statistik", tab: "fortschritt", title: "Fortschritt", onShow: onShowStatistik });
 // Einstellungen (Zahnrad) mit Unterseiten
-addRoute("einstellungen", { page: "page-mehr", title: "Einstellungen" });
+addRoute("einstellungen", { page: "page-einstellungen", title: "Einstellungen", onShow: onShowEinstellungen });
 addRoute("einstellungen/daten", { page: "page-daten", title: "Daten", onShow: onShowDaten, parent: "einstellungen" });
 addRoute("einstellungen/brett", { page: "page-brett", title: "Freies Brett", onShow: onShowBrett, parent: "einstellungen" });
 addRoute("einstellungen/info", { page: "page-info", title: "Info und Lizenzen", parent: "einstellungen" });
-addRoute("mehr/einstellungen", { page: "page-einstellungen", title: "Denkhilfe", onShow: onShowEinstellungen, parent: "einstellungen" });
-addRoute("mehr/darstellung", { page: "page-darstellung", title: "Darstellung", onShow: onShowDarstellung, parent: "einstellungen" });
 
 // Alte Adressen führen auf die neuen Orte
 addRedirect("brett", "einstellungen/brett");
 addRedirect("taktik/statistik", "fortschritt");
 addRedirect("mehr", "einstellungen");
+addRedirect("mehr/einstellungen", "einstellungen");
+addRedirect("mehr/darstellung", "einstellungen");
 addRedirect("mehr/daten", "einstellungen/daten");
 addRedirect("mehr/info", "einstellungen/info");
 
