@@ -121,55 +121,58 @@
 
       <!-- Seite: Taktik (Üben) -->
       <div id="page-taktik" class="page" hidden>
-        <div id="taktik-start" class="page-inner">
+        <div id="taktik-start" class="page-inner stack-gross">
           <p id="taktik-staerke" class="strength"></p>
           <p id="taktik-info" class="muted"></p>
 
-          <div id="taktik-einstufung" class="block" hidden>
-            <p>
-              Zum Einstieg schätzt die App deine Taktikstärke mit 10 Rätseln ein. Danach passen sich die Rätsel
-              an dich an. Es gibt keine Zeitvorgabe und keine Hinweise.
-            </p>
-            <div class="stack"><button id="btn-einstufung" type="button">Einstufung starten</button></div>
+          <div id="taktik-einstufung" class="stack-gross" hidden>
+            <p class="muted">Zehn Rätsel zeigen, wo du stehst. Danach passen sich die Rätsel an dich an.</p>
+            <button id="btn-einstufung" type="button" class="btn-haupt">Einstufung starten</button>
           </div>
 
-          <div id="taktik-training" class="block" hidden>
-            <div class="field">
-              <label for="sel-groesse">Rätsel pro Sitzung</label>
-              <select id="sel-groesse">
-                <option value="5">5</option>
-                <option value="10" selected>10</option>
-                <option value="20">20</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="sel-thema">Thema</label>
-              <select id="sel-thema"></select>
-            </div>
-            <div class="stack"><button id="btn-sitzung" type="button">Sitzung starten</button></div>
-            <div class="stack"><button id="btn-neu-einstufen" type="button" class="btn-quiet">Einstufung wiederholen</button></div>
-            <div id="neu-einstufen-frage" class="confirm" hidden>
-              <p>
-                Die Einstufung wiederholen? Deine Taktikstärke wird mit 10 neuen Rätseln neu geschätzt.
-                Verlauf, Wiederholungen und Statistik bleiben erhalten.
-              </p>
-              <div class="stack">
-                <button id="btn-neu-ja" type="button">Einstufung starten</button>
-                <button id="btn-neu-nein" type="button">Abbrechen</button>
+          <div id="taktik-training" class="stack-gross" hidden>
+            <button id="btn-sitzung" type="button" class="btn-haupt">Sitzung starten</button>
+            <details id="taktik-optionen" class="optionen">
+              <summary>Mehr Optionen</summary>
+              <div class="optionen-inhalt">
+                <div class="field">
+                  <label for="sel-groesse">Rätsel pro Sitzung</label>
+                  <select id="sel-groesse">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="sel-thema">Thema</label>
+                  <select id="sel-thema"></select>
+                </div>
+                <a class="btn-link-quiet" href="#/taktik/themen">Themen-Übersicht</a>
+                <button id="btn-neu-einstufen" type="button" class="btn-quiet">Einstufung wiederholen</button>
+                <div id="neu-einstufen-frage" class="confirm" hidden>
+                  <p>
+                    Die Einstufung wiederholen? Deine Taktikstärke wird mit 10 neuen Rätseln neu geschätzt.
+                    Verlauf, Wiederholungen und Statistik bleiben erhalten.
+                  </p>
+                  <div class="stack">
+                    <button id="btn-neu-ja" type="button">Einstufung starten</button>
+                    <button id="btn-neu-nein" type="button">Abbrechen</button>
+                  </div>
+                </div>
               </div>
-            </div>
+            </details>
           </div>
 
-          <div id="taktik-fortsetzen" class="block" hidden>
-            <p id="taktik-fortsetzen-text"></p>
-            <div class="stack">
-              <button id="btn-fortsetzen" type="button">Fortsetzen</button>
-              <button id="btn-verwerfen" type="button">Verwerfen</button>
-            </div>
+          <div id="taktik-fortsetzen" class="stack-gross" hidden>
+            <p id="taktik-fortsetzen-text" class="muted"></p>
+            <button id="btn-fortsetzen" type="button" class="btn-haupt">Fortsetzen</button>
+            <button id="btn-verwerfen" type="button" class="btn-quiet">Verwerfen</button>
           </div>
 
-          <div class="stack"><a class="btn-link-quiet" href="#/taktik/themen">Themen-Übersicht</a></div>
-          <p id="taktik-standort-info" class="muted"></p>
+          <details class="info">
+            <summary>Info zu Wiederholungen</summary>
+            <p>Rätsel, die du nicht löst, kommen nach 1, 3, 7 und 21 Tagen wieder. So prägen sich die Muster ein.</p>
+          </details>
           <p id="taktik-meldung" class="message" role="status" aria-live="polite"></p>
         </div>
 
@@ -539,15 +542,14 @@
       <!-- Seite: Themen -->
       <div id="page-themen" class="page" hidden>
         <div class="page-inner">
-          <p class="muted">
-            Jedes Rätsel gehört zu einem oder mehreren Themen. Hier steht, was die Themen bedeuten, und du
-            kannst ein Thema gezielt üben. Die ersten zehn eignen sich besonders für den Einstieg.
-          </p>
+          <p class="muted">Jedes Rätsel gehört zu einem oder mehreren Themen. Hier kannst du eines gezielt üben.</p>
           <p id="themen-meldung" class="message" role="status" aria-live="polite"></p>
-          <h3 class="list-title">Für den Einstieg</h3>
+          <h2 class="list-title">Für den Einstieg</h2>
           <ul id="themen-einstieg" class="theme-list"></ul>
-          <h3 class="list-title">Weitere Themen</h3>
-          <ul id="themen-weitere" class="theme-list"></ul>
+          <details class="optionen">
+            <summary>Alle anderen Themen anzeigen</summary>
+            <ul id="themen-weitere" class="theme-list"></ul>
+          </details>
         </div>
       </div>
 

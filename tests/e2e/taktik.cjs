@@ -194,6 +194,7 @@ const loadBand = (b) => JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles
         const x = b.getBoundingClientRect();
         return !!b.offsetParent && x.height >= 43.5 && x.width >= 43.5;
       }));
+      await page.evaluate(() => { document.getElementById("taktik-optionen").open = true; });
       await page.click("#btn-neu-einstufen");
       r.check("Rückfrage erscheint, Knopf verschwindet", await page.evaluate(() => !document.getElementById("neu-einstufen-frage").hidden && document.getElementById("btn-neu-einstufen").hidden));
       await page.click("#btn-neu-nein");

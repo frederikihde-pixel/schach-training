@@ -30,6 +30,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
   await page.reload();
   await page.waitForTimeout(800);
   r.check("Offline: Taktik-Seite lädt", await page.evaluate(() => !document.getElementById("page-taktik").hidden && !document.getElementById("btn-sitzung").disabled));
+  await page.evaluate(() => { document.getElementById("taktik-optionen").open = true; });
   await page.selectOption("#sel-groesse", "5");
   await page.click("#btn-sitzung");
   await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 10000 });

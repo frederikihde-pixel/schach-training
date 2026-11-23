@@ -16,7 +16,11 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     const { page } = await newPage(browser);
     await page.goto(url + "index.html#/taktik");
     await page.waitForTimeout(400);
+    await setTaktik(page, "d.taktik.staerke = 800; d.taktik.eingestuft = true;");
+    await page.reload();
+    await page.waitForTimeout(500);
     r.check("Taktik-Seite führt zur Themen-Übersicht (keine zweite Reihe von Reitern mehr)", (await page.locator("#page-taktik .subnav").count()) === 0 && (await page.locator('#taktik-start a[href="#/taktik/themen"]').count()) === 1);
+    await page.evaluate(() => { document.getElementById("taktik-optionen").open = true; });
     await page.click('#taktik-start a[href="#/taktik/themen"]');
     await page.waitForTimeout(300);
     r.check("Themen-Seite sichtbar, Reiter Taktik markiert", await page.evaluate(() => !document.getElementById("page-themen").hidden && document.getElementById("tab-taktik").getAttribute("aria-current") === "page"));
@@ -28,7 +32,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
         einstieg: names("themen-einstieg"),
         weitere: names("themen-weitere"),
         alleMitSatz: rows.every((li) => li.querySelector("p").textContent.length > 20),
-        alleMitKnopf: rows.every((li) => li.querySelector("button").textContent === "Dieses Thema üben"),
+        alleMitKnopf: rows.every((li) => li.querySelector("button").textContent === "Üben"),
         gabel: rows.find((li) => li.querySelector("strong").textContent === "Gabel").querySelector("p").textContent,
       };
     });
@@ -38,11 +42,12 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     r.check("Erklärung der Gabel ist einfaches Deutsch", /zwei gegnerische Figuren/.test(info.gabel), info.gabel);
     r.check("Kein Überlauf, Tippflächen mindestens 44 px", await page.evaluate(() => {
       const ok = document.documentElement.scrollWidth === window.innerWidth;
-      const small = [...document.querySelectorAll("#page-themen a, #page-themen button")].filter((e) => { const b = e.getBoundingClientRect(); return b.width < 43.5 || b.height < 43.5; });
+      const small = [...document.querySelectorAll("#page-themen a, #page-themen button")].filter((e) => e.offsetParent).filter((e) => { const b = e.getBoundingClientRect(); return b.width < 43.5 || b.height < 43.5; });
       return ok && small.length === 0;
     }));
 
     // noch nicht eingestuft: Hinweis, keine Sitzung
+    await setTaktik(page, "d.taktik.staerke = null; d.taktik.eingestuft = false;");
     await page.click('.theme-row button[data-thema="fork"]');
     r.check("Ohne Einstufung: freundlicher Hinweis statt Sitzung", /zuerst deine Stärke ein/.test(await page.textContent("#themen-meldung")) && !(await page.evaluate(() => document.getElementById("page-themen").hidden)));
 

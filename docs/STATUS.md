@@ -539,6 +539,19 @@ die Startseite stehen in `docs/HEUTE.md`.
 - Getestet: 14 Logik-Tests `heute.test.mjs` (jeder Fall, Reihenfolge, Nebenzeilen, keine Gamification-Wörter) und `tests/e2e/heute.cjs`
   (28 Prüfungen: jeder Fall a bis f und Fortsetzen mit dem, was der Knopf startet, Layout, keine Emojis).
 
+### Abschnitt 5: Taktik und Themen (fertig)
+
+- Taktik: oben die Taktikstärke (eine Zeile) und der Hauptknopf "Sitzung starten" (vor der Einstufung "Einstufung starten", läuft etwas
+  "Fortsetzen"). Sitzungslänge, Themenfilter, Themen-Übersicht und "Einstufung wiederholen" liegen eingeklappt unter "Mehr Optionen"; die
+  Erklärung der Wiederholungen steht hinter einem kleinen "Info". Der Satz zur letzten Standortbestimmung ist von hier entfallen (gehört zu
+  Fortschritt).
+- Themen (`#/taktik/themen`): die zehn Einsteiger-Themen kompakt (Name, Knopf "Üben", ein Satz), alle anderen eingeklappt unter "Alle anderen
+  Themen anzeigen". Höhe vorher 8143 px (9,7 Bildschirme), jetzt 1647 px (2,0 Bildschirme) mit eingeklappter Liste.
+- **Anpassungen an alten Tests:** `denkhilfe`, `taktik-offline`, `taktik-session`, `taktik` (die Auswahl "Rätsel pro Sitzung" und
+  "Einstufung wiederholen" liegen jetzt in "Mehr Optionen" und werden vor dem Antippen aufgeklappt), `leer` (kurzer Satz "Noch keine
+  Wiederholungen." statt des langen, die Erklärung steht hinter "Info"), `themen` (Knopf heißt "Üben", Link zur Themen-Übersicht liegt in
+  "Mehr Optionen" und erscheint erst nach der Einstufung, Tippflächen nur für sichtbare Elemente).
+
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 
 Die **Analyse eigener Partien ist fertig** (Teil E bis G, siehe oben; sie nimmt PGN und Farbe des Spielers und ist nicht an die

@@ -60,6 +60,7 @@ const band = (b) => JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles/ban
     pool.slice(0, 5).forEach((p, i) => (cards[p.id] = card(p, 1, "2026-11-11")));
     await prepare(page, { cards });
     r.check("5 fällige Wiederholungen angezeigt", (await page.textContent("#taktik-info")) === "Fällige Wiederholungen: 5");
+    await page.evaluate(() => { document.getElementById("taktik-optionen").open = true; });
     await page.selectOption("#sel-groesse", "10");
     await page.click("#btn-sitzung");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 10000 });

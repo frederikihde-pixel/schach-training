@@ -44,6 +44,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     const ids = Array.from({ length: 9 }, (_, i) => `"g${i}":1`).join(",");
     await mutate(page, `d.taktik.staerke = 500; d.taktik.eingestuft = true; d.taktik.gesehen = {${ids}};`);
     await page.reload(); await page.waitForTimeout(500);
+    await page.evaluate(() => { document.getElementById("taktik-optionen").open = true; });
     await page.selectOption("#sel-groesse", "5");
     await page.click("#btn-sitzung");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 20000 });
