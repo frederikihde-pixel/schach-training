@@ -35,7 +35,7 @@ function renderChart(verlauf) {
     return;
   }
   const W = 340;
-  const H = 160;
+  const H = 130;
   const left = 38;
   const right = 10;
   const top = 12;

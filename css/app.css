@@ -98,7 +98,7 @@ body {
   border-radius: 8px;
   color: var(--text-muted);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .header-link[aria-current="page"] {
@@ -139,10 +139,6 @@ a {
   color: #8fb0d6;
 }
 
-.back-row {
-  margin: 0 0 8px;
-}
-
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -178,7 +174,7 @@ a {
 
 .block h3 {
   margin: 0 0 6px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -218,7 +214,7 @@ details.license summary {
   overflow: auto;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
@@ -254,7 +250,7 @@ details.license summary {
 .status-message {
   min-height: 1.4em;
   margin: 10px 16px 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
@@ -295,7 +291,7 @@ details.license summary {
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .controls {
@@ -313,7 +309,7 @@ button {
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -342,7 +338,7 @@ section {
 
 section h2 {
   margin: 0 0 8px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -358,7 +354,7 @@ section h2 {
   border: 1px solid var(--border);
   border-radius: 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .fen-buttons {
@@ -374,7 +370,7 @@ section h2 {
 .fen-error {
   margin: 8px 0 0;
   color: var(--danger);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .move-list {
@@ -392,7 +388,7 @@ section h2 {
 .move-list:empty::after {
   content: "Noch keine Züge.";
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .move-entry {
@@ -402,7 +398,7 @@ section h2 {
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -494,7 +490,7 @@ section h2 {
 }
 
 .promo-label {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
@@ -504,7 +500,7 @@ section h2 {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .notice[hidden] {
@@ -554,7 +550,7 @@ section h2 {
   border: 1px solid var(--border);
   border-radius: 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.8rem;
+  font-size: 1rem;
   overflow-wrap: anywhere;
   user-select: all;
 }
@@ -638,7 +634,7 @@ section h2 {
 
 .field label {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 select {
@@ -656,7 +652,7 @@ select {
   justify-content: space-between;
   min-height: 2em;
   padding: 10px 16px 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .side-line {
@@ -669,7 +665,7 @@ select {
 .thinking-aid {
   min-height: 2.8em; /* Platz bleibt reserviert, damit das Brett nicht springt */
   margin: 0 16px 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.4;
   color: var(--text-muted);
 }
@@ -716,7 +712,7 @@ select {
 
 .subhead {
   margin: 16px 0 6px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -762,7 +758,7 @@ select {
   align-items: center;
   gap: 10px;
   min-height: 32px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .week-label {
@@ -798,7 +794,7 @@ select {
 
 .list-title {
   margin: 20px 0 4px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -845,7 +841,7 @@ select {
   padding: 2px 8px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
@@ -912,11 +908,11 @@ select {
 }
 
 .design-text .muted {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .design-status {
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--text);
 }
 
@@ -1026,30 +1022,6 @@ body.intro-open {
 }
 
 /* Spielen */
-.way-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.way {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: 44px;
-  padding: 12px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  text-decoration: none;
-}
-
-.way span {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
 
 .text-input {
   min-height: 44px;
@@ -1067,7 +1039,7 @@ body.intro-open {
 
 .field p {
   margin: 4px 0 0;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .pgn-input {
@@ -1079,7 +1051,7 @@ body.intro-open {
   border: 1px solid var(--border);
   border-radius: 8px;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .game-list {
@@ -1128,13 +1100,7 @@ body.intro-open {
 
 .rb-eintrag span {
   color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.subnav-3 a {
-  padding: 0 6px;
-  font-size: 0.92rem;
-  text-align: center;
+  font-size: 1rem;
 }
 
 .hint-row {
@@ -1156,7 +1122,7 @@ body.intro-open {
 
 .set-titel {
   margin: 0 0 8px;
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1198,7 +1164,7 @@ details.info summary {
   align-items: center;
   min-height: 44px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 details.info p {
@@ -1226,7 +1192,7 @@ details.info p {
 }
 
 .choice .muted {
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .choice[aria-pressed="true"] {
@@ -1241,7 +1207,7 @@ details.info p {
 
 .field-label {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 /* Hauptknopf: genau einer je Seite, gefüllt; alles andere ruhiger */
@@ -1382,5 +1348,5 @@ details.optionen > summary {
 
 .karte span {
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 1rem;
 }

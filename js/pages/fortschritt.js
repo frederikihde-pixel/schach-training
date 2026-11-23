@@ -43,7 +43,7 @@ function diagramm(punkte) {
     return;
   }
   const W = 340;
-  const H = 150;
+  const H = 120;
   const left = 30;
   const right = 10;
   const top = 12;

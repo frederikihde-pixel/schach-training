@@ -583,6 +583,13 @@ die Startseite stehen in `docs/HEUTE.md`.
   Alte Adresse führt weiter), `partien-liste` und `rueckblick` (Liste liegt unter "Alle Partien anzeigen", Hilfsfunktion `oeffneAlle`),
   `tippflaechen-spielen`, `weiterleitungen` (neue Zeilen).
 
+### Abschnitt 8: Design-Politur (fertig)
+
+- Alle Schriften sind mindestens 1rem (16 px); Ausnahme: Zahlen an den Achsen des Diagramms (SVG, skaliert mit der Breite).
+- Tote Stile entfernt (`.way`, `.way-list`, `.subnav-3`, `.back-row`).
+- Diagramme niedriger (Taktik-Verlauf 130, Patzer-Verlauf 120): Fortschritt hat jetzt 2,42 Bildschirmhöhen statt 2,48 (Grenze 2,5).
+- Keine Testanpassung nötig; schnelle Testreihe grün.
+
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 
 Die **Analyse eigener Partien ist fertig** (Teil E bis G, siehe oben; sie nimmt PGN und Farbe des Spielers und ist nicht an die
