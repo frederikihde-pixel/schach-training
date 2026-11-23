@@ -1,6 +1,6 @@
 // Spielen: Partie als Weiß und Schwarz, Sperre während der Bedenkzeit, Zug zurück, Aufgeben, Spielende,
 // Fortsetzen nach Neuladen, Patzer-Warnung. Echte Engine im Chromium, 390 px, Touch-Emulation.
-const { startServer, launch, newPage, tapMove, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, tapMove, reporter, waehle } = require("./lib.cjs");
 
 const aktiv = (page) => page.evaluate(async () => (await import("./js/storage.js")).store.get().spielen.aktiv);
 const spielen = (page) => page.evaluate(async () => (await import("./js/storage.js")).store.get().spielen);
@@ -18,10 +18,18 @@ const warteAktivWeg = (page, ms = 15000) => until(page, async () => (await impor
 const status = (page) => page.textContent("#sp-lauf-status");
 
 async function einrichten(page, { farbe = "w", stufe = 1, zurueck = false, warnung = false } = {}) {
-  await page.goto(page.__url + "index.html#/spielen/partie");
+  await page.goto(page.__url + "index.html#/spielen");
+  await page.reload();
+  await page.waitForSelector("#sp-start:not([hidden])");
+  // Läuft noch eine Partie (aus einem früheren Schritt), wird sie erst verworfen
+  if (await page.isVisible("#sp-fortsetzen")) {
+    await page.click("#sp-btn-verwerfen");
+    await page.click("#sp-btn-verwerfen-ja");
+  }
   await page.waitForSelector("#sp-btn-start");
-  await page.selectOption("#sp-farbe", farbe);
-  await page.selectOption("#sp-stufe", String(stufe));
+  await waehle(page, "#sp-farbe", farbe);
+  await waehle(page, "#sp-stufe", String(stufe));
+  await page.evaluate(() => { document.getElementById("sp-optionen").open = true; });
   const sw = async (id, want) => {
     if ((await page.getAttribute(id, "aria-checked")) !== String(want)) await page.click(id);
   };
@@ -58,28 +66,20 @@ async function seed(page, opts) {
   // --- Startseite ---
   await page.goto(url + "index.html#/spielen");
   await page.waitForSelector("#sp-start:not([hidden])");
-  const wege = await page.locator("#sp-start .way strong").allTextContents();
-  r.check("Startseite zeigt die drei Wege: Partie, Grundmatts üben, Vorteil verwerten", wege.join("|") === "Partie|Grundmatts üben|Vorteil verwerten", wege.join("|"));
+  r.check("Startseite: Farbe (Weiß, Schwarz, Zufall), Stufe, ein Hauptknopf 'Partie starten', darunter zwei Karten", (await page.locator("#sp-farbe .choice").allTextContents()).join("|") === "Weiß|Schwarz|Zufall" && (await page.locator("#sp-stufe .choice").count()) === 8 && (await page.textContent("#sp-btn-start")) === "Partie starten" && (await page.locator("#sp-start .btn-haupt:visible").count()) === 1 && (await page.locator("#sp-start .karte strong").allTextContents()).join("|") === "Grundmatts üben|Vorteil verwerten");
   r.check("Reiter Spielen ist markiert und mindestens 44 px hoch", (await page.getAttribute("#tab-spielen", "aria-current")) === "page" && (await page.locator("#tab-spielen").boundingBox()).height >= 44);
-  const ways = await page.locator("#sp-start .way").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
-  r.check("Die drei Wege sind mindestens 44 px hoch", ways.every((h) => h >= 44), ways.join(","));
-
-  // --- Einstellungen ---
-  await page.click("#sp-weg-partie");
-  await page.waitForSelector("#sp-setup:not([hidden])");
-  r.check("Zug zurücknehmen ist standardmäßig aus, Erklärung vorhanden", (await page.getAttribute("#sp-sw-zurueck", "aria-checked")) === "false" && /gründlich/.test(await page.textContent("#sp-setup")));
-  r.check("Patzer-Warnung ist bei der ersten Partie an", (await page.getAttribute("#sp-sw-warnung", "aria-checked")) === "true");
-  r.check("8 Stufen zur Wahl, Stufen 1 bis 3 als Anfänger", (await page.locator("#sp-stufe option").count()) === 8 && /Anfänger/.test(await page.textContent("#sp-stufe option:nth-child(3)")));
-  r.check("Ehrlicher Hinweis zur Stärke und Hinweis zum Anpassen", /Richtwerte/.test(await page.textContent("#sp-stufe-info")) && /Zu leicht oder zu schwer/.test(await page.textContent("#sp-setup")));
-  await page.fill("#sp-wertung", "440");
-  await page.waitForTimeout(100);
-  r.check("Wertung 440 schlägt Stufe 2 vor und wählt sie", /Stufe 2/.test(await page.textContent("#sp-wertung-info")) && (await page.inputValue("#sp-stufe")) === "2");
-  r.check("Wertung wird nur lokal gespeichert", (await page.evaluate(async () => (await import("./js/storage.js")).store.get().einstellungen.chesscomWertung)) === 440);
-  await page.fill("#sp-wertung", "abc");
-  r.check("Ungültige Wertung wird gemeldet und nicht gespeichert", /ganze Zahl/.test(await page.textContent("#sp-wertung-info")) && (await page.evaluate(async () => (await import("./js/storage.js")).store.get().einstellungen.chesscomWertung)) === 440);
-  await page.fill("#sp-wertung", "");
-  const tap = await page.locator("#sp-setup button, #sp-setup select, #sp-setup input").evaluateAll((els) => els.filter((e) => e.offsetParent).map((e) => Math.min(e.getBoundingClientRect().height, 999)));
-  r.check("Bedienelemente der Einstellungen mindestens 44 px hoch", tap.every((h) => h >= 44), tap.join(","));
+  r.check("Vorausgewählt: Farbe Zufall und die empfohlene Stufe 2", (await page.getAttribute('#sp-farbe [data-wert="z"]', "aria-pressed")) === "true" && (await page.getAttribute('#sp-stufe [data-wert="2"]', "aria-pressed")) === "true" && /empfohlen/.test(await page.textContent('#sp-stufe [data-wert="2"]')));
+  r.check("Optionen (Zug zurücknehmen, Patzer-Warnung) sind eingeklappt, Standard aus den Einstellungen: Zurücknehmen aus, Warnung an", (await page.evaluate(() => !document.getElementById("sp-optionen").open)) && (await page.getAttribute("#sp-sw-zurueck", "aria-checked")) === "false" && (await page.getAttribute("#sp-sw-warnung", "aria-checked")) === "true" && /Einstellungen/.test(await page.textContent("#sp-optionen")));
+  r.check("Stufen 1 bis 3 sind als Anfänger beschriftet, ehrlicher Hinweis zur Stärke hinter 'Info'", /Anfänger/.test(await page.getAttribute('#sp-stufe [data-wert="3"]', "aria-label")) && !/Anfänger/.test(await page.getAttribute('#sp-stufe [data-wert="5"]', "aria-label")) && /Richtwerte/.test(await page.textContent("#sp-stufe-hinweis")) && /Zu leicht oder zu schwer/.test(await page.textContent("#sp-start details.info")));
+  r.check("Die Chess.com-Wertung steht nicht mehr auf der Spielen-Seite (nur in den Einstellungen)", (await page.locator("#sp-start input, #sp-wertung").count()) === 0);
+  await waehle(page, "#sp-stufe", "5");
+  r.check("Stufe wählen aktualisiert die Zeile 'Stufe 5: ungefähr ...'", /^Stufe 5: ungefähr 1150/.test(await page.textContent("#sp-stufe-info")));
+  const tap = await page.locator("#sp-start button, #sp-start a, #sp-start summary").evaluateAll((els) => els.filter((e) => e.offsetParent).map((e) => Math.round(Math.min(e.getBoundingClientRect().height, 999))));
+  r.check("Alle Schalter, Knöpfe und Karten mindestens 44 px hoch", tap.every((h) => h >= 44), tap.join(","));
+  await page.evaluate(async () => (await import("./js/storage.js")).store.update((d) => { d.einstellungen.chesscomWertung = 440; }));
+  await page.reload();
+  await page.waitForSelector("#sp-btn-start");
+  r.check("Wertung 440 aus den Einstellungen: Stufe 2 vorgeschlagen ('nach deiner Wertung')", (await page.getAttribute('#sp-stufe [data-wert="2"]', "aria-pressed")) === "true" && /nach deiner Wertung/.test(await page.textContent("#sp-stufe-info")));
 
   // --- Partie als Weiß ---
   await einrichten(page, { farbe: "w", stufe: 1 });
@@ -225,7 +225,11 @@ async function seed(page, opts) {
 
   // --- Standardwert der Warnung nach 3 Partien (die dritte über die Einstellungen starten) ---
   await einrichten(page, { farbe: "w", stufe: 1 });
-  await page.goto(url + "index.html#/spielen/partie");
+  await page.goto(url + "index.html#/spielen");
+  await page.waitForSelector("#sp-fortsetzen:not([hidden])");
+  r.check("Läuft eine Partie, ist 'Partie fortsetzen' der einzige Hauptknopf (keine zweite Partie daneben)", (await page.textContent("#sp-btn-fortsetzen")) === "Partie fortsetzen" && (await page.locator("#sp-start .btn-haupt:visible").count()) === 1 && (await page.isHidden("#sp-btn-start")));
+  await page.click("#sp-btn-verwerfen");
+  await page.click("#sp-btn-verwerfen-ja");
   await page.waitForSelector("#sp-btn-start");
   const gestartet = await page.evaluate(async () => (await import("./js/storage.js")).store.get().spielen.gestartet);
   r.check("Nach 3 begonnenen Partien ist die Warnung zunächst aus (mit Hinweis)", gestartet >= 3 && (await page.getAttribute("#sp-sw-warnung", "aria-checked")) === "false" && /zunächst aus/.test(await page.textContent("#sp-warn-info")));

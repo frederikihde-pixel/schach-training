@@ -20,7 +20,6 @@ addRoute("heute", { page: "page-heute", tab: "heute", title: "Heute", onShow: on
 addRoute("taktik", { page: "page-taktik", tab: "taktik", title: "Taktik", onShow: onShowTaktik });
 addRoute("taktik/themen", { page: "page-themen", tab: "taktik", title: "Themen", onShow: onShowThemen, parent: "taktik" });
 addRoute("spielen", { page: "page-spielen", tab: "spielen", title: "Spielen", onShow: onShowSpielen });
-addRoute("spielen/partie", { page: "page-spielen", tab: "spielen", title: "Partie", onShow: onShowSpielen, parent: "spielen" });
 addRoute("spielen/grundmatt", { page: "page-spielen", tab: "spielen", title: "Grundmatts üben", onShow: onShowSpielen, parent: "spielen" });
 addRoute("spielen/vorteil", { page: "page-spielen", tab: "spielen", title: "Vorteil verwerten", onShow: onShowSpielen, parent: "spielen" });
 addRoute("spielen/lauf", { page: "page-spielen", tab: "spielen", title: "Partie", onShow: onShowSpielen, parent: "spielen" });
@@ -38,6 +37,7 @@ addRoute("einstellungen/info", { page: "page-info", title: "Info und Lizenzen", 
 
 // Alte Adressen führen auf die neuen Orte
 addRedirect("brett", "einstellungen/brett");
+addRedirect("spielen/partie", "spielen");
 addRedirect("taktik/statistik", "fortschritt");
 addRedirect("mehr", "einstellungen");
 addRedirect("mehr/einstellungen", "einstellungen");

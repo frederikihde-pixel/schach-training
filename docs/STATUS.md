@@ -552,6 +552,22 @@ die Startseite stehen in `docs/HEUTE.md`.
   Wiederholungen." statt des langen, die Erklärung steht hinter "Info"), `themen` (Knopf heißt "Üben", Link zur Themen-Übersicht liegt in
   "Mehr Optionen" und erscheint erst nach der Einstufung, Tippflächen nur für sichtbare Elemente).
 
+### Abschnitt 6: Spielen, Grundmatts, Vorteil (fertig)
+
+- Spielen (`#/spielen`) ist jetzt die Partie-Startseite: Farbe (Weiß, Schwarz, Zufall; vorausgewählt Zufall) und Stufe (1 bis 8, die empfohlene
+  Stufe vorausgewählt und als "empfohlen" markiert) als **große Schalter** statt Auswahlfeldern, ein Hauptknopf "Partie starten", darunter
+  "Mehr Optionen" (Zug zurücknehmen und Patzer-Warnung für diese eine Partie; Standard aus den Einstellungen), "Info zu den Stufen" (ehrlicher
+  Hinweis, Anpassen nach zwei bis drei Partien) und zwei kleine Karten "Grundmatts üben" und "Vorteil verwerten". Läuft eine Partie, ist
+  "Partie fortsetzen" der einzige Hauptknopf (die Auswahl ist ausgeblendet, damit eine laufende Partie nicht versehentlich überschrieben wird).
+  Das Feld Chess.com-Wertung ist hier entfallen (nur in den Einstellungen; sie bestimmt weiter die vorgeschlagene Startstufe). Der Hinweisblock
+  "Offene Rückblicke / Fällige eigene Rätsel" ist entfallen (steht auf Heute und in Fortschritt). `#/spielen/partie` führt auf `#/spielen`.
+- Vorteil verwerten und Grundmatts: ebenfalls große Schalter (Vorteil, Farbe, Stufe beziehungsweise Figur), Hauptknopf "Übung starten",
+  Zusatzoptionen (Stellung, Zurücknehmen, Warnung) eingeklappt, lange Erklärungen hinter "Info". Neues gemeinsames Bauteil `js/ui/auswahl.js`.
+- **Anpassungen an alten Tests:** `spielen` (Schalter statt Auswahlfelder, ein Hauptknopf, Wertung nur in den Einstellungen, laufende Partie zeigt
+  "Partie fortsetzen", Optionen werden vor dem Antippen aufgeklappt), `uebungen`, `rueckblick`, `spielen-offline`, `einstellungen`,
+  `tippflaechen-spielen` (gleiche Gründe), `lib.cjs` (neue Hilfsfunktion `waehle`), `heute` (längere Wartezeit beim Laden der Rätselbänder).
+  **Entfallen:** `spielen-hinweise.cjs` (der Hinweisblock ist weg; die Fälle prüft `heute.cjs`).
+
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 
 Die **Analyse eigener Partien ist fertig** (Teil E bis G, siehe oben; sie nimmt PGN und Farbe des Spielers und ist nicht an die

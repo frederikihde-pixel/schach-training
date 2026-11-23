@@ -165,7 +165,12 @@ function reporter(title) {
   };
 }
 
-module.exports = { ROOT, startServer, launch, newContext, newPage, squareCenter, tapMove, dragMove, reporter };
+// Wählt in einer Gruppe großer Schalter (Farbe, Stufe, Figur ...) den Schalter mit diesem Wert.
+async function waehle(page, gruppe, wert) {
+  await page.click(`${gruppe} [data-wert="${wert}"]`);
+}
+
+module.exports = { waehle, ROOT, startServer, launch, newContext, newPage, squareCenter, tapMove, dragMove, reporter };
 
 // ---- Taktik-Helfer ----
 

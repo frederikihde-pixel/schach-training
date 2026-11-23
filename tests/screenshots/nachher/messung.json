@@ -22,22 +22,22 @@
  },
  {
   "route": "spielen",
+  "hoehe": 878,
+  "tipps": 21,
+  "breite": 390,
+  "bildschirme": 1.04
+ },
+ {
+  "route": "spielen/vorteil",
   "hoehe": 844,
-  "tipps": 12,
+  "tipps": 23,
   "breite": 390,
   "bildschirme": 1
  },
  {
-  "route": "spielen/vorteil",
-  "hoehe": 1231,
-  "tipps": 13,
-  "breite": 390,
-  "bildschirme": 1.46
- },
- {
   "route": "spielen/grundmatt",
   "hoehe": 844,
-  "tipps": 9,
+  "tipps": 10,
   "breite": 390,
   "bildschirme": 1
  },

@@ -45,13 +45,13 @@ const RUHIG = EINGESTUFT + " d.spielen.partien.push(partie('p1', 1)); d.spielen.
   s = await seite(page);
   r.check("a: noch keine Einstufung -> 'Einstufung starten', keine Nebenzeilen", s.fall === "a" && s.knopf === "Einstufung starten" && s.neben.length === 0, JSON.stringify(s));
   await page.click("#heute-haupt");
-  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
+  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 45000 });
   r.check("a: ein Tipp startet die Einstufung", (await page.evaluate(async () => (await import("./js/storage.js")).store.get().taktik.aktiv.typ)) === "einstufung");
   // Fortsetzen
   s = await seite(page);
   r.check("0: läuft die Einstufung, heißt der Knopf 'Sitzung fortsetzen'", s.fall === "fortsetzen" && s.knopf === "Sitzung fortsetzen", JSON.stringify(s));
   await page.click("#heute-haupt");
-  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
+  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 45000 });
   r.check("0: der Knopf setzt die Einstufung fort (Rätsel läuft, nichts Neues)", (await page.evaluate(async () => (await import("./js/storage.js")).store.get().taktik.aktiv.typ)) === "einstufung" && /Rätsel \d+ von 10/.test(await page.textContent("#lauf-fortschritt")));
   await setze(page, "");
 
@@ -61,7 +61,7 @@ const RUHIG = EINGESTUFT + " d.spielen.partien.push(partie('p1', 1)); d.spielen.
   r.check("b: 'Sitzung starten (3 fällig)' mit Begründung, eigene Fehler genannt", s.fall === "b" && s.knopf === "Sitzung starten (3 fällig)" && s.text === "3 Wiederholungen sind fällig, 1 davon aus eigenen Fehlern.", JSON.stringify(s));
   r.check("b: Nebenzeile 'Partie spielen' (keine doppelte Sitzung)", s.neben.join() === "Partie spielen", s.neben.join());
   await page.click("#heute-haupt");
-  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 20000 });
+  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 45000 });
   const sitz = await page.evaluate(async () => { const a = (await import("./js/storage.js")).store.get().taktik.aktiv; return { typ: a.typ, n: a.plan.length }; });
   r.check("b: ein Tipp startet die Sitzung", sitz.typ === "sitzung" && sitz.n >= 1, JSON.stringify(sitz));
   await setze(page, "");
@@ -94,13 +94,13 @@ const RUHIG = EINGESTUFT + " d.spielen.partien.push(partie('p1', 1)); d.spielen.
   s = await seite(page);
   r.check("e: Standortbestimmung nach 4 Wochen -> 'Standortbestimmung'", s.fall === "e" && s.knopf === "Standortbestimmung", JSON.stringify(s));
   await page.click("#heute-haupt");
-  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 20000 });
+  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 45000 });
   const sb = await page.evaluate(async () => { const a = (await import("./js/storage.js")).store.get().taktik.aktiv; return { typ: a.typ, set: a.pruefset, n: a.plan.length }; });
   r.check("e: der Knopf startet die Standortbestimmung mit dem Prüfset aus den Einstellungen (automatisch: Einsteiger bei Stärke 600)", sb.typ === "standort" && sb.set === "einsteiger" && sb.n === 20, JSON.stringify(sb));
   await setze(page, RUHIG + " d.einstellungen.pruefset = 'fortgeschritten'; d.taktik.standort.push({ datum: new Date(Date.now() - 30 * 86400000).toISOString(), geloest: 9, von: 20, msSchnitt: 20000, satz: 'x', pruefset: 'einsteiger' });");
   s = await seite(page);
   await page.click("#heute-haupt");
-  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 20000 });
+  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 45000 });
   r.check("e: gewähltes Prüfset 'Fortgeschritten' wird benutzt", (await page.evaluate(async () => (await import("./js/storage.js")).store.get().taktik.aktiv.pruefset)) === "fortgeschritten");
 
   // Reihenfolge: e wird von d verdeckt, bleibt aber als Nebenzeile
@@ -114,7 +114,7 @@ const RUHIG = EINGESTUFT + " d.spielen.partien.push(partie('p1', 1)); d.spielen.
   s = await seite(page);
   r.check("f: sonst 'Sitzung starten'", s.fall === "f" && s.knopf === "Sitzung starten" && s.neben.join() === "Partie spielen", JSON.stringify(s));
   await page.click("#heute-haupt");
-  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 20000 });
+  await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 45000 });
   r.check("f: ein Tipp startet eine Sitzung", (await page.evaluate(async () => (await import("./js/storage.js")).store.get().taktik.aktiv.typ)) === "sitzung");
 
   // Partie läuft

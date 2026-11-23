@@ -30,9 +30,10 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   r.check("Nach Neuladen bleiben die Werte", (await page.textContent("#set-zuruecknahme")) === "an" && (await page.textContent("#set-warnung")) === "aus");
 
   // Die Standardwerte gelten beim Start einer Partie und lassen sich dort überschreiben
-  await page.goto(url + "index.html#/spielen/partie");
+  await page.goto(url + "index.html#/spielen");
   await page.waitForSelector("#sp-btn-start");
   r.check("Partie übernimmt die Standardwerte (Zurücknehmen an, Warnung aus)", (await page.getAttribute("#sp-sw-zurueck", "aria-checked")) === "true" && (await page.getAttribute("#sp-sw-warnung", "aria-checked")) === "false");
+  await page.evaluate(() => { document.getElementById("sp-optionen").open = true; });
   await page.click("#sp-sw-warnung");
   r.check("Vor dem Start lässt sich die Warnung für diese Partie ändern, ohne den Standard zu ändern", (await page.getAttribute("#sp-sw-warnung", "aria-checked")) === "true" && (await ein()).patzerWarnung === false);
 

@@ -1338,3 +1338,49 @@ details.optionen > summary {
 .optionen-inhalt .field {
   margin-bottom: 0;
 }
+
+/* Große Schalter (Farbe, Stufe, Figur) und Karten */
+.choice.mittig {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.choice-group.row .choice {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.choice-group.stufen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.choice-group.stufen .choice {
+  min-height: 56px;
+  padding: 6px 4px;
+}
+
+.karten {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.karte {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 96px;
+  padding: 14px;
+  background: var(--surface);
+  border-radius: 12px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.karte span {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}

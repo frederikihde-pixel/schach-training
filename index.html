@@ -218,35 +218,16 @@
 
       <!-- Seite: Spielen (Partien gegen den Computer) -->
       <div id="page-spielen" class="page" hidden>
-        <div id="sp-start" class="page-inner" hidden>
-          <p class="muted">
-            Partien gegen den Computer sind hier Training: erst spielen, danach zurückschauen. Es gibt keine
-            Uhr, keine Bewertungsleiste und keine Zugvorschläge.
-          </p>
-
-          <div id="sp-hinweise" class="block">
-            <div class="hint-row">
-              <span id="sp-hinweis-rueckblick">Offene Rückblicke: 0</span>
-              <button id="sp-hinweis-rueckblick-btn" type="button">Ansehen</button>
-            </div>
-            <div class="hint-row">
-              <span id="sp-hinweis-raetsel">Fällige eigene Rätsel: 0</span>
-              <button id="sp-hinweis-raetsel-btn" type="button">Üben</button>
-            </div>
-            <p id="sp-hinweis-meldung" class="muted" role="status" aria-live="polite"></p>
-          </div>
-
+        <div id="sp-start" class="page-inner stack-gross" hidden>
           <div id="sp-letzte" class="block" hidden>
             <p id="sp-letzte-text"></p>
             <div class="stack"><a class="btn-link-quiet" href="#/spielen/ende">Ergebnis ansehen</a></div>
           </div>
 
-          <div id="sp-fortsetzen" class="block" hidden>
-            <p id="sp-fortsetzen-text"></p>
-            <div class="stack">
-              <button id="sp-btn-fortsetzen" type="button">Fortsetzen</button>
-              <button id="sp-btn-verwerfen" type="button" class="btn-quiet">Verwerfen</button>
-            </div>
+          <div id="sp-fortsetzen" class="stack-gross" hidden>
+            <p id="sp-fortsetzen-text" class="muted"></p>
+            <button id="sp-btn-fortsetzen" type="button" class="btn-haupt">Partie fortsetzen</button>
+            <button id="sp-btn-verwerfen" type="button" class="btn-quiet">Verwerfen</button>
             <div id="sp-verwerfen-frage" class="confirm" hidden>
               <p>Die laufende Partie verwerfen? Sie wird nicht gespeichert und zählt nicht.</p>
               <div class="stack">
@@ -256,24 +237,43 @@
             </div>
           </div>
 
-          <div class="stack">
-            <a class="btn-link-quiet" href="#/spielen/liste">Meine Partien</a>
-            <a class="btn-link-quiet" href="#/spielen/fortschritt">Zahlen zu meinen Partien</a>
-          </div>
-
-          <div class="way-list">
-            <a class="way" id="sp-weg-partie" href="#/spielen/partie">
-              <strong>Partie</strong>
-              <span>Eine ganze Partie gegen den Computer, Stufe und Farbe wählbar.</span>
-            </a>
-            <a class="way" id="sp-weg-grundmatt" href="#/spielen/grundmatt">
-              <strong>Grundmatts üben</strong>
-              <span>Mit Dame oder Turm gegen den blanken König Matt setzen.</span>
-            </a>
-            <a class="way" id="sp-weg-vorteil" href="#/spielen/vorteil">
-              <strong>Vorteil verwerten</strong>
-              <span>Der Computer startet ohne Dame, Turm oder Springer. Kannst du gewinnen?</span>
-            </a>
+          <div id="sp-neu" class="stack-gross">
+            <div class="field">
+              <span class="field-label" id="sp-farbe-label">Meine Farbe</span>
+              <div id="sp-farbe" class="choice-group row" role="group" aria-labelledby="sp-farbe-label"></div>
+            </div>
+            <div class="field">
+              <span class="field-label" id="sp-stufe-label">Stufe</span>
+              <div id="sp-stufe" class="choice-group stufen" role="group" aria-labelledby="sp-stufe-label"></div>
+              <p id="sp-stufe-info" class="muted"></p>
+              <p id="sp-empfehlung" class="muted" hidden></p>
+            </div>
+            <button id="sp-btn-start" type="button" class="btn-haupt">Partie starten</button>
+            <p id="sp-setup-meldung" class="message" role="status" aria-live="polite"></p>
+            <details id="sp-optionen" class="optionen">
+              <summary>Mehr Optionen</summary>
+              <div class="optionen-inhalt">
+                <button id="sp-sw-zurueck" type="button" role="switch" aria-checked="false">Zug zurücknehmen: aus</button>
+                <button id="sp-sw-warnung" type="button" role="switch" aria-checked="true">Patzer-Warnung: an</button>
+                <p id="sp-warn-info" class="muted"></p>
+                <p class="muted">Gilt nur für diese Partie. Die Standardwerte stehen in den Einstellungen.</p>
+              </div>
+            </details>
+            <details class="info">
+              <summary>Info zu den Stufen</summary>
+              <p id="sp-stufe-hinweis"></p>
+              <p>Zu leicht oder zu schwer? Stufe nach zwei bis drei Partien anpassen.</p>
+            </details>
+            <div class="karten">
+              <a id="sp-weg-grundmatt" class="karte" href="#/spielen/grundmatt">
+                <strong>Grundmatts üben</strong>
+                <span>Matt mit Dame oder Turm gegen den blanken König.</span>
+              </a>
+              <a id="sp-weg-vorteil" class="karte" href="#/spielen/vorteil">
+                <strong>Vorteil verwerten</strong>
+                <span>Der Computer startet mit einer Figur weniger.</span>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -417,70 +417,56 @@
           </div>
         </div>
 
-        <div id="sp-setup" class="page-inner" hidden>
-          <h2 id="sp-setup-titel" class="page-title" hidden>Partie</h2>
-          <p id="sp-setup-text" class="muted"></p>
-
-          <div id="sp-feld-art" class="field" hidden>
-            <label for="sp-art">Vorteil</label>
-            <select id="sp-art"></select>
+        <div id="sp-vorteil" class="page-inner stack-gross" hidden>
+          <p class="muted">Der Computer startet mit einer Figur weniger. Es zählt: gewonnen, remis oder verloren, getrennt von normalen Partien.</p>
+          <div class="field">
+            <span class="field-label" id="vt-art-label">Vorteil</span>
+            <div id="vt-art" class="choice-group row" role="group" aria-labelledby="vt-art-label"></div>
           </div>
           <div class="field">
-            <label for="sp-farbe">Meine Farbe</label>
-            <select id="sp-farbe">
-              <option value="w">Weiß</option>
-              <option value="b">Schwarz</option>
-              <option value="z">Zufall</option>
-            </select>
+            <span class="field-label" id="vt-farbe-label">Meine Farbe</span>
+            <div id="vt-farbe" class="choice-group row" role="group" aria-labelledby="vt-farbe-label"></div>
           </div>
           <div class="field">
-            <label for="sp-stufe">Stufe</label>
-            <select id="sp-stufe"></select>
-            <p id="sp-stufe-info" class="muted"></p>
-            <p id="sp-empfehlung" class="muted" hidden></p>
+            <span class="field-label" id="vt-stufe-label">Stufe</span>
+            <div id="vt-stufe" class="choice-group stufen" role="group" aria-labelledby="vt-stufe-label"></div>
+            <p id="vt-stufe-info" class="muted"></p>
           </div>
-          <div class="field">
-            <label for="sp-wertung">Meine Chess.com-Wertung (freiwillig, bleibt nur auf diesem Gerät)</label>
-            <input id="sp-wertung" class="text-input" type="text" inputmode="numeric" autocomplete="off" placeholder="zum Beispiel 440" />
-            <p id="sp-wertung-info" class="muted"></p>
-          </div>
-          <p class="muted">Zu leicht oder zu schwer? Stufe nach zwei bis drei Partien anpassen.</p>
-
-          <div class="block">
-            <h3>Zug zurücknehmen erlauben</h3>
-            <p>Standard: aus. So überlegst du dir deine Züge gründlich, bevor du sie ausführst.</p>
-            <div class="stack"><button id="sp-sw-zurueck" type="button" role="switch" aria-checked="false">Zug zurücknehmen: aus</button></div>
-          </div>
-          <div class="block">
-            <h3>Patzer-Warnung</h3>
-            <p>
-              Vor dem Ausführen prüft die App kurz, ob dein Zug eine Figur kostenlos einstellt oder ein Matt in 1
-              erlaubt. Sie sagt dir nicht, was besser wäre. Für die ersten 3 Partien ist sie an.
-            </p>
-            <p id="sp-warn-info" class="muted"></p>
-            <div class="stack"><button id="sp-sw-warnung" type="button" role="switch" aria-checked="true">Patzer-Warnung: an</button></div>
-          </div>
-
-          <div class="stack"><button id="sp-btn-start" type="button">Partie starten</button></div>
-          <p id="sp-setup-meldung" class="message" role="status" aria-live="polite"></p>
+          <button id="vt-btn-start" type="button" class="btn-haupt">Übung starten</button>
+          <details id="vt-optionen" class="optionen">
+            <summary>Mehr Optionen</summary>
+            <div class="optionen-inhalt">
+              <button id="vt-sw-zurueck" type="button" role="switch" aria-checked="false">Zug zurücknehmen: aus</button>
+              <button id="vt-sw-warnung" type="button" role="switch" aria-checked="true">Patzer-Warnung: an</button>
+              <p class="muted">Gilt nur für diese Übung. Die Standardwerte stehen in den Einstellungen.</p>
+            </div>
+          </details>
         </div>
 
-        <div id="sp-grundmatt" class="page-inner" hidden>
-          <p class="muted">
-            Du spielst Weiß und setzt Matt. Der Computer verteidigt mit Stufe 8. Misserfolg: Patt, dreifache
-            Wiederholung, 50-Züge-Regel oder Verlust deiner Figur. Zum Vergleich: Mit Dame und König ist das Matt
-            in höchstens 10 Zügen erzwingbar, mit Turm und König in höchstens 16 Zügen.
-          </p>
+        <div id="sp-grundmatt" class="page-inner stack-gross" hidden>
+          <p class="muted">Du spielst Weiß und setzt Matt. Der Computer verteidigt mit Stufe 8.</p>
           <div class="field">
-            <label for="gm-art">Figur</label>
-            <select id="gm-art"></select>
+            <span class="field-label" id="gm-art-label">Figur</span>
+            <div id="gm-art" class="choice-group row" role="group" aria-labelledby="gm-art-label"></div>
+            <p id="gm-info" class="muted"></p>
           </div>
-          <div class="field">
-            <label for="gm-stellung">Stellung</label>
-            <select id="gm-stellung"></select>
-          </div>
-          <p id="gm-info" class="muted"></p>
-          <div class="stack"><button id="gm-btn-start" type="button">Übung starten</button></div>
+          <button id="gm-btn-start" type="button" class="btn-haupt">Übung starten</button>
+          <details id="gm-optionen" class="optionen">
+            <summary>Mehr Optionen</summary>
+            <div class="optionen-inhalt">
+              <div class="field">
+                <label for="gm-stellung">Stellung</label>
+                <select id="gm-stellung"></select>
+              </div>
+            </div>
+          </details>
+          <details class="info">
+            <summary>Info zu den Grundmatts</summary>
+            <p>
+              Misserfolg: Patt, dreifache Wiederholung, 50-Züge-Regel oder Verlust deiner Figur. Zum Vergleich: Mit Dame und König ist das Matt
+              in höchstens 10 Zügen erzwingbar, mit Turm und König in höchstens 16 Zügen.
+            </p>
+          </details>
         </div>
 
         <div id="sp-lauf" hidden>
