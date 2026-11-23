@@ -1,6 +1,6 @@
 // Rückblick: Hinweis nach der Partie, Fortschritt, Liste, Stelle auf dem Brett (Pfeile, Erklärung), gleiche Designs,
 // Fortsetzen nach Neuladen. Echte Engine, 390 px, Touch.
-const { startServer, launch, newPage, reporter, waehle } = require("./lib.cjs");
+const { startServer, launch, newPage, reporter, waehle, oeffneAlle } = require("./lib.cjs");
 
 // Weiß stellt im 3. Zug die Dame ein: 1.e4 e5 2.Dh5 Sc6 3.Dxe5+ Sxe5 4.Sf3 Sxf3+ 5.gxf3
 const ZUEGE = ["e2e4", "e7e5", "d1h5", "b8c6", "h5e5", "c6e5", "g1f3", "e5f3", "g2f3"];
@@ -50,9 +50,10 @@ async function until(page, fn, arg, ms = 30000) {
 
   // --- Partie mit bekanntem Patzer: Rückblick starten ---
   await seedPartie(page, "p-dame");
-  await page.goto(url + "index.html#/spielen/liste");
+  await page.goto(url + "index.html#/fortschritt");
   await page.waitForTimeout(300);
-  r.check("In 'Meine Partien' gibt es für Partien den Knopf Rückblick", (await page.locator("#liste-partien .game-item a", { hasText: "Rückblick" }).count()) >= 1);
+  await oeffneAlle(page);
+  r.check("Unter Fortschritt (Alle Partien) gibt es für Partien den Knopf Rückblick", (await page.locator("#liste-partien .game-item a", { hasText: "Rückblick" }).count()) >= 1);
   await page.goto(url + "index.html#/spielen/rueckblick/p-dame");
   await page.waitForSelector("#sp-rueckblick:not([hidden])");
   await until(page, () => /Stellung \d+ von 10/.test(document.getElementById("rb-fortschritt-text").textContent) || !document.getElementById("rb-ergebnis").hidden, null, 8000);

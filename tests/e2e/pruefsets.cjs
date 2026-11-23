@@ -1,6 +1,6 @@
 // Zwei Prüfsets: Auswahl auf der Statistik-Seite, Empfehlung, getrennte Ergebnislisten,
 // Erinnerung nennt den Satz, Umstellung alter Ergebnisse. 390 px, Touch-Emulation.
-const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, reporter, startStandort } = require("./lib.cjs");
 
 (async () => {
   const r = reporter("Zwei Prüfsets");
@@ -19,17 +19,21 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
   // ---- Auswahl und Empfehlung ----
   {
     const { page } = await newPage(browser);
-    await page.goto(url + "index.html#/taktik/statistik");
+    await page.goto(url + "index.html#/fortschritt");
     await page.waitForTimeout(700);
-    r.check("Beide Prüfsets stehen zur Wahl, mit Knopf mindestens 44 px", await page.evaluate(() =>
-      ["btn-standort-einsteiger", "btn-standort-fortgeschritten"].every((id) => { const b = document.getElementById(id); const x = b.getBoundingClientRect(); return !b.disabled && x.height >= 43.5 && x.width >= 43.5; })));
-    r.check("Stärke unbekannt: 'Empfohlen' beim Prüfset Einsteiger, nicht beim anderen", (await visible(page, "empf-einsteiger")) && !(await visible(page, "empf-fortgeschritten")));
+    r.check("Standortbestimmung hat einen Knopf (mindestens 44 px), das Prüfset kommt aus den Einstellungen", await page.evaluate(() => { const b = document.getElementById("btn-standort"); const x = b.getBoundingClientRect(); return !b.disabled && x.height >= 43.5 && x.width >= 43.5; }));
+    const satz = () => page.textContent("#stat-standort-satz");
+    r.check("Stärke unbekannt: Prüfset Einsteiger, 'automatisch gewählt'", /^Prüfset Einsteiger \(automatisch gewählt\)/.test(await satz()), await satz());
     await mutate(page, "d.taktik.staerke = 950; d.taktik.eingestuft = true;");
     await page.reload(); await page.waitForTimeout(600);
-    r.check("Stärke 950: weiter Einsteiger empfohlen", (await visible(page, "empf-einsteiger")) && !(await visible(page, "empf-fortgeschritten")));
+    r.check("Stärke 950: weiter Einsteiger", /^Prüfset Einsteiger \(automatisch/.test(await satz()), await satz());
     await mutate(page, "d.taktik.staerke = 1300;");
     await page.reload(); await page.waitForTimeout(600);
-    r.check("Stärke 1300: Fortgeschritten empfohlen", !(await visible(page, "empf-einsteiger")) && (await visible(page, "empf-fortgeschritten")));
+    r.check("Stärke 1300: Fortgeschritten", /^Prüfset Fortgeschritten \(automatisch/.test(await satz()), await satz());
+    await mutate(page, "d.einstellungen.pruefset = 'einsteiger';");
+    await page.reload(); await page.waitForTimeout(600);
+    r.check("Ausdrücklich gewähltes Prüfset (Einstellungen) schlägt die Empfehlung, ohne 'automatisch'", /^Prüfset Einsteiger\. /.test(await satz()) && !/automatisch/.test(await satz()), await satz());
+    await mutate(page, "d.einstellungen.pruefset = null;");
     r.check("Kein Überlauf auf der Statistik-Seite", await page.evaluate(() => document.documentElement.scrollWidth === window.innerWidth));
     r.check("keine Skriptfehler (Auswahl)", page.__errors.length === 0, page.__errors.join("; "));
   }
@@ -37,12 +41,12 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
   // ---- Prüfset Einsteiger durchspielen ----
   {
     const { page } = await newPage(browser);
-    await page.goto(url + "index.html#/taktik/statistik");
+    await page.goto(url + "index.html#/fortschritt");
     await page.waitForTimeout(500);
     await mutate(page, "d.taktik.staerke = 480; d.taktik.eingestuft = true; d.taktik.anzahl = 10;");
     await page.reload(); await page.waitForTimeout(600);
     const before = (await state(page)).taktik;
-    await page.click("#btn-standort-einsteiger");
+    await startStandort(page, "einsteiger");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
     const t = (await state(page)).taktik;
     const ratings = t.aktiv.plan.map((i) => i.puzzle.rating);
@@ -75,7 +79,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     const after = (await state(page)).taktik;
     r.check("Ergebnis mit Prüfset 'einsteiger' gespeichert; Stärke, Versuche, Verlauf unberührt", after.standort.length === 1 && after.standort[0].pruefset === "einsteiger" && after.staerke === 480 && after.versuche.length === before.versuche.length && after.verlauf.length === before.verlauf.length && Object.keys(after.gesehen).length === 0);
     await page.click("#btn-zus-zurueck");
-    await page.goto(url + "index.html#/taktik/statistik");
+    await page.goto(url + "index.html#/fortschritt");
     await page.waitForTimeout(600);
     r.check("Liste Einsteiger zeigt das Ergebnis, Liste Fortgeschritten bleibt leer", (await page.$$eval("#stat-standort-liste-einsteiger li", (l) => l.length)) === 1 && (await page.$$eval("#stat-standort-liste-fortgeschritten li", (l) => l.length)) === 0 && (await visible(page, "stat-standort-leer-fortgeschritten")) && !(await visible(page, "stat-standort-leer-einsteiger")));
     r.check("keine Skriptfehler (Prüfset Einsteiger)", page.__errors.length === 0, page.__errors.join("; "));
@@ -91,9 +95,9 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
   // ---- Abbrechen speichert nichts ----
   {
     const { page } = await newPage(browser);
-    await page.goto(url + "index.html#/taktik/statistik");
+    await page.goto(url + "index.html#/fortschritt");
     await page.waitForTimeout(500);
-    await page.click("#btn-standort-einsteiger");
+    await startStandort(page, "einsteiger");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
     await page.click("#btn-beenden");
     await page.click("#btn-beenden-ja");
@@ -105,17 +109,17 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
   // ---- Erinnerung nennt den Satz des letzten Ergebnisses ----
   {
     const { page } = await newPage(browser);
-    await page.goto(url + "index.html#/taktik/statistik");
+    await page.goto(url + "index.html#/fortschritt");
     await page.waitForTimeout(500);
     await mutate(page, `d.taktik.standort = [
       { datum: ${daysAgo(60)}, geloest: 9, von: 20, msSchnitt: 1000, satz: "x", pruefset: "fortgeschritten" },
       { datum: ${daysAgo(30)}, geloest: 8, von: 20, msSchnitt: 1000, satz: "y", pruefset: "einsteiger" }];`);
     await page.reload(); await page.waitForTimeout(600);
-    const text = await page.innerText("#hinweis-standort");
-    r.check("Nach 30 Tagen: Erinnerung nennt 'Prüfset Einsteiger' (das letzte Ergebnis), ruhig formuliert", !(await page.evaluate(() => document.getElementById("hinweis-standort").hidden)) && /Prüfset Einsteiger/.test(text) && /vier Wochen/.test(text) && /Wenn du magst/.test(text) && !/!|sofort|unbedingt/i.test(text), text.replace(/\s+/g, " "));
+    const text = await page.textContent("#stat-standort-meldung");
+    r.check("Nach 30 Tagen: Erinnerung im Abschnitt Standortbestimmung nennt 'Prüfset Einsteiger' (das letzte Ergebnis), ruhig formuliert", /Prüfset Einsteiger/.test(text) && /vier Wochen/.test(text) && /Wenn du magst/.test(text) && !/!|sofort|unbedingt/i.test(text), text.replace(/\s+/g, " "));
     await mutate(page, `d.taktik.standort.push({ datum: ${daysAgo(2)}, geloest: 10, von: 20, msSchnitt: 1000, satz: "x", pruefset: "fortgeschritten" });`);
     await page.reload(); await page.waitForTimeout(600);
-    r.check("Neues Ergebnis vor 2 Tagen: keine Erinnerung mehr", await page.evaluate(() => document.getElementById("hinweis-standort").hidden));
+    r.check("Neues Ergebnis vor 2 Tagen: keine Erinnerung mehr", !/vier Wochen her/.test(await page.textContent("#stat-standort-meldung")));
   }
 
   // ---- Alter Stand (Version 3, Ergebnisse ohne Prüfset) wird umgestellt ----
@@ -131,7 +135,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
         }));
       }
     });
-    await page.goto(url + "index.html#/taktik/statistik");
+    await page.goto(url + "index.html#/fortschritt");
     await page.waitForTimeout(700);
     const s = await state(page);
     r.check("Version 3 wird auf die aktuelle Version 7 umgestellt; altes Ergebnis gehört zu 'fortgeschritten'", s.version === 7 && s.taktik.standort[0].pruefset === "fortgeschritten" && s.einstellungen.denkhilfe === true && s.taktik.standort[0].geloest === 13);

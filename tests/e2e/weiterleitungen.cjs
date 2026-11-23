@@ -4,7 +4,10 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
 // [alte Adresse, neue Adresse nach der Weiterleitung, sichtbare Seite, Seitenname in der Kopfzeile]
 const TABELLE = [
   ["#/brett", "#/einstellungen/brett", "page-brett", "Freies Brett"],
-  ["#/taktik/statistik", "#/fortschritt", "page-statistik", "Fortschritt"],
+  ["#/taktik/statistik", "#/fortschritt", "page-fortschritt", "Fortschritt"],
+  ["#/spielen/fortschritt", "#/fortschritt", "page-fortschritt", "Fortschritt"],
+  ["#/spielen/liste", "#/fortschritt", "page-fortschritt", "Fortschritt"],
+  ["#/spielen/partie", "#/spielen", "page-spielen", "Spielen"],
   ["#/mehr", "#/einstellungen", "page-einstellungen", "Einstellungen"],
   ["#/mehr/einstellungen", "#/einstellungen", "page-einstellungen", "Einstellungen"],
   ["#/mehr/darstellung", "#/einstellungen", "page-einstellungen", "Einstellungen"],

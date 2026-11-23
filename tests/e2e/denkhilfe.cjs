@@ -1,5 +1,5 @@
 // Denkhilfe vor den ersten Rätseln, Einstellungen-Seite. 390 px, Touch-Emulation.
-const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, reporter, startStandort } = require("./lib.cjs");
 
 (async () => {
   const r = reporter("Denkhilfe und Einstellungen");
@@ -86,7 +86,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     const { page } = await newPage(browser);
     await page.goto(url + "index.html#/taktik/statistik");
     await page.waitForTimeout(600);
-    await page.click("#btn-standort-einsteiger");
+    await startStandort(page, "einsteiger");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
     await waitForSide(page);
     r.check("Standortbestimmung läuft ohne Hinweise (auch für neue Nutzer)", (await line(page)).hidden);

@@ -500,8 +500,7 @@ die Startseite stehen in `docs/HEUTE.md`.
   `#/einstellungen/brett`, `#/taktik/statistik` nach `#/fortschritt`, `#/mehr` nach `#/einstellungen`, `#/mehr/daten` nach
   `#/einstellungen/daten`, `#/mehr/info` nach `#/einstellungen/info`.
 - **Vorläufig** (bis zu den Abschnitten 3, 4, 7): `#/einstellungen` zeigt (seit Abschnitt 3) die neue Seite,
-  `#/fortschritt` zeigt noch die alte Statistik, "Meine Partien" und die Partien-Zahlen sind über zwei Links auf der Spielen-Seite
-  erreichbar.
+  `#/fortschritt` zeigte zunächst noch die alte Statistik (seit Abschnitt 7 die neue Seite).
 - Das freie Brett wird versteckt aufgebaut und beim Öffnen neu gemessen (`onShowBrett`).
 - **Anpassungen an alten Tests** (nur Wege und Beschriftungen, keine Logik): `brett`, `design`, `taktik-session` (Wechsel zum freien Brett
   über die Adresse statt Reiter "Brett"), `design` und `einfuehrung` und `navigation` (Zahnrad `#link-einstellungen` statt "Mehr"),
@@ -567,6 +566,22 @@ die Startseite stehen in `docs/HEUTE.md`.
   "Partie fortsetzen", Optionen werden vor dem Antippen aufgeklappt), `uebungen`, `rueckblick`, `spielen-offline`, `einstellungen`,
   `tippflaechen-spielen` (gleiche Gründe), `lib.cjs` (neue Hilfsfunktion `waehle`), `heute` (längere Wartezeit beim Laden der Rätselbänder).
   **Entfallen:** `spielen-hinweise.cjs` (der Hinweisblock ist weg; die Fälle prüft `heute.cjs`).
+
+### Abschnitt 7: Fortschritt zusammengelegt (fertig)
+
+- Eine Seite `#/fortschritt` mit drei Abschnitten statt Statistik, Partien-Zahlen und "Meine Partien" (`js/pages/fortschritt-seite.js` fügt die
+  bestehenden Module zusammen): **Taktik** (Stärke, Verlauf, schwächste 3 Themen; "Alle Themen und Sitzungen anzeigen" eingeklappt),
+  **Partien** (Rückblicke offen mit Knopf, Stufenempfehlung, Ergebnisse je Stufe, Patzer pro Partie; "Weitere Zahlen anzeigen" und "Alle Partien
+  anzeigen" eingeklappt) und **Standortbestimmung** (ein Knopf mit dem Prüfset aus den Einstellungen, frühere Ergebnisse eingeklappt).
+  Erklärtexte stehen hinter "Info". Der Rückblick wird nur noch von hier und vom Spielende erreicht (und von Heute, wenn er der Schritt ist).
+- Weiterleitungen: `#/taktik/statistik`, `#/spielen/fortschritt` und `#/spielen/liste` führen auf `#/fortschritt`.
+- **Entfallen** (doppelte Wege): die Erinnerungsleiste "Standortbestimmung ist vier Wochen her" oben auf jeder Seite. Die Erinnerung steht jetzt im
+  Abschnitt Standortbestimmung dieser Seite und als Fall e auf Heute. Die Leiste zur Datensicherung bleibt.
+- **Anpassungen an alten Tests:** `statistik`, `pruefsets` (ein Knopf `#btn-standort` statt zwei, Prüfset kommt aus den Einstellungen,
+  Empfehlung als Textzeile "Prüfset ... (automatisch gewählt)", Erinnerung als Zeile im Abschnitt statt Leiste, Hilfsfunktion `startStandort`),
+  `denkhilfe`, `design`, `taktik-offline` (Hilfsfunktion `startStandort`), `fortschritt` (Seite `#page-fortschritt`, Bereiche werden aufgeklappt,
+  Alte Adresse führt weiter), `partien-liste` und `rueckblick` (Liste liegt unter "Alle Partien anzeigen", Hilfsfunktion `oeffneAlle`),
+  `tippflaechen-spielen`, `weiterleitungen` (neue Zeilen).
 
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 

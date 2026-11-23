@@ -1,5 +1,5 @@
 // Brett-Designs: Standard, Wechsel wirkt sofort auf alle Bretter, Speichern, Migration, Vorschau, Umwandlung.
-const { startServer, launch, newPage, tapMove, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, tapMove, reporter, startStandort } = require("./lib.cjs");
 
 const COLORS = {
   klassisch: { hell: "rgb(240, 230, 210)", dunkel: "rgb(139, 94, 60)" },
@@ -65,7 +65,7 @@ const COLORS = {
   await page.click("#btn-beenden-ja");
   await page.goto(url + "index.html#/taktik/statistik");
   await page.waitForTimeout(600);
-  await page.click("#btn-standort-fortgeschritten");
+  await startStandort(page, "fortgeschritten");
   await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
   await page.waitForTimeout(600);
   r.check("Standortbestimmung zeigt die Dunkel-Farben", (await bg(page, "#taktik-board cg-board")) === COLORS.dunkel.hell);

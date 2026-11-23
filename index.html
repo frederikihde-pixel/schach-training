@@ -35,13 +35,6 @@
         <button id="hinweis-export-spaeter" type="button">Später</button>
       </div>
     </div>
-    <div id="hinweis-standort" class="notice" role="status" hidden>
-      <p id="hinweis-standort-text">Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie unter Fortschritt.</p>
-      <div class="notice-actions">
-        <a class="btn-link" href="#/fortschritt">Zu Fortschritt</a>
-        <button id="hinweis-standort-spaeter" type="button">Später</button>
-      </div>
-    </div>
     <div id="hinweis-speicher" class="notice notice-warn" role="status" hidden>
       <p id="hinweis-speicher-text"></p>
     </div>
@@ -211,7 +204,7 @@
           <dl id="zus-fakten" class="facts"></dl>
           <div class="stack">
             <button id="btn-zus-zurueck" type="button">Zurück zur Taktik</button>
-            <a class="btn-link-quiet" href="#/taktik/statistik">Zur Statistik</a>
+            <a class="btn-link-quiet" href="#/fortschritt">Zu Fortschritt</a>
           </div>
         </div>
       </div>
@@ -275,83 +268,6 @@
               </a>
             </div>
           </div>
-        </div>
-
-        <div id="sp-fortschritt" class="page-inner" hidden>
-          <p class="muted">
-            Zahlen aus deinen Partien gegen den Computer. Der Zufall in einzelnen Partien ist groß; aussagekräftig werden
-            die Zahlen erst nach 10 oder mehr Partien. Der Computer spielt anders als Menschen: Die Zahlen zeigen deine
-            Entwicklung gegen ihn, nicht deine Wertung gegen Menschen.
-          </p>
-          <p id="fs-version" class="muted"></p>
-
-          <div class="field">
-            <label for="fs-gruppe">Anzeigen</label>
-            <select id="fs-gruppe">
-              <option value="ohne">Partien ohne Patzer-Warnung</option>
-              <option value="mit">Partien mit Patzer-Warnung</option>
-            </select>
-            <p class="muted">Partien mit eingeschalteter Patzer-Warnung werden getrennt gezählt, damit der Vergleich ehrlich bleibt.</p>
-          </div>
-
-          <div id="fs-empfehlung" class="block">
-            <h3>Stufe</h3>
-            <p id="fs-empfehlung-text"></p>
-          </div>
-
-          <div id="fs-partien" class="block">
-            <h3>Partien</h3>
-            <p id="fs-anzahl"></p>
-            <dl id="fs-stufen" class="facts"></dl>
-          </div>
-
-          <div id="fs-analyse" class="block">
-            <h3>Rückblick-Zahlen</h3>
-            <p id="fs-analyse-text"></p>
-            <div id="fs-analyse-inhalt">
-              <p class="subhead">Patzer pro Partie (Mittel der letzten 5)</p>
-              <div id="fs-diagramm" class="chart"></div>
-              <p id="fs-diagramm-hinweis" class="muted"></p>
-              <dl id="fs-zahlen" class="facts"></dl>
-              <p class="subhead">Patzer nach Spielphase</p>
-              <dl id="fs-phasen" class="facts"></dl>
-              <p class="subhead">Art der Fehler</p>
-              <dl id="fs-arten" class="facts"></dl>
-            </div>
-          </div>
-
-          <div id="fs-eigene" class="block">
-            <h3>Eigene Rätsel</h3>
-            <dl id="fs-eigene-zahlen" class="facts"></dl>
-          </div>
-
-          <div id="fs-grundmatt" class="block">
-            <h3>Grundmatts</h3>
-            <dl id="fs-grundmatt-zahlen" class="facts"></dl>
-          </div>
-
-          <div id="fs-vorteil" class="block">
-            <h3>Vorteil verwerten</h3>
-            <dl id="fs-vorteil-zahlen" class="facts"></dl>
-          </div>
-
-          <div id="fs-aeltere" class="block" hidden>
-            <h3>Frühere Stufenversionen</h3>
-            <p class="muted">Diese Partien wurden mit anderen Stufeneinstellungen gespielt. Sie werden getrennt gezählt und nicht in die Zahlen oben einbezogen.</p>
-            <dl id="fs-aeltere-zahlen" class="facts"></dl>
-          </div>
-        </div>
-
-        <div id="sp-liste" class="page-inner" hidden>
-          <p class="muted">
-            Die letzten 30 Partien und die letzten 100 Übungen (Grundmatts, Vorteil verwerten) bleiben auf diesem
-            Gerät gespeichert. Ältere werden automatisch entfernt. Mit "Daten sichern" unter Mehr nimmst du sie mit.
-          </p>
-          <p id="liste-meldung" class="message" role="status" aria-live="polite"></p>
-          <h3 class="list-title">Partien</h3>
-          <ul id="liste-partien" class="game-list"></ul>
-          <h3 class="list-title">Übungen</h3>
-          <ul id="liste-versuche" class="game-list"></ul>
         </div>
 
         <div id="sp-rueckblick" hidden>
@@ -513,7 +429,7 @@
           <dl id="sp-ende-fakten" class="facts"></dl>
           <div id="sp-ende-rueckblick" class="block" hidden>
             <p>Wenn du magst, schau dir die Partie noch einmal an. Die App zeigt dir die größten Fehler.</p>
-            <div class="stack"><a id="sp-ende-rueckblick-link" class="btn-link-quiet" href="#/spielen/liste">Rückblick ansehen (ca. 3 Minuten)</a></div>
+            <div class="stack"><a id="sp-ende-rueckblick-link" class="btn-link-quiet" href="#/fortschritt">Rückblick ansehen (ca. 3 Minuten)</a></div>
           </div>
           <div class="stack">
             <a id="sp-ende-ansehen" class="btn-link-quiet" href="#/einstellungen/brett">Im Brett ansehen</a>
@@ -539,73 +455,136 @@
         </div>
       </div>
 
-      <!-- Seite: Statistik -->
-      <div id="page-statistik" class="page" hidden>
-        <div class="page-inner">
+      <!-- Seite: Fortschritt (Taktik, Partien, Standortbestimmung) -->
+      <div id="page-fortschritt" class="page" hidden>
+        <div class="page-inner stack-gross">
 
-          <div id="stat-leer" class="empty-state" hidden>
-            <p id="stat-leer-text"></p>
-            <div class="stack"><button id="btn-stat-leer" type="button"></button></div>
-          </div>
-
-          <div id="stat-inhalt">
-
-            <div class="block">
-              <h3>Taktikstärke</h3>
+          <section class="fs-abschnitt" aria-labelledby="fsa-taktik">
+            <h2 id="fsa-taktik" class="set-titel">Taktik</h2>
+            <div id="stat-leer" class="empty-state" hidden>
+              <p id="stat-leer-text"></p>
+              <div class="stack"><button id="btn-stat-leer" type="button"></button></div>
+            </div>
+            <div id="stat-inhalt" class="stack-gross">
               <p id="stat-staerke" class="strength"></p>
-              <div id="stat-diagramm" class="chart"></div>
-              <p id="stat-diagramm-hinweis" class="muted"></p>
+              <div>
+                <div id="stat-diagramm" class="chart"></div>
+                <p id="stat-diagramm-hinweis" class="muted"></p>
+              </div>
+              <div>
+                <h3 class="subhead">Schwächste Themen</h3>
+                <p id="stat-schwach-leer" class="muted" hidden></p>
+                <ul id="stat-schwach" class="weak-list"></ul>
+                <p id="stat-schwach-meldung" class="message" role="status"></p>
+              </div>
+              <details class="optionen">
+                <summary>Alle Themen und Sitzungen anzeigen</summary>
+                <div class="optionen-inhalt">
+                  <h3 class="subhead">Sitzungen pro Woche</h3>
+                  <ul id="stat-wochen" class="week-list"></ul>
+                  <h3 class="subhead">Themen</h3>
+                  <p id="stat-themen-leer" class="muted" hidden>Noch keine Rätsel gespielt.</p>
+                  <ul id="stat-themen" class="stat-list"></ul>
+                </div>
+              </details>
             </div>
+          </section>
 
-            <div class="block">
-              <h3>Sitzungen pro Woche</h3>
-              <ul id="stat-wochen" class="week-list"></ul>
+          <section class="fs-abschnitt" aria-labelledby="fsa-partien">
+            <h2 id="fsa-partien" class="set-titel">Partien</h2>
+            <div class="stack-gross">
+              <div class="hint-row">
+                <span id="fp-offen">Rückblicke offen: 0</span>
+                <button id="fp-offen-btn" type="button">Ansehen</button>
+              </div>
+              <p id="fs-empfehlung-text" class="heute-text"></p>
+              <div id="fs-partien">
+                <p id="fs-anzahl"></p>
+                <dl id="fs-stufen" class="facts"></dl>
+              </div>
+              <div id="fs-analyse">
+                <p id="fs-analyse-text" class="muted"></p>
+                <div id="fs-analyse-inhalt">
+                  <p class="subhead">Patzer pro Partie (Mittel der letzten 5)</p>
+                  <div id="fs-diagramm" class="chart"></div>
+                  <p id="fs-diagramm-hinweis" class="muted"></p>
+                </div>
+              </div>
+              <details class="optionen">
+                <summary>Weitere Zahlen anzeigen</summary>
+                <div class="optionen-inhalt">
+                  <div class="field">
+                    <label for="fs-gruppe">Anzeigen</label>
+                    <select id="fs-gruppe">
+                      <option value="ohne">Partien ohne Patzer-Warnung</option>
+                      <option value="mit">Partien mit Patzer-Warnung</option>
+                    </select>
+                    <p class="muted">Partien mit eingeschalteter Patzer-Warnung werden getrennt gezählt, damit der Vergleich ehrlich bleibt.</p>
+                  </div>
+                  <p id="fs-version" class="muted"></p>
+                  <dl id="fs-zahlen" class="facts"></dl>
+                  <p class="subhead">Patzer nach Spielphase</p>
+                  <dl id="fs-phasen" class="facts"></dl>
+                  <p class="subhead">Art der Fehler</p>
+                  <dl id="fs-arten" class="facts"></dl>
+                  <p class="subhead">Eigene Rätsel</p>
+                  <dl id="fs-eigene-zahlen" class="facts"></dl>
+                  <p class="subhead">Grundmatts</p>
+                  <dl id="fs-grundmatt-zahlen" class="facts"></dl>
+                  <p class="subhead">Vorteil verwerten</p>
+                  <dl id="fs-vorteil-zahlen" class="facts"></dl>
+                  <div id="fs-aeltere" hidden>
+                    <p class="subhead">Frühere Stufenversionen</p>
+                    <p class="muted">Diese Partien wurden mit anderen Stufeneinstellungen gespielt. Sie werden getrennt gezählt und nicht in die Zahlen einbezogen.</p>
+                    <dl id="fs-aeltere-zahlen" class="facts"></dl>
+                  </div>
+                </div>
+              </details>
+              <details class="info">
+                <summary>Info zu den Zahlen</summary>
+                <p>
+                  Der Zufall in einzelnen Partien ist groß; aussagekräftig werden die Zahlen erst nach 10 oder mehr Partien. Der Computer spielt
+                  anders als Menschen: Die Zahlen zeigen deine Entwicklung gegen ihn, nicht deine Wertung gegen Menschen. Die letzten 30
+                  Partien und die letzten 100 Übungen bleiben gespeichert, ältere werden automatisch entfernt.
+                </p>
+              </details>
+              <details id="fp-alle" class="optionen">
+                <summary>Alle Partien anzeigen</summary>
+                <div class="optionen-inhalt">
+                  <p id="liste-meldung" class="message" role="status" aria-live="polite"></p>
+                  <h3 class="subhead">Partien</h3>
+                  <ul id="liste-partien" class="game-list"></ul>
+                  <h3 class="subhead">Übungen</h3>
+                  <ul id="liste-versuche" class="game-list"></ul>
+                </div>
+              </details>
             </div>
+          </section>
 
-            <div class="block">
-              <h3>Schwächste Themen</h3>
-              <p id="stat-schwach-leer" class="muted" hidden></p>
-              <ul id="stat-schwach" class="weak-list"></ul>
-              <p id="stat-schwach-meldung" class="message" role="status"></p>
+          <section id="stat-standort" class="fs-abschnitt" aria-labelledby="fsa-standort">
+            <h2 id="fsa-standort" class="set-titel">Standortbestimmung</h2>
+            <div class="stack-gross">
+              <p class="muted">20 feste Rätsel, ohne Hinweise und ohne Zeitvorgabe, etwa 15 bis 25 Minuten. Deine Taktikstärke ändert sich dadurch nicht.</p>
+              <p id="stat-standort-meldung" class="muted"></p>
+              <button id="btn-standort" type="button">Standortbestimmung starten</button>
+              <p id="stat-standort-satz" class="muted"></p>
+              <details class="optionen">
+                <summary>Frühere Ergebnisse anzeigen</summary>
+                <div class="optionen-inhalt">
+                  <p class="subhead">Prüfset Einsteiger</p>
+                  <p id="stat-standort-leer-einsteiger" class="muted">Noch keine Ergebnisse.</p>
+                  <ul id="stat-standort-liste-einsteiger" class="plain-list"></ul>
+                  <p class="subhead">Prüfset Fortgeschritten</p>
+                  <p id="stat-standort-leer-fortgeschritten" class="muted">Noch keine Ergebnisse.</p>
+                  <ul id="stat-standort-liste-fortgeschritten" class="plain-list"></ul>
+                  <p class="muted">Ergebnisse der beiden Prüfsets werden getrennt gespeichert und nicht miteinander verglichen.</p>
+                </div>
+              </details>
             </div>
+          </section>
 
-            <div class="block">
-              <h3>Themen</h3>
-              <p id="stat-themen-leer" class="muted" hidden>Noch keine Rätsel gespielt.</p>
-              <ul id="stat-themen" class="stat-list"></ul>
-            </div>
-
-          </div>
-
-          <div id="stat-standort" class="block">
-            <h3>Standortbestimmung</h3>
-            <p>
-              20 feste Rätsel von leicht bis schwer, ohne Hinweise und ohne Zeitvorgabe. Das Ergebnis wird mit
-              Datum gespeichert, damit du es später mit einer Wiederholung vergleichen kannst. Deine
-              Taktikstärke ändert sich dadurch nicht. Plane etwa 15 bis 25 Minuten ein. Es gibt zwei Prüfsets;
-              ihre Ergebnisse werden getrennt gespeichert und nicht miteinander verglichen.
-            </p>
-            <p id="stat-standort-meldung" class="muted"></p>
-            <div class="pruefset-opt">
-              <p><strong>Prüfset Einsteiger</strong> <span id="empf-einsteiger" class="tag-quiet" hidden>Empfohlen</span></p>
-              <p class="muted">20 Rätsel, Wertung etwa 450 bis 1100.</p>
-              <div class="stack"><button id="btn-standort-einsteiger" type="button">Prüfset Einsteiger starten</button></div>
-            </div>
-            <div class="pruefset-opt">
-              <p><strong>Prüfset Fortgeschritten</strong> <span id="empf-fortgeschritten" class="tag-quiet" hidden>Empfohlen</span></p>
-              <p class="muted">20 Rätsel, Wertung etwa 850 bis 2050.</p>
-              <div class="stack"><button id="btn-standort-fortgeschritten" type="button">Prüfset Fortgeschritten starten</button></div>
-            </div>
-            <h4 class="subhead">Frühere Ergebnisse: Prüfset Einsteiger</h4>
-            <p id="stat-standort-leer-einsteiger" class="muted">Noch keine Ergebnisse.</p>
-            <ul id="stat-standort-liste-einsteiger" class="plain-list"></ul>
-            <h4 class="subhead">Frühere Ergebnisse: Prüfset Fortgeschritten</h4>
-            <p id="stat-standort-leer-fortgeschritten" class="muted">Noch keine Ergebnisse.</p>
-            <ul id="stat-standort-liste-fortgeschritten" class="plain-list"></ul>
-          </div>
         </div>
       </div>
-
       <!-- Seite: Einstellungen (Zahnrad) -->
       <div id="page-einstellungen" class="page" hidden>
         <div class="page-inner">

@@ -170,7 +170,23 @@ async function waehle(page, gruppe, wert) {
   await page.click(`${gruppe} [data-wert="${wert}"]`);
 }
 
-module.exports = { waehle, ROOT, startServer, launch, newContext, newPage, squareCenter, tapMove, dragMove, reporter };
+// Startet die Standortbestimmung mit dem gewünschten Prüfset: Das Prüfset kommt aus den Einstellungen, also erst dort setzen.
+async function startStandort(page, satz) {
+  await page.evaluate(async (x) => {
+    const { store } = await import("./js/storage.js");
+    store.update((d) => {
+      d.einstellungen.pruefset = x;
+    });
+  }, satz);
+  await page.click("#btn-standort");
+}
+
+// Klappt alle eingeklappten Bereiche der Fortschritt-Seite auf (Listen und weitere Zahlen), damit Tests sie bedienen können.
+async function oeffneAlle(page) {
+  await page.evaluate(() => document.querySelectorAll("#page-fortschritt details").forEach((d) => { d.open = true; }));
+}
+
+module.exports = { oeffneAlle, startStandort, waehle, ROOT, startServer, launch, newContext, newPage, squareCenter, tapMove, dragMove, reporter };
 
 // ---- Taktik-Helfer ----
 
