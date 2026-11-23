@@ -71,7 +71,7 @@ const band = (b) => JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles/ban
     r.check("keine doppelten Rätsel, keine schon gesehenen", new Set(plan.map((i) => i.puzzle.id)).size === 10);
     r.check("Fortschrittsanzeige 'Rätsel 1 von 10' ohne Serien oder Punkte", (await page.textContent("#lauf-fortschritt")) === "Rätsel 1 von 10" && !/Serie|Punkte|Streak/i.test(await page.innerText("#page-taktik")));
     // Fortsetzen nach Verlassen der Seite
-    await page.click("#tab-brett");
+    await page.evaluate(() => { location.hash = "#/einstellungen/brett"; });
     await page.waitForTimeout(300);
     await page.click("#tab-taktik");
     await page.waitForTimeout(400);

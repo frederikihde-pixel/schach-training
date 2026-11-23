@@ -19,21 +19,26 @@
   </head>
   <body>
     <header class="app-header">
-      <h1>Schach-Training</h1>
-      <a id="link-mehr" class="header-link" href="#/mehr">Mehr</a>
+      <a id="btn-zurueck" class="header-icon" href="#/heute" aria-label="Zurück" hidden>
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </a>
+      <h1 id="app-titel">Heute</h1>
+      <a id="link-einstellungen" class="header-icon" href="#/einstellungen" aria-label="Einstellungen">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+      </a>
     </header>
 
     <div id="hinweis-export" class="notice" role="status" hidden>
       <p id="hinweis-export-text"></p>
       <div class="notice-actions">
-        <a class="btn-link" href="#/mehr/daten">Daten sichern</a>
+        <a class="btn-link" href="#/einstellungen/daten">Daten sichern</a>
         <button id="hinweis-export-spaeter" type="button">Später</button>
       </div>
     </div>
     <div id="hinweis-standort" class="notice" role="status" hidden>
-      <p id="hinweis-standort-text">Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie in der Statistik.</p>
+      <p id="hinweis-standort-text">Deine letzte Standortbestimmung ist vier Wochen her. Wenn du magst, wiederhole sie unter Fortschritt.</p>
       <div class="notice-actions">
-        <a class="btn-link" href="#/taktik/statistik">Zur Statistik</a>
+        <a class="btn-link" href="#/fortschritt">Zu Fortschritt</a>
         <button id="hinweis-standort-spaeter" type="button">Später</button>
       </div>
     </div>
@@ -42,8 +47,15 @@
     </div>
 
     <main id="app">
-      <!-- Seite: Brett (Phase 1) -->
-      <div id="page-brett" class="page">
+      <!-- Seite: Heute -->
+      <div id="page-heute" class="page" hidden>
+        <div class="page-inner">
+          <p id="heute-platzhalter" class="muted">Heute</p>
+        </div>
+      </div>
+
+      <!-- Seite: Freies Brett (unter Einstellungen) -->
+      <div id="page-brett" class="page" hidden>
         <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
 
         <div class="board-row">
@@ -107,12 +119,6 @@
       <!-- Seite: Taktik (Üben) -->
       <div id="page-taktik" class="page" hidden>
         <div id="taktik-start" class="page-inner">
-          <nav class="subnav" aria-label="Taktik">
-            <a href="#/taktik" aria-current="page">Üben</a>
-            <a href="#/taktik/statistik">Statistik</a>
-            <a href="#/taktik/themen">Themen</a>
-          </nav>
-          <h2 class="page-title">Taktik</h2>
           <p id="taktik-staerke" class="strength"></p>
           <p id="taktik-info" class="muted"></p>
 
@@ -159,6 +165,7 @@
             </div>
           </div>
 
+          <div class="stack"><a class="btn-link-quiet" href="#/taktik/themen">Themen-Übersicht</a></div>
           <p id="taktik-standort-info" class="muted"></p>
           <p id="taktik-meldung" class="message" role="status" aria-live="polite"></p>
         </div>
@@ -206,12 +213,6 @@
       <!-- Seite: Spielen (Partien gegen den Computer) -->
       <div id="page-spielen" class="page" hidden>
         <div id="sp-start" class="page-inner" hidden>
-          <nav class="subnav subnav-3" aria-label="Spielen">
-            <a href="#/spielen" id="sub-spielen">Spielen</a>
-            <a href="#/spielen/liste">Meine Partien</a>
-            <a href="#/spielen/fortschritt">Fortschritt</a>
-          </nav>
-          <h2 class="page-title">Spielen</h2>
           <p class="muted">
             Partien gegen den Computer sind hier Training: erst spielen, danach zurückschauen. Es gibt keine
             Uhr, keine Bewertungsleiste und keine Zugvorschläge.
@@ -249,6 +250,11 @@
             </div>
           </div>
 
+          <div class="stack">
+            <a class="btn-link-quiet" href="#/spielen/liste">Meine Partien</a>
+            <a class="btn-link-quiet" href="#/spielen/fortschritt">Zahlen zu meinen Partien</a>
+          </div>
+
           <div class="way-list">
             <a class="way" id="sp-weg-partie" href="#/spielen/partie">
               <strong>Partie</strong>
@@ -266,12 +272,6 @@
         </div>
 
         <div id="sp-fortschritt" class="page-inner" hidden>
-          <nav class="subnav subnav-3" aria-label="Spielen">
-            <a href="#/spielen">Spielen</a>
-            <a href="#/spielen/liste">Meine Partien</a>
-            <a href="#/spielen/fortschritt" aria-current="page">Fortschritt</a>
-          </nav>
-          <h2 class="page-title">Fortschritt</h2>
           <p class="muted">
             Zahlen aus deinen Partien gegen den Computer. Der Zufall in einzelnen Partien ist groß; aussagekräftig werden
             die Zahlen erst nach 10 oder mehr Partien. Der Computer spielt anders als Menschen: Die Zahlen zeigen deine
@@ -337,12 +337,6 @@
         </div>
 
         <div id="sp-liste" class="page-inner" hidden>
-          <nav class="subnav subnav-3" aria-label="Spielen">
-            <a href="#/spielen">Spielen</a>
-            <a href="#/spielen/liste" aria-current="page">Meine Partien</a>
-            <a href="#/spielen/fortschritt">Fortschritt</a>
-          </nav>
-          <h2 class="page-title">Meine Partien</h2>
           <p class="muted">
             Die letzten 30 Partien und die letzten 100 Übungen (Grundmatts, Vorteil verwerten) bleiben auf diesem
             Gerät gespeichert. Ältere werden automatisch entfernt. Mit "Daten sichern" unter Mehr nimmst du sie mit.
@@ -356,8 +350,6 @@
 
         <div id="sp-rueckblick" hidden>
           <div class="page-inner">
-            <p class="back-row"><a class="back-link" id="rb-zurueck" href="#/spielen/liste">Zurück</a></p>
-            <h2 class="page-title">Rückblick</h2>
             <p id="rb-kopf" class="muted"></p>
 
             <div id="rb-fortschritt" class="block" hidden>
@@ -420,8 +412,7 @@
         </div>
 
         <div id="sp-setup" class="page-inner" hidden>
-          <p class="back-row"><a class="back-link" href="#/spielen">Zurück</a></p>
-          <h2 id="sp-setup-titel" class="page-title">Partie</h2>
+          <h2 id="sp-setup-titel" class="page-title" hidden>Partie</h2>
           <p id="sp-setup-text" class="muted"></p>
 
           <div id="sp-feld-art" class="field" hidden>
@@ -469,8 +460,6 @@
         </div>
 
         <div id="sp-grundmatt" class="page-inner" hidden>
-          <p class="back-row"><a class="back-link" href="#/spielen">Zurück</a></p>
-          <h2 class="page-title">Grundmatts üben</h2>
           <p class="muted">
             Du spielst Weiß und setzt Matt. Der Computer verteidigt mit Stufe 8. Misserfolg: Patt, dreifache
             Wiederholung, 50-Züge-Regel oder Verlust deiner Figur. Zum Vergleich: Mit Dame und König ist das Matt
@@ -535,7 +524,7 @@
             <div class="stack"><a id="sp-ende-rueckblick-link" class="btn-link-quiet" href="#/spielen/liste">Rückblick ansehen (ca. 3 Minuten)</a></div>
           </div>
           <div class="stack">
-            <a id="sp-ende-ansehen" class="btn-link-quiet" href="#/brett">Im Brett ansehen</a>
+            <a id="sp-ende-ansehen" class="btn-link-quiet" href="#/einstellungen/brett">Im Brett ansehen</a>
             <button id="sp-ende-pgn" type="button">PGN kopieren</button>
             <a id="sp-ende-neu" class="btn-link" href="#/spielen/partie">Neue Partie</a>
             <a id="sp-ende-zurueck" class="btn-link-quiet" href="#/spielen">Zurück zu Spielen</a>
@@ -547,12 +536,6 @@
       <!-- Seite: Themen -->
       <div id="page-themen" class="page" hidden>
         <div class="page-inner">
-          <nav class="subnav" aria-label="Taktik">
-            <a href="#/taktik">Üben</a>
-            <a href="#/taktik/statistik">Statistik</a>
-            <a href="#/taktik/themen" aria-current="page">Themen</a>
-          </nav>
-          <h2 class="page-title">Themen</h2>
           <p class="muted">
             Jedes Rätsel gehört zu einem oder mehreren Themen. Hier steht, was die Themen bedeuten, und du
             kannst ein Thema gezielt üben. Die ersten zehn eignen sich besonders für den Einstieg.
@@ -568,12 +551,6 @@
       <!-- Seite: Statistik -->
       <div id="page-statistik" class="page" hidden>
         <div class="page-inner">
-          <nav class="subnav" aria-label="Taktik">
-            <a href="#/taktik">Üben</a>
-            <a href="#/taktik/statistik" aria-current="page">Statistik</a>
-            <a href="#/taktik/themen">Themen</a>
-          </nav>
-          <h2 class="page-title">Statistik</h2>
 
           <div id="stat-leer" class="empty-state" hidden>
             <p id="stat-leer-text"></p>
@@ -641,13 +618,13 @@
       <!-- Seite: Mehr -->
       <div id="page-mehr" class="page" hidden>
         <div class="page-inner">
-          <h2 class="page-title">Mehr</h2>
           <nav class="link-list" aria-label="Mehr">
             <button id="btn-einfuehrung" type="button">Einführung</button>
+            <a href="#/einstellungen/brett">Freies Brett</a>
             <a href="#/mehr/darstellung">Darstellung</a>
             <a href="#/mehr/einstellungen">Einstellungen</a>
-            <a href="#/mehr/daten">Daten sichern und wiederherstellen</a>
-            <a href="#/mehr/info">Info und Lizenzen</a>
+            <a href="#/einstellungen/daten">Daten sichern und wiederherstellen</a>
+            <a href="#/einstellungen/info">Info und Lizenzen</a>
           </nav>
         </div>
       </div>
@@ -655,8 +632,6 @@
       <!-- Seite: Einstellungen -->
       <div id="page-einstellungen" class="page" hidden>
         <div class="page-inner">
-          <p class="back-row"><a class="back-link" href="#/mehr">Zurück</a></p>
-          <h2 class="page-title">Einstellungen</h2>
           <div class="block">
             <h3>Denkhilfe</h3>
             <p>
@@ -674,8 +649,6 @@
       <!-- Seite: Darstellung -->
       <div id="page-darstellung" class="page" hidden>
         <div class="page-inner">
-          <p class="back-row"><a class="back-link" href="#/mehr">Zurück</a></p>
-          <h2 class="page-title">Darstellung</h2>
           <p class="muted">
             So sieht das Brett aus. Die App selbst bleibt dunkel. Die Wahl gilt für alle Bretter (Brett, Taktik,
             Standortbestimmung).
@@ -687,8 +660,6 @@
       <!-- Seite: Daten -->
       <div id="page-daten" class="page" hidden>
         <div class="page-inner">
-          <p class="back-row"><a class="back-link" href="#/mehr">Zurück</a></p>
-          <h2 class="page-title">Daten</h2>
 
           <div class="block">
             <h3>Wo die Daten liegen</h3>
@@ -753,8 +724,6 @@
       <!-- Seite: Info -->
       <div id="page-info" class="page" hidden>
         <div class="page-inner">
-          <p class="back-row"><a class="back-link" href="#/mehr">Zurück</a></p>
-          <h2 class="page-title">Info und Lizenzen</h2>
 
           <div class="block">
             <h3>Über diese App</h3>
@@ -836,9 +805,10 @@
     </main>
 
     <nav class="tabbar" aria-label="Hauptnavigation">
-      <a id="tab-brett" href="#/brett">Brett</a>
+      <a id="tab-heute" href="#/heute">Heute</a>
       <a id="tab-taktik" href="#/taktik">Taktik</a>
       <a id="tab-spielen" href="#/spielen">Spielen</a>
+      <a id="tab-fortschritt" href="#/fortschritt">Fortschritt</a>
     </nav>
 
     <div id="intro" class="intro" role="dialog" aria-modal="true" aria-labelledby="intro-titel" hidden>

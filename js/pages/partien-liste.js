@@ -42,7 +42,7 @@ function eintragElement(e, meldung) {
   ansehen.addEventListener("click", () => {
     try {
       ladePgn(e.pgn, { farbe: e.farbe });
-      location.hash = "#/brett";
+      location.hash = "#/einstellungen/brett";
     } catch (err) {
       meldung("Diese Partie konnte nicht ins Brett geladen werden.");
     }

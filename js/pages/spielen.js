@@ -585,7 +585,7 @@ function zeigeEnde() {
     ev.preventDefault();
     try {
       ladePgn(e.pgn, { farbe: e.farbe });
-      location.hash = "#/brett";
+      location.hash = "#/einstellungen/brett";
     } catch (err) {
       meldung("sp-ende-meldung", "Die Partie konnte nicht ins Brett geladen werden.");
     }

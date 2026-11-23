@@ -491,6 +491,25 @@ die Startseite stehen in `docs/HEUTE.md`.
   Partien 1916 px (2,3), Info 1820 px (2,2), Partie-Einstellungen 1250 px (1,5); alle anderen höchstens 1,5. Tipps bis zum Start:
   Rätsel-Sitzung 2, Partie 3. Kein Seitenüberlauf.
 
+### Abschnitt 2: Gerüst (fertig)
+
+- Kopfzeile: links der Zurück-Pfeil (nur auf Unterseiten, führt zur Eltern-Route), in der Mitte der Seitenname (ersetzt die doppelten
+  Seitentitel), rechts das Zahnrad "Einstellungen" (einfaches Strichsymbol, kein Emoji). Untere Leiste mit vier Orten: Heute, Taktik,
+  Spielen, Fortschritt. Alle Unterreiter und Textlinks "Zurück" sind entfernt. Startseite ist `#/heute`, unbekannte Adressen zeigen sie.
+- Router (`js/router.js`): Routen haben `parent`, Weiterleitungen mit `addRedirect`. Schon umgeleitet: `#/brett` nach
+  `#/einstellungen/brett`, `#/taktik/statistik` nach `#/fortschritt`, `#/mehr` nach `#/einstellungen`, `#/mehr/daten` nach
+  `#/einstellungen/daten`, `#/mehr/info` nach `#/einstellungen/info`.
+- **Vorläufig** (bis zu den Abschnitten 3, 4, 7): `#/heute` ist ein Platzhalter, `#/einstellungen` zeigt noch das alte Mehr-Menü,
+  `#/fortschritt` zeigt noch die alte Statistik, "Meine Partien" und die Partien-Zahlen sind über zwei Links auf der Spielen-Seite
+  erreichbar.
+- Das freie Brett wird versteckt aufgebaut und beim Öffnen neu gemessen (`onShowBrett`).
+- **Anpassungen an alten Tests** (nur Wege und Beschriftungen, keine Logik): `brett`, `design`, `taktik-session` (Wechsel zum freien Brett
+  über die Adresse statt Reiter "Brett"), `design` und `einfuehrung` und `navigation` (Zahnrad `#link-einstellungen` statt "Mehr"),
+  `navigation` (Leiste Heute/Taktik/Spielen/Fortschritt, Info-Link, Zurück-Pfeil, unbekannte Adresse zeigt Heute), `denkhilfe`
+  (Zurück-Pfeil), `pwa` (Offline-Prüfung öffnet das freie Brett über die Adresse), `fortschritt` (Reiter und Unterreiter-Prüfungen durch
+  Prüfung des Reiters Fortschritt und des Pfeils ersetzt, Neuladen statt gleicher Adresse), `themen` (Link "Themen-Übersicht" statt
+  Unterreiter). Neu: `weiterleitungen.cjs` (19 Prüfungen).
+
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 
 Die **Analyse eigener Partien ist fertig** (Teil E bis G, siehe oben; sie nimmt PGN und Farbe des Spielers und ist nicht an die

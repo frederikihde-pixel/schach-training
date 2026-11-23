@@ -17,16 +17,16 @@ const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/tak
     const b = el.getBoundingClientRect();
     return { top: b.top, bottom: b.bottom, h: b.height, pos: getComputedStyle(el).position, labels: [...el.querySelectorAll("a")].map((a) => a.textContent.trim()), ih: innerHeight };
   });
-  r.check("Leiste ist fest und enthält Brett, Taktik und Spielen", bar.pos === "fixed" && bar.labels.join() === "Brett,Taktik,Spielen", bar.labels.join());
+  r.check("Leiste ist fest und enthält Heute, Taktik, Spielen und Fortschritt", bar.pos === "fixed" && bar.labels.join() === "Heute,Taktik,Spielen,Fortschritt", bar.labels.join());
   r.check("Leiste liegt am unteren Rand", Math.abs(bar.bottom - bar.ih) < 1, `bottom=${bar.bottom} innerHeight=${bar.ih}`);
 
   await page.click("#tab-taktik");
   await page.waitForTimeout(150);
   r.check("Taktik-Seite sichtbar, Reiter markiert", (await page.evaluate(() => !document.getElementById("page-taktik").hidden && document.getElementById("tab-taktik").getAttribute("aria-current") === "page")));
-  await page.click("#link-mehr");
+  await page.click("#link-einstellungen");
   await page.waitForTimeout(150);
   r.check("Mehr-Seite über Knopf oben rechts", await page.evaluate(() => !document.getElementById("page-mehr").hidden));
-  await page.click('a[href="#/mehr/info"]');
+  await page.click('a[href="#/einstellungen/info"]');
   await page.waitForTimeout(150);
   r.check("Info-Seite erreichbar", await page.evaluate(() => !document.getElementById("page-info").hidden));
   r.check("Info nennt Cburnett und CC BY-SA 3.0", await page.evaluate(() => /Cburnett/.test(document.body.innerText) && /CC BY-SA 3\.0/.test(document.body.innerText)));
@@ -35,12 +35,12 @@ const ROUTES = (process.env.ROUTES || "#/brett,#/taktik,#/taktik/statistik,#/tak
   await page.waitForTimeout(400);
   const lic = await page.locator("details.license").nth(1).locator("pre").innerText();
   r.check("Lizenztext chess.js wird geladen", /BSD|Redistribution/.test(lic), lic.slice(0, 40));
-  await page.click("#page-info .back-link");
+  await page.click("#btn-zurueck");
   await page.waitForTimeout(150);
   r.check("Zurück führt zu Mehr", await page.evaluate(() => !document.getElementById("page-mehr").hidden));
   await page.goto(url + "index.html#/gibtesnicht");
   await page.waitForTimeout(200);
-  r.check("Unbekannte Adresse zeigt das Brett", await page.evaluate(() => !document.getElementById("page-brett").hidden));
+  r.check("Unbekannte Adresse zeigt die Startseite Heute", await page.evaluate(() => !document.getElementById("page-heute").hidden));
 
   // Tippflächen
   for (const route of ROUTES) {

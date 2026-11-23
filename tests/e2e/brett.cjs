@@ -108,12 +108,12 @@ const { startServer, launch, newPage, tapMove, dragMove, reporter } = require(".
   // Seitenwechsel behält die Partie und das Brett bleibt bedienbar
   {
     const p = await fresh("#/taktik");
-    await p.click("#tab-brett");
+    await p.evaluate(() => { location.hash = "#/einstellungen/brett"; });
     await p.waitForTimeout(300);
     await tapMove(p, "e2", "e4");
     await p.click("#tab-taktik");
     await p.waitForTimeout(150);
-    await p.click("#tab-brett");
+    await p.evaluate(() => { location.hash = "#/einstellungen/brett"; });
     await p.waitForTimeout(300);
     r.check("Partie bleibt beim Seitenwechsel erhalten", (await fenOf(p)).startsWith("rnbqkbnr/pppppppp/8/8/4P3/8/"), await fenOf(p));
     await tapMove(p, "e7", "e5");

@@ -24,7 +24,7 @@ const COLORS = {
   r.check("Neue Nutzer: Standard ist Klassisch", (await dataset(page)) === "klassisch" && (await bg(page, "#board cg-board")) === COLORS.klassisch.hell, await dataset(page));
 
   // ---- Auswahl über Mehr > Darstellung ----
-  await page.click("#link-mehr");
+  await page.click("#link-einstellungen");
   await page.click('a[href="#/mehr/darstellung"]');
   await page.waitForSelector("#design-liste .design-card");
   const cards = await page.$$eval(".design-card", (c) => c.map((x) => ({ name: x.querySelector("strong").textContent, h: x.getBoundingClientRect().height, w: x.getBoundingClientRect().width, pressed: x.getAttribute("aria-pressed") })));
@@ -43,7 +43,7 @@ const COLORS = {
   r.check("Gespeichert (Einstellungen)", (await stored(page)).einstellungen.brettDesign === "dunkel");
 
   // Wirkt auf das Brett
-  await page.click("#tab-brett");
+  await page.evaluate(() => { location.hash = "#/einstellungen/brett"; });
   await page.waitForTimeout(300);
   r.check("Brett zeigt die Dunkel-Farben", (await bg(page, "#board cg-board")) === COLORS.dunkel.hell, await bg(page, "#board cg-board"));
   await tapMove(page, "e2", "e4");
@@ -85,7 +85,7 @@ const COLORS = {
 
   // ---- Umwandlungsauswahl: Figuren auf der Feldfarbe mit dem besten Kontrast ----
   await page.locator(".design-card").nth(1).click();
-  await page.click("#tab-brett");
+  await page.evaluate(() => { location.hash = "#/einstellungen/brett"; });
   await page.waitForTimeout(300);
   await page.fill("#fen-input", "8/8/8/8/8/8/p6k/4K3 b - - 0 1");
   await page.click("#btn-fen-load");

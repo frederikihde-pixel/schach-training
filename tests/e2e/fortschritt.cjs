@@ -11,7 +11,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   // --- leer ---
   await page.goto(url + "index.html#/spielen/fortschritt");
   await page.waitForSelector("#sp-fortschritt:not([hidden])");
-  r.check("Reiter Spielen markiert, Unterreiter Fortschritt aktiv", (await page.getAttribute("#tab-spielen", "aria-current")) === "page" && (await page.getAttribute("#sp-fortschritt .subnav a[aria-current]", "href")) === "#/spielen/fortschritt");
+  r.check("Reiter Fortschritt markiert, Zurück-Pfeil oben links", (await page.getAttribute("#tab-fortschritt", "aria-current")) === "page" && !(await page.isHidden("#btn-zurueck")));
   r.check("Leer: 'zu wenig Daten' statt Zahlen, kein Diagramm", /zu wenig Daten/.test(await text("#fs-partien")) && /zu wenig Daten/.test(await text("#fs-analyse")) && (await page.isHidden("#fs-analyse-inhalt")) && (await page.locator("#fs-diagramm svg").count()) === 0);
   r.check("Leer: Stufenempfehlung nennt, was fehlt", /Noch keine Empfehlung/.test(await text("#fs-empfehlung-text")));
   r.check("Leer: eigene Rätsel 0, Grundmatts und Vorteil 'noch keine'", /Gespeicherte eigene Rätsel 0/.test((await text("#fs-eigene-zahlen")).replace(/\s+/g, " ")) && /noch keine/.test(await text("#fs-grundmatt")) && /noch keine/.test(await text("#fs-vorteil")));
@@ -89,15 +89,9 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   await page.selectOption("#fs-gruppe", "ohne");
 
   // --- Layout ---
-  const tap = await page.locator("#sp-fortschritt select, #sp-fortschritt .subnav a").evaluateAll((els) => els.map((e) => [e.textContent.trim(), Math.round(e.getBoundingClientRect().height), Math.round(e.getBoundingClientRect().width)]));
-  r.check("Auswahl und Reiter mindestens 44 px hoch", tap.every(([, h, w]) => h >= 44 && w >= 44), JSON.stringify(tap));
-  r.check("Seite läuft bei 390 px nicht über, Reiter passen nebeneinander", await page.evaluate(() => { const n = document.querySelector("#sp-fortschritt .subnav"); return document.documentElement.scrollWidth === window.innerWidth && n.scrollWidth <= n.clientWidth + 1; }));
-  const links = await page.locator("#sp-fortschritt .subnav a").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().top));
-  r.check("Die drei Reiter stehen in einer Zeile", new Set(links.map(Math.round)).size === 1);
-  // Reiter auch auf den anderen Spielen-Seiten
-  await page.goto(url + "index.html#/spielen/liste");
-  await page.waitForTimeout(200);
-  r.check("Auf 'Meine Partien' führt der Reiter Fortschritt hierher", (await page.locator('#sp-liste .subnav a[href="#/spielen/fortschritt"]').count()) === 1);
+  const tap = await page.locator("#sp-fortschritt select").evaluateAll((els) => els.map((e) => [e.textContent.trim(), Math.round(e.getBoundingClientRect().height), Math.round(e.getBoundingClientRect().width)]));
+  r.check("Auswahl mindestens 44 px hoch", tap.every(([, h, w]) => h >= 44 && w >= 44), JSON.stringify(tap));
+  r.check("Seite läuft bei 390 px nicht über", await page.evaluate(() => document.documentElement.scrollWidth === window.innerWidth));
 
   // --- alte Version: Stand mit Version 0 nur, aktuelle leer ---
   await page.evaluate(async () => {
@@ -106,8 +100,8 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
       d.spielen.partien = [1, 2, 3, 4, 5, 6].map((i) => ({ id: "alt" + i, datum: new Date().toISOString(), modus: "partie", farbe: "w", stufe: 2, stufenversion: 0, ausgang: "gewonnen", grund: "Matt", warnung: false, pgn: "" }));
     });
   });
-  await page.goto(url + "index.html#/spielen/fortschritt");
-  await page.waitForTimeout(300);
+  await page.reload();
+  await page.waitForTimeout(400);
   r.check("Nur Partien einer früheren Version: die aktuelle Auswertung bleibt leer, die frühere steht getrennt da", /Partien ohne Patzer-Warnung: 0 \(zu wenig Daten\)/.test(await text("#fs-anzahl")) && /6 Partien/.test(await text("#fs-aeltere-zahlen")));
   r.check("Keine Seitenfehler", page.__errors.length === 0, page.__errors.join(" | "));
   await browser.close();

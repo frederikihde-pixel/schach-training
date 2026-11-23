@@ -114,7 +114,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     await page.waitForTimeout(300);
     await page.click("#set-denkhilfe");
     r.check("Wieder anschalten", (await page.textContent("#set-denkhilfe")) === "Denkhilfe: an");
-    await page.click("#page-einstellungen .back-link");
+    await page.click("#btn-zurueck");
     await page.waitForTimeout(200);
     r.check("Zurück führt zu Mehr", await page.evaluate(() => !document.getElementById("page-mehr").hidden));
     r.check("keine Skriptfehler (Einstellungen)", page.__errors.length === 0, page.__errors.join("; "));

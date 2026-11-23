@@ -283,3 +283,10 @@ document.getElementById("btn-pgn-copy").addEventListener("click", async () => {
 });
 
 renderPosition();
+
+// Beim Öffnen der Seite: Das Brett wurde womöglich im versteckten Zustand aufgebaut (Größe 0), also neu messen und zeichnen.
+export function onShowBrett() {
+  cg.state.dom.bounds.clear();
+  cg.redrawAll();
+  renderPosition();
+}

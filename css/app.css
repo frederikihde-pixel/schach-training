@@ -41,18 +41,51 @@ body {
 }
 
 .app-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
   align-items: center;
-  justify-content: space-between;
-  padding: 4px 8px 4px 16px;
-  border-bottom: 1px solid var(--border);
+  padding: 6px 8px;
 }
 
 .app-header h1 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
+  text-align: center;
   color: var(--text);
+}
+
+.header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.header-icon[hidden] {
+  display: none;
+}
+
+#btn-zurueck {
+  grid-column: 1;
+}
+
+#app-titel {
+  grid-column: 2;
+}
+
+#link-einstellungen {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.header-icon[aria-current="page"] {
+  color: var(--text);
+  background: var(--surface-2);
 }
 
 .header-link {

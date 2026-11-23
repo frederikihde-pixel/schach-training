@@ -1,5 +1,5 @@
-import { addRoute, startRouter } from "./router.js";
-import "./pages/brett.js";
+import { addRoute, addRedirect, startRouter } from "./router.js";
+import { onShowBrett } from "./pages/brett.js";
 import { initInfo } from "./pages/mehr.js";
 import { initDaten, onShowDaten } from "./pages/daten.js";
 import { initTaktik, onShowTaktik } from "./pages/taktik.js";
@@ -15,24 +15,35 @@ import { initDesign } from "./design.js";
 import { initEinfuehrung } from "./pages/einfuehrung.js";
 import { store, requestPersistence } from "./storage.js";
 
-addRoute("brett", { page: "page-brett", tab: "brett", title: "Brett" });
+// Hauptorte (untere Leiste): Heute, Taktik, Spielen, Fortschritt. Einstellungen über das Zahnrad.
+addRoute("heute", { page: "page-heute", tab: "heute", title: "Heute" });
 addRoute("taktik", { page: "page-taktik", tab: "taktik", title: "Taktik", onShow: onShowTaktik });
-addRoute("taktik/statistik", { page: "page-statistik", tab: "taktik", title: "Statistik", onShow: onShowStatistik });
-addRoute("taktik/themen", { page: "page-themen", tab: "taktik", title: "Themen", onShow: onShowThemen });
+addRoute("taktik/themen", { page: "page-themen", tab: "taktik", title: "Themen", onShow: onShowThemen, parent: "taktik" });
 addRoute("spielen", { page: "page-spielen", tab: "spielen", title: "Spielen", onShow: onShowSpielen });
-addRoute("spielen/partie", { page: "page-spielen", tab: "spielen", title: "Partie", onShow: onShowSpielen });
-addRoute("spielen/grundmatt", { page: "page-spielen", tab: "spielen", title: "Grundmatts üben", onShow: onShowSpielen });
-addRoute("spielen/vorteil", { page: "page-spielen", tab: "spielen", title: "Vorteil verwerten", onShow: onShowSpielen });
-addRoute("spielen/lauf", { page: "page-spielen", tab: "spielen", title: "Partie", onShow: onShowSpielen });
-addRoute("spielen/liste", { page: "page-spielen", tab: "spielen", title: "Meine Partien", onShow: onShowSpielen });
-addRoute("spielen/rueckblick", { page: "page-spielen", tab: "spielen", title: "Rückblick", onShow: onShowSpielen, prefix: true });
-addRoute("spielen/fortschritt", { page: "page-spielen", tab: "spielen", title: "Fortschritt", onShow: onShowSpielen });
-addRoute("spielen/ende", { page: "page-spielen", tab: "spielen", title: "Ergebnis", onShow: onShowSpielen });
-addRoute("mehr", { page: "page-mehr", title: "Mehr" });
-addRoute("mehr/einstellungen", { page: "page-einstellungen", title: "Einstellungen", onShow: onShowEinstellungen });
-addRoute("mehr/darstellung", { page: "page-darstellung", title: "Darstellung", onShow: onShowDarstellung });
-addRoute("mehr/daten", { page: "page-daten", title: "Daten", onShow: onShowDaten });
-addRoute("mehr/info", { page: "page-info", title: "Info und Lizenzen" });
+addRoute("spielen/partie", { page: "page-spielen", tab: "spielen", title: "Partie", onShow: onShowSpielen, parent: "spielen" });
+addRoute("spielen/grundmatt", { page: "page-spielen", tab: "spielen", title: "Grundmatts üben", onShow: onShowSpielen, parent: "spielen" });
+addRoute("spielen/vorteil", { page: "page-spielen", tab: "spielen", title: "Vorteil verwerten", onShow: onShowSpielen, parent: "spielen" });
+addRoute("spielen/lauf", { page: "page-spielen", tab: "spielen", title: "Partie", onShow: onShowSpielen, parent: "spielen" });
+addRoute("spielen/ende", { page: "page-spielen", tab: "spielen", title: "Ergebnis", onShow: onShowSpielen, parent: "spielen" });
+// Vorläufig (bis Abschnitt 7): eigene Ansichten für die Partienliste und die Partien-Zahlen
+addRoute("spielen/liste", { page: "page-spielen", tab: "fortschritt", title: "Meine Partien", onShow: onShowSpielen, parent: "fortschritt" });
+addRoute("spielen/fortschritt", { page: "page-spielen", tab: "fortschritt", title: "Partien-Zahlen", onShow: onShowSpielen, parent: "fortschritt" });
+addRoute("spielen/rueckblick", { page: "page-spielen", tab: "fortschritt", title: "Rückblick", onShow: onShowSpielen, prefix: true, parent: "fortschritt" });
+addRoute("fortschritt", { page: "page-statistik", tab: "fortschritt", title: "Fortschritt", onShow: onShowStatistik });
+// Einstellungen (Zahnrad) mit Unterseiten
+addRoute("einstellungen", { page: "page-mehr", title: "Einstellungen" });
+addRoute("einstellungen/daten", { page: "page-daten", title: "Daten", onShow: onShowDaten, parent: "einstellungen" });
+addRoute("einstellungen/brett", { page: "page-brett", title: "Freies Brett", onShow: onShowBrett, parent: "einstellungen" });
+addRoute("einstellungen/info", { page: "page-info", title: "Info und Lizenzen", parent: "einstellungen" });
+addRoute("mehr/einstellungen", { page: "page-einstellungen", title: "Denkhilfe", onShow: onShowEinstellungen, parent: "einstellungen" });
+addRoute("mehr/darstellung", { page: "page-darstellung", title: "Darstellung", onShow: onShowDarstellung, parent: "einstellungen" });
+
+// Alte Adressen führen auf die neuen Orte
+addRedirect("brett", "einstellungen/brett");
+addRedirect("taktik/statistik", "fortschritt");
+addRedirect("mehr", "einstellungen");
+addRedirect("mehr/daten", "einstellungen/daten");
+addRedirect("mehr/info", "einstellungen/info");
 
 store.get();
 initDesign();
