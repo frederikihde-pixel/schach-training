@@ -477,6 +477,20 @@ Browser-Prüfungen in 30 Dateien, alle bestanden.** Neu in Teil E bis H: `analys
 (Wartezeit im Test: Der Seitenwechsel kam nach dem Klick erst im nächsten Schritt).
 Die Messungen `stufen-staerke.cjs` (etwa 8 Minuten) und `analyse-dauer.cjs` (etwa 3 Minuten) gehören zu den langen Tests.
 
+## Oberfläche vereinfachen (Pull Request 8, in Arbeit, keine neuen Funktionen)
+
+Ziel: weniger Orte, weniger Auswahl vor dem Start, keine doppelten Wege. Daten und Logik bleiben; einzige Datenänderung: drei neue
+Standardwerte in den Einstellungen (Speicherformat Version 7, nur zusätzliche Felder). Plan und Skizzen standen im Chat; die Regeln für
+die Startseite stehen in `docs/HEUTE.md`.
+
+### Abschnitt 1: Ausgangsmessung (fertig)
+
+- `tests/e2e/seiten-messen.cjs vorher|nachher` misst alle Hauptseiten bei 390 x 844 und schreibt Screenshots nach
+  `tests/screenshots/vorher/` beziehungsweise `nachher/` (mit `messung.json`). Es ist ein Werkzeug, kein Test.
+- Ausgangswerte (mit Beispieldaten): Themen 8143 px (9,7 Bildschirme), Statistik 2111 px (2,5), Fortschritt 2110 px (2,5), Meine
+  Partien 1916 px (2,3), Info 1820 px (2,2), Partie-Einstellungen 1250 px (1,5); alle anderen höchstens 1,5. Tipps bis zum Start:
+  Rätsel-Sitzung 2, Partie 3. Kein Seitenüberlauf.
+
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 
 Die **Analyse eigener Partien ist fertig** (Teil E bis G, siehe oben; sie nimmt PGN und Farbe des Spielers und ist nicht an die

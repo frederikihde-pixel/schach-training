@@ -11,6 +11,7 @@ SLOW="taktik.cjs taktik-session.cjs statistik.cjs stufen-staerke.cjs analyse-dau
 for t in tests/e2e/*.cjs; do
   [ "$(basename "$t")" = "lib.cjs" ] && continue
   [ "$(basename "$t")" = "screenshots.cjs" ] && continue  # erzeugt Bilder, ist kein Test
+  [ "$(basename "$t")" = "seiten-messen.cjs" ] && continue  # Messwerkzeug (Vorher/Nachher), ist kein Test
   if [ -n "${QUICK:-}" ] && echo " $SLOW " | grep -q " $(basename "$t") "; then echo "== $t (übersprungen, QUICK)"; continue; fi
   echo "== $t"
   node "$t" || fail=1

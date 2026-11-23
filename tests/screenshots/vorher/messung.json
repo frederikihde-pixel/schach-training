@@ -1,0 +1,107 @@
+[
+ {
+  "route": "brett",
+  "hoehe": 1002,
+  "tipps": 14,
+  "breite": 390,
+  "bildschirme": 1.19
+ },
+ {
+  "route": "taktik",
+  "hoehe": 844,
+  "tipps": 11,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "taktik/statistik",
+  "hoehe": 2111,
+  "tipps": 12,
+  "breite": 390,
+  "bildschirme": 2.5
+ },
+ {
+  "route": "taktik/themen",
+  "hoehe": 8143,
+  "tipps": 57,
+  "breite": 390,
+  "bildschirme": 9.65
+ },
+ {
+  "route": "spielen",
+  "hoehe": 844,
+  "tipps": 12,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "spielen/partie",
+  "hoehe": 1250,
+  "tipps": 11,
+  "breite": 390,
+  "bildschirme": 1.48
+ },
+ {
+  "route": "spielen/grundmatt",
+  "hoehe": 844,
+  "tipps": 8,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "spielen/vorteil",
+  "hoehe": 1306,
+  "tipps": 12,
+  "breite": 390,
+  "bildschirme": 1.55
+ },
+ {
+  "route": "spielen/liste",
+  "hoehe": 1916,
+  "tipps": 31,
+  "breite": 390,
+  "bildschirme": 2.27
+ },
+ {
+  "route": "spielen/fortschritt",
+  "hoehe": 2110,
+  "tipps": 8,
+  "breite": 390,
+  "bildschirme": 2.5
+ },
+ {
+  "route": "mehr",
+  "hoehe": 844,
+  "tipps": 9,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "mehr/einstellungen",
+  "hoehe": 844,
+  "tipps": 6,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "mehr/darstellung",
+  "hoehe": 844,
+  "tipps": 8,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "mehr/daten",
+  "hoehe": 1116,
+  "tipps": 8,
+  "breite": 390,
+  "bildschirme": 1.32
+ },
+ {
+  "route": "mehr/info",
+  "hoehe": 1820,
+  "tipps": 11,
+  "breite": 390,
+  "bildschirme": 2.16
+ }
+]
