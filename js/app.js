@@ -7,6 +7,7 @@ import { initStatistik, onShowStatistik } from "./pages/statistik.js";
 import { onShowThemen } from "./pages/themen.js";
 import { onShowEinstellungen, initEinstellungen } from "./pages/einstellungen.js";
 import { initSpielen, onShowSpielen } from "./pages/spielen.js";
+import { initHeute, onShowHeute } from "./pages/heute.js";
 import { initRueckblick } from "./pages/rueckblick.js";
 import { initFortschritt } from "./pages/fortschritt.js";
 import { rueckblick } from "./rueckblick.js";
@@ -15,7 +16,7 @@ import { initEinfuehrung } from "./pages/einfuehrung.js";
 import { store, requestPersistence } from "./storage.js";
 
 // Hauptorte (untere Leiste): Heute, Taktik, Spielen, Fortschritt. Einstellungen über das Zahnrad.
-addRoute("heute", { page: "page-heute", tab: "heute", title: "Heute" });
+addRoute("heute", { page: "page-heute", tab: "heute", title: "Heute", onShow: onShowHeute });
 addRoute("taktik", { page: "page-taktik", tab: "taktik", title: "Taktik", onShow: onShowTaktik });
 addRoute("taktik/themen", { page: "page-themen", tab: "taktik", title: "Themen", onShow: onShowThemen, parent: "taktik" });
 addRoute("spielen", { page: "page-spielen", tab: "spielen", title: "Spielen", onShow: onShowSpielen });
@@ -56,6 +57,7 @@ initInfo();
 initDaten();
 initTaktik();
 initSpielen();
+initHeute();
 initRueckblick();
 initFortschritt();
 initStatistik();

@@ -198,6 +198,14 @@ export async function startStandortbestimmung(id = "fortgeschritten") {
   location.hash = "#/taktik";
 }
 
+// Wird von der Startseite "Heute" aufgerufen: die angefangene Sitzung (auch Einstufung oder Standortbestimmung) fortsetzen.
+export function fortsetzenSitzung() {
+  if (!taktik().aktiv) return false;
+  autoRun = true;
+  location.hash = "#/taktik";
+  return true;
+}
+
 // Wird vom Rückblick aufgerufen: ein einzelnes eigenes Rätsel üben.
 export function startEigenesRaetsel(puzzle) {
   store.update((d) => {

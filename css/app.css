@@ -1239,3 +1239,67 @@ details.info p {
   color: var(--text-muted);
   font-size: 0.9rem;
 }
+
+/* Hauptknopf: genau einer je Seite, gefüllt; alles andere ruhiger */
+.btn-haupt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 60px;
+  padding: 12px 16px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-haupt:disabled {
+  opacity: 0.5;
+}
+
+/* Heute */
+.heute {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 32px;
+}
+
+.heute-text {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.neben-liste {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.neben {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 4px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 1rem;
+  text-align: left;
+}
+
+.neben::after {
+  content: "\203A";
+  color: var(--text-muted);
+  font-size: 1.4rem;
+}

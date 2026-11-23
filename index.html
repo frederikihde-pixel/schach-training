@@ -49,8 +49,11 @@
     <main id="app">
       <!-- Seite: Heute -->
       <div id="page-heute" class="page" hidden>
-        <div class="page-inner">
-          <p id="heute-platzhalter" class="muted">Heute</p>
+        <div class="page-inner heute">
+          <button id="heute-haupt" class="btn-haupt" type="button">Sitzung starten</button>
+          <p id="heute-text" class="heute-text" role="status"></p>
+          <ul id="heute-neben" class="neben-liste"></ul>
+          <p id="heute-meldung" class="message" role="status" aria-live="polite"></p>
         </div>
       </div>
 

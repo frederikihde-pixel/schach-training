@@ -499,7 +499,7 @@ die Startseite stehen in `docs/HEUTE.md`.
 - Router (`js/router.js`): Routen haben `parent`, Weiterleitungen mit `addRedirect`. Schon umgeleitet: `#/brett` nach
   `#/einstellungen/brett`, `#/taktik/statistik` nach `#/fortschritt`, `#/mehr` nach `#/einstellungen`, `#/mehr/daten` nach
   `#/einstellungen/daten`, `#/mehr/info` nach `#/einstellungen/info`.
-- **Vorläufig** (bis zu den Abschnitten 3, 4, 7): `#/heute` ist ein Platzhalter, `#/einstellungen` zeigt (seit Abschnitt 3) die neue Seite,
+- **Vorläufig** (bis zu den Abschnitten 3, 4, 7): `#/einstellungen` zeigt (seit Abschnitt 3) die neue Seite,
   `#/fortschritt` zeigt noch die alte Statistik, "Meine Partien" und die Partien-Zahlen sind über zwei Links auf der Spielen-Seite
   erreichbar.
 - Das freie Brett wird versteckt aufgebaut und beim Öffnen neu gemessen (`onShowBrett`).
@@ -526,6 +526,18 @@ die Startseite stehen in `docs/HEUTE.md`.
   Hauptort ohne Zurück-Pfeil), `design` (die Design-Karten stehen direkt auf der Einstellungsseite), `navigation` (Einstellungen über das
   Zahnrad), `daten`, `pruefsets`, `storage` (Version 7), Unit-Test `storage` (neue Felder in den Standardwerten). Neu: `einstellungen.cjs`
   (21 Prüfungen), Unit-Tests `standards` (4) und Migration 6 auf 7 (3).
+
+### Abschnitt 4: Heute (fertig)
+
+- Startseite `#/heute` (`js/pages/heute.js`, Regeln in `js/heute.js`, dokumentiert in `docs/HEUTE.md`): ein gefüllter Hauptknopf, eine kurze
+  Begründung, höchstens zwei ruhige Nebenzeilen. Reihenfolge: (a) Einstufung starten, (b) Sitzung starten (N fällig), (c) Rückblick ansehen,
+  (d) Partie spielen (letzte Partie 3 Tage oder länger her, oder keine), (e) Standortbestimmung (4 Wochen), (f) Sitzung starten. Davor
+  (Fall 0, Ergänzung): Läuft eine Sitzung, Einstufung, Standortbestimmung oder Partie, ist "Fortsetzen" der Hauptknopf.
+- Der Knopf startet direkt: Einstufung und Sitzung beginnen mit einem Tipp, der Rückblick öffnet den neuesten offenen, die
+  Standortbestimmung startet das Prüfset aus den Einstellungen. Fall e wird von Fall d verdeckt, solange die letzte Partie 3 Tage oder
+  länger zurückliegt (so ist die Reihenfolge gewünscht); die Erinnerung bleibt dann als Nebenzeile stehen.
+- Getestet: 14 Logik-Tests `heute.test.mjs` (jeder Fall, Reihenfolge, Nebenzeilen, keine Gamification-Wörter) und `tests/e2e/heute.cjs`
+  (28 Prüfungen: jeder Fall a bis f und Fortsetzen mit dem, was der Knopf startet, Layout, keine Emojis).
 
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 
