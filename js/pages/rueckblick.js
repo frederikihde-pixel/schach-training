@@ -209,7 +209,7 @@ export function initRueckblick() {
   $("rb-btn-raetsel").addEventListener("click", alsRaetsel);
   $("rb-btn-abbrechen").addEventListener("click", () => {
     rueckblick.abbrechen();
-    location.hash = "#/spielen/liste";
+    location.hash = "#/fortschritt";
   });
   $("rb-btn-nochmal").addEventListener("click", () => {
     rueckblick.fortsetzen();

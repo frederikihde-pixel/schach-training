@@ -118,7 +118,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   r.check("Neuladen: Einführung erscheint nicht wieder", !(await visible(page)));
 
   // Wieder öffnen über Mehr
-  await page.click("#link-mehr");
+  await page.click("#link-einstellungen");
   await page.waitForTimeout(150);
   r.check("Eintrag 'Einführung' unter Mehr, mindestens 44 px", await page.evaluate(() => {
     const b = document.getElementById("btn-einfuehrung").getBoundingClientRect();
@@ -158,7 +158,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   await c.page.goto(url + "index.html#/brett");
   await c.page.waitForTimeout(500);
   r.check("Bisheriger Nutzer (Version 2): keine automatische Einführung", !(await visible(c.page)));
-  await c.page.click("#link-mehr");
+  await c.page.click("#link-einstellungen");
   await c.page.click("#btn-einfuehrung");
   r.check("Bisheriger Nutzer findet sie trotzdem unter Mehr", await visible(c.page));
 

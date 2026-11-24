@@ -477,6 +477,141 @@ Browser-Prüfungen in 30 Dateien, alle bestanden.** Neu in Teil E bis H: `analys
 (Wartezeit im Test: Der Seitenwechsel kam nach dem Klick erst im nächsten Schritt).
 Die Messungen `stufen-staerke.cjs` (etwa 8 Minuten) und `analyse-dauer.cjs` (etwa 3 Minuten) gehören zu den langen Tests.
 
+## Oberfläche vereinfachen (Pull Request 8, fertig, keine neuen Funktionen)
+
+Ziel: weniger Orte, weniger Auswahl vor dem Start, keine doppelten Wege. Daten und Logik bleiben; einzige Datenänderung: drei neue
+Standardwerte in den Einstellungen (Speicherformat Version 7, nur zusätzliche Felder). Plan und Skizzen standen im Chat; die Regeln für
+die Startseite stehen in `docs/HEUTE.md`.
+
+### Abschnitt 1: Ausgangsmessung (fertig)
+
+- `tests/e2e/seiten-messen.cjs vorher|nachher` misst alle Hauptseiten bei 390 x 844 und schreibt Screenshots nach
+  `tests/screenshots/vorher/` beziehungsweise `nachher/` (mit `messung.json`). Es ist ein Werkzeug, kein Test.
+- Ausgangswerte (mit Beispieldaten): Themen 8143 px (9,7 Bildschirme), Statistik 2111 px (2,5), Fortschritt 2110 px (2,5), Meine
+  Partien 1916 px (2,3), Info 1820 px (2,2), Partie-Einstellungen 1250 px (1,5); alle anderen höchstens 1,5. Tipps bis zum Start:
+  Rätsel-Sitzung 2, Partie 3. Kein Seitenüberlauf.
+
+### Abschnitt 2: Gerüst (fertig)
+
+- Kopfzeile: links der Zurück-Pfeil (nur auf Unterseiten, führt zur Eltern-Route), in der Mitte der Seitenname (ersetzt die doppelten
+  Seitentitel), rechts das Zahnrad "Einstellungen" (einfaches Strichsymbol, kein Emoji). Untere Leiste mit vier Orten: Heute, Taktik,
+  Spielen, Fortschritt. Alle Unterreiter und Textlinks "Zurück" sind entfernt. Startseite ist `#/heute`, unbekannte Adressen zeigen sie.
+- Router (`js/router.js`): Routen haben `parent`, Weiterleitungen mit `addRedirect`. Schon umgeleitet: `#/brett` nach
+  `#/einstellungen/brett`, `#/taktik/statistik` nach `#/fortschritt`, `#/mehr` nach `#/einstellungen`, `#/mehr/daten` nach
+  `#/einstellungen/daten`, `#/mehr/info` nach `#/einstellungen/info`.
+- **Vorläufig** (bis zu den Abschnitten 3, 4, 7): `#/einstellungen` zeigt (seit Abschnitt 3) die neue Seite,
+  `#/fortschritt` zeigte zunächst noch die alte Statistik (seit Abschnitt 7 die neue Seite).
+- Das freie Brett wird versteckt aufgebaut und beim Öffnen neu gemessen (`onShowBrett`).
+- **Anpassungen an alten Tests** (nur Wege und Beschriftungen, keine Logik): `brett`, `design`, `taktik-session` (Wechsel zum freien Brett
+  über die Adresse statt Reiter "Brett"), `design` und `einfuehrung` und `navigation` (Zahnrad `#link-einstellungen` statt "Mehr"),
+  `navigation` (Leiste Heute/Taktik/Spielen/Fortschritt, Info-Link, Zurück-Pfeil, unbekannte Adresse zeigt Heute), `denkhilfe`
+  (Zurück-Pfeil), `pwa` (Offline-Prüfung öffnet das freie Brett über die Adresse), `fortschritt` (Reiter und Unterreiter-Prüfungen durch
+  Prüfung des Reiters Fortschritt und des Pfeils ersetzt, Neuladen statt gleicher Adresse), `themen` (Link "Themen-Übersicht" statt
+  Unterreiter). Neu: `weiterleitungen.cjs` (19 Prüfungen).
+
+### Abschnitt 3: Einstellungen und Speicherformat Version 7 (fertig)
+
+- Eine Seite `#/einstellungen` (Zahnrad) mit drei Abschnitten: **Darstellung** (Brett-Design), **Training** (Denkhilfe, Zug zurücknehmen,
+  Patzer-Warnung, Chess.com-Wertung, Prüfset der Standortbestimmung; längere Erklärungen hinter einem kleinen "Info") und **Weiteres**
+  (Daten sichern und wiederherstellen, Einführung ansehen, Freies Brett, Info und Lizenzen). Daten, Freies Brett und Info sind Unterseiten
+  mit Zurück-Pfeil, damit die Einstellungen nicht länger als zwei Bildschirme werden. `#/mehr/einstellungen` und `#/mehr/darstellung`
+  führen hierher. Die Chess.com-Wertung gibt es nur hier (in den Partie-Einstellungen steht sie noch bis Abschnitt 6).
+- **Speicherformat Version 7** (einzige Datenänderung, nur zusätzliche Felder): `einstellungen.zuruecknahme` (aus), `einstellungen.patzerWarnung`
+  (null = automatisch: an für die ersten 3 Partien, danach aus; sonst ausdrücklich an oder aus) und `einstellungen.pruefset` (null =
+  automatisch nach Taktikstärke). Die Migration setzt genau das bisherige Verhalten. `js/standards.js` liefert die wirksamen Standardwerte.
+  Beim Start einer Partie gelten die Standardwerte und lassen sich für diese eine Partie ändern. Das Prüfset wird in Abschnitt 7 an die
+  Standortbestimmung angeschlossen.
+- **Anpassungen an alten Tests:** `denkhilfe` (Schalter heißt jetzt "an"/"aus" statt "Denkhilfe: an"/"aus", die Einstellungen sind ein
+  Hauptort ohne Zurück-Pfeil), `design` (die Design-Karten stehen direkt auf der Einstellungsseite), `navigation` (Einstellungen über das
+  Zahnrad), `daten`, `pruefsets`, `storage` (Version 7), Unit-Test `storage` (neue Felder in den Standardwerten). Neu: `einstellungen.cjs`
+  (21 Prüfungen), Unit-Tests `standards` (4) und Migration 6 auf 7 (3).
+
+### Abschnitt 4: Heute (fertig)
+
+- Startseite `#/heute` (`js/pages/heute.js`, Regeln in `js/heute.js`, dokumentiert in `docs/HEUTE.md`): ein gefüllter Hauptknopf, eine kurze
+  Begründung, höchstens zwei ruhige Nebenzeilen. Reihenfolge: (a) Einstufung starten, (b) Sitzung starten (N fällig), (c) Rückblick ansehen,
+  (d) Partie spielen (letzte Partie 3 Tage oder länger her, oder keine), (e) Standortbestimmung (4 Wochen), (f) Sitzung starten. Davor
+  (Fall 0, Ergänzung): Läuft eine Sitzung, Einstufung, Standortbestimmung oder Partie, ist "Fortsetzen" der Hauptknopf.
+- Der Knopf startet direkt: Einstufung und Sitzung beginnen mit einem Tipp, der Rückblick öffnet den neuesten offenen, die
+  Standortbestimmung startet das Prüfset aus den Einstellungen. Fall e wird von Fall d verdeckt, solange die letzte Partie 3 Tage oder
+  länger zurückliegt (so ist die Reihenfolge gewünscht); die Erinnerung bleibt dann als Nebenzeile stehen.
+- Getestet: 14 Logik-Tests `heute.test.mjs` (jeder Fall, Reihenfolge, Nebenzeilen, keine Gamification-Wörter) und `tests/e2e/heute.cjs`
+  (28 Prüfungen: jeder Fall a bis f und Fortsetzen mit dem, was der Knopf startet, Layout, keine Emojis).
+
+### Abschnitt 5: Taktik und Themen (fertig)
+
+- Taktik: oben die Taktikstärke (eine Zeile) und der Hauptknopf "Sitzung starten" (vor der Einstufung "Einstufung starten", läuft etwas
+  "Fortsetzen"). Sitzungslänge, Themenfilter, Themen-Übersicht und "Einstufung wiederholen" liegen eingeklappt unter "Mehr Optionen"; die
+  Erklärung der Wiederholungen steht hinter einem kleinen "Info". Der Satz zur letzten Standortbestimmung ist von hier entfallen (gehört zu
+  Fortschritt).
+- Themen (`#/taktik/themen`): die zehn Einsteiger-Themen kompakt (Name, Knopf "Üben", ein Satz), alle anderen eingeklappt unter "Alle anderen
+  Themen anzeigen". Höhe vorher 8143 px (9,7 Bildschirme), jetzt 1647 px (2,0 Bildschirme) mit eingeklappter Liste.
+- **Anpassungen an alten Tests:** `denkhilfe`, `taktik-offline`, `taktik-session`, `taktik` (die Auswahl "Rätsel pro Sitzung" und
+  "Einstufung wiederholen" liegen jetzt in "Mehr Optionen" und werden vor dem Antippen aufgeklappt), `leer` (kurzer Satz "Noch keine
+  Wiederholungen." statt des langen, die Erklärung steht hinter "Info"), `themen` (Knopf heißt "Üben", Link zur Themen-Übersicht liegt in
+  "Mehr Optionen" und erscheint erst nach der Einstufung, Tippflächen nur für sichtbare Elemente).
+
+### Abschnitt 6: Spielen, Grundmatts, Vorteil (fertig)
+
+- Spielen (`#/spielen`) ist jetzt die Partie-Startseite: Farbe (Weiß, Schwarz, Zufall; vorausgewählt Zufall) und Stufe (1 bis 8, die empfohlene
+  Stufe vorausgewählt und als "empfohlen" markiert) als **große Schalter** statt Auswahlfeldern, ein Hauptknopf "Partie starten", darunter
+  "Mehr Optionen" (Zug zurücknehmen und Patzer-Warnung für diese eine Partie; Standard aus den Einstellungen), "Info zu den Stufen" (ehrlicher
+  Hinweis, Anpassen nach zwei bis drei Partien) und zwei kleine Karten "Grundmatts üben" und "Vorteil verwerten". Läuft eine Partie, ist
+  "Partie fortsetzen" der einzige Hauptknopf (die Auswahl ist ausgeblendet, damit eine laufende Partie nicht versehentlich überschrieben wird).
+  Das Feld Chess.com-Wertung ist hier entfallen (nur in den Einstellungen; sie bestimmt weiter die vorgeschlagene Startstufe). Der Hinweisblock
+  "Offene Rückblicke / Fällige eigene Rätsel" ist entfallen (steht auf Heute und in Fortschritt). `#/spielen/partie` führt auf `#/spielen`.
+- Vorteil verwerten und Grundmatts: ebenfalls große Schalter (Vorteil, Farbe, Stufe beziehungsweise Figur), Hauptknopf "Übung starten",
+  Zusatzoptionen (Stellung, Zurücknehmen, Warnung) eingeklappt, lange Erklärungen hinter "Info". Neues gemeinsames Bauteil `js/ui/auswahl.js`.
+- **Anpassungen an alten Tests:** `spielen` (Schalter statt Auswahlfelder, ein Hauptknopf, Wertung nur in den Einstellungen, laufende Partie zeigt
+  "Partie fortsetzen", Optionen werden vor dem Antippen aufgeklappt), `uebungen`, `rueckblick`, `spielen-offline`, `einstellungen`,
+  `tippflaechen-spielen` (gleiche Gründe), `lib.cjs` (neue Hilfsfunktion `waehle`), `heute` (längere Wartezeit beim Laden der Rätselbänder).
+  **Entfallen:** `spielen-hinweise.cjs` (der Hinweisblock ist weg; die Fälle prüft `heute.cjs`).
+
+### Abschnitt 7: Fortschritt zusammengelegt (fertig)
+
+- Eine Seite `#/fortschritt` mit drei Abschnitten statt Statistik, Partien-Zahlen und "Meine Partien" (`js/pages/fortschritt-seite.js` fügt die
+  bestehenden Module zusammen): **Taktik** (Stärke, Verlauf, schwächste 3 Themen; "Alle Themen und Sitzungen anzeigen" eingeklappt),
+  **Partien** (Rückblicke offen mit Knopf, Stufenempfehlung, Ergebnisse je Stufe, Patzer pro Partie; "Weitere Zahlen anzeigen" und "Alle Partien
+  anzeigen" eingeklappt) und **Standortbestimmung** (ein Knopf mit dem Prüfset aus den Einstellungen, frühere Ergebnisse eingeklappt).
+  Erklärtexte stehen hinter "Info". Der Rückblick wird nur noch von hier und vom Spielende erreicht (und von Heute, wenn er der Schritt ist).
+- Weiterleitungen: `#/taktik/statistik`, `#/spielen/fortschritt` und `#/spielen/liste` führen auf `#/fortschritt`.
+- **Entfallen** (doppelte Wege): die Erinnerungsleiste "Standortbestimmung ist vier Wochen her" oben auf jeder Seite. Die Erinnerung steht jetzt im
+  Abschnitt Standortbestimmung dieser Seite und als Fall e auf Heute. Die Leiste zur Datensicherung bleibt.
+- **Anpassungen an alten Tests:** `statistik`, `pruefsets` (ein Knopf `#btn-standort` statt zwei, Prüfset kommt aus den Einstellungen,
+  Empfehlung als Textzeile "Prüfset ... (automatisch gewählt)", Erinnerung als Zeile im Abschnitt statt Leiste, Hilfsfunktion `startStandort`),
+  `denkhilfe`, `design`, `taktik-offline` (Hilfsfunktion `startStandort`), `fortschritt` (Seite `#page-fortschritt`, Bereiche werden aufgeklappt,
+  Alte Adresse führt weiter), `partien-liste` und `rueckblick` (Liste liegt unter "Alle Partien anzeigen", Hilfsfunktion `oeffneAlle`),
+  `tippflaechen-spielen`, `weiterleitungen` (neue Zeilen).
+
+### Abschnitt 8: Design-Politur (fertig)
+
+- Alle Schriften sind mindestens 1rem (16 px); Ausnahme: Zahlen an den Achsen des Diagramms (SVG, skaliert mit der Breite).
+- Tote Stile entfernt (`.way`, `.way-list`, `.subnav-3`, `.back-row`).
+- Diagramme niedriger (Taktik-Verlauf 130, Patzer-Verlauf 120): Fortschritt hat jetzt 2,42 Bildschirmhöhen statt 2,48 (Grenze 2,5).
+- Keine Testanpassung nötig; schnelle Testreihe grün.
+
+### Abschnitt 9: Messziele, Screenshots, Abschluss (fertig)
+
+- Neuer Test `tests/e2e/messziele.cjs` (390 px, Touch): vom Start bis zur Rätsel-Sitzung 1 Tipp (Ziel höchstens 2), bis zur laufenden Partie
+  2 Tipps (Ziel höchstens 3); jede Hauptseite höchstens 2,5 Bildschirmhöhen (eingeklappte Listen zählen nicht), kein seitlicher Überlauf, alle
+  Tippflächen mindestens 44 x 44 px, höchstens ein ausgefüllter Hauptknopf je Seite.
+- Vorher/Nachher-Screenshots und Maße: `tests/screenshots/vorher/` und `tests/screenshots/nachher/` (`messung.json`). Neu erzeugen:
+  `node tests/e2e/seiten-messen.cjs vorher|nachher`. Die längste Seite ist Fortschritt mit 2,42 Bildschirmhöhen.
+- Weiterleitungen: alle alten Adressen (`#/brett`, `#/spielen/partie`, `#/mehr/...`, `#/taktik/statistik`, `#/spielen/fortschritt`,
+  `#/spielen/liste`) führen auf die neuen Seiten; getestet in `tests/e2e/weiterleitungen.cjs`.
+- Testreihe: `tests/run-all.sh` (Logik, Python, Browser) läuft vollständig durch.
+
+**Auf dem echten Handy prüfen (Oberfläche):**
+- Heute: Ist der Vorschlag am Morgen nachvollziehbar? Stimmt die Reihenfolge (fällige Wiederholungen vor "Partie spielen")?
+- Reicht ein Tipp auf den Hauptknopf; wirkt der Knopf der unteren Leiste (Heute, Taktik, Spielen, Fortschritt) nah genug am Daumen?
+- Zahnrad oben rechts und Zurück-Pfeil oben links: gut zu treffen, auch mit Hülle? Safe-Area (Notch, Home-Balken) unten und oben.
+- Spielen: Große Schalter für Farbe und Stufe: eindeutig, welche gewählt ist? Ist "Zufall" als Standard für die Farbe gewollt?
+- "Mehr Optionen" und "Weitere Zahlen": Findest du alles wieder, was früher auf der Hauptseite stand? Fehlt etwas Wichtiges?
+- Fortschritt: Ist die lange Seite beim Scrollen übersichtlich? Sind die eingeklappten Listen ("Alle anzeigen") gut zu finden?
+- Schrift: Ist 16 px überall gut lesbar, ohne dass Texte zu groß wirken? Alle drei Brett-Designs im dunklen Stil prüfen.
+- Alte Lesezeichen und Home-Bildschirm-Verknüpfung: Führen sie auf die richtige neue Seite?
+- Datensicherung: Sicherung aus der alten Version importieren (Speicherformat 7 ergänzt nur neue Felder).
+
 ## Phase 3 — Eigene Partien analysieren (Chess.com)
 
 Die **Analyse eigener Partien ist fertig** (Teil E bis G, siehe oben; sie nimmt PGN und Farbe des Spielers und ist nicht an die

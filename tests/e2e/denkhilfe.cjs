@@ -1,5 +1,5 @@
 // Denkhilfe vor den ersten Rätseln, Einstellungen-Seite. 390 px, Touch-Emulation.
-const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, reporter, startStandort } = require("./lib.cjs");
 
 (async () => {
   const r = reporter("Denkhilfe und Einstellungen");
@@ -44,6 +44,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     const ids = Array.from({ length: 9 }, (_, i) => `"g${i}":1`).join(",");
     await mutate(page, `d.taktik.staerke = 500; d.taktik.eingestuft = true; d.taktik.gesehen = {${ids}};`);
     await page.reload(); await page.waitForTimeout(500);
+    await page.evaluate(() => { document.getElementById("taktik-optionen").open = true; });
     await page.selectOption("#sel-groesse", "5");
     await page.click("#btn-sitzung");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 20000 });
@@ -85,7 +86,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     const { page } = await newPage(browser);
     await page.goto(url + "index.html#/taktik/statistik");
     await page.waitForTimeout(600);
-    await page.click("#btn-standort-einsteiger");
+    await startStandort(page, "einsteiger");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
     await waitForSide(page);
     r.check("Standortbestimmung läuft ohne Hinweise (auch für neue Nutzer)", (await line(page)).hidden);
@@ -94,15 +95,13 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
   // ---- Einstellungen: abschaltbar ----
   {
     const { page } = await newPage(browser);
-    await page.goto(url + "index.html#/mehr");
+    await page.goto(url + "index.html#/einstellungen");
     await page.waitForTimeout(400);
-    r.check("Mehr enthält 'Einstellungen'", await page.evaluate(() => [...document.querySelectorAll("#page-mehr a")].some((a) => a.textContent.trim() === "Einstellungen")));
-    await page.click('#page-mehr a[href="#/mehr/einstellungen"]');
-    await page.waitForTimeout(300);
+    r.check("Einstellungen hat den Abschnitt 'Training' mit der Denkhilfe", await page.evaluate(() => [...document.querySelectorAll("#page-einstellungen .set-titel")].some((h) => h.textContent.trim() === "Training") && !!document.getElementById("set-denkhilfe")));
     const sw = await page.evaluate(() => { const b = document.getElementById("set-denkhilfe"); const x = b.getBoundingClientRect(); return { text: b.textContent, on: b.getAttribute("aria-checked"), ok: x.height >= 43.5 && x.width >= 43.5 }; });
-    r.check("Schalter 'Denkhilfe: an' (Standard), mindestens 44 px", sw.text === "Denkhilfe: an" && sw.on === "true" && sw.ok, JSON.stringify(sw));
+    r.check("Schalter Denkhilfe steht auf 'an' (Standard), mindestens 44 px", sw.text === "an" && sw.on === "true" && sw.ok, JSON.stringify(sw));
     await page.click("#set-denkhilfe");
-    r.check("Antippen schaltet ab und speichert", (await page.textContent("#set-denkhilfe")) === "Denkhilfe: aus" && (await page.getAttribute("#set-denkhilfe", "aria-checked")) === "false" && (await page.evaluate(async () => (await import("./js/storage.js")).store.get().einstellungen.denkhilfe)) === false);
+    r.check("Antippen schaltet ab und speichert", (await page.textContent("#set-denkhilfe")) === "aus" && (await page.getAttribute("#set-denkhilfe", "aria-checked")) === "false" && (await page.evaluate(async () => (await import("./js/storage.js")).store.get().einstellungen.denkhilfe)) === false);
     await page.goto(url + "index.html#/taktik");
     await page.waitForTimeout(500);
     await page.click("#btn-einstufung");
@@ -110,13 +109,11 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     await waitForSide(page);
     r.check("Abgeschaltet: auch bei der Einstufung keine Zeile", (await line(page)).hidden);
     await page.click("#btn-beenden"); await page.click("#btn-beenden-ja");
-    await page.goto(url + "index.html#/mehr/einstellungen");
+    await page.goto(url + "index.html#/einstellungen");
     await page.waitForTimeout(300);
     await page.click("#set-denkhilfe");
-    r.check("Wieder anschalten", (await page.textContent("#set-denkhilfe")) === "Denkhilfe: an");
-    await page.click("#page-einstellungen .back-link");
-    await page.waitForTimeout(200);
-    r.check("Zurück führt zu Mehr", await page.evaluate(() => !document.getElementById("page-mehr").hidden));
+    r.check("Wieder anschalten", (await page.textContent("#set-denkhilfe")) === "an");
+    r.check("Einstellungen ist ein Hauptort: Zahnrad markiert, kein Zurück-Pfeil", (await page.getAttribute("#link-einstellungen", "aria-current")) === "page" && (await page.evaluate(() => document.getElementById("btn-zurueck").hidden)));
     r.check("keine Skriptfehler (Einstellungen)", page.__errors.length === 0, page.__errors.join("; "));
   }
 

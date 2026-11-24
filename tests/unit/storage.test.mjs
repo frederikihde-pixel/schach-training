@@ -79,13 +79,13 @@ test("Migration 2 auf 3: schon gewählte Werte bleiben erhalten", () => {
   v2.version = 2;
   v2.einstellungen = { brettDesign: "gruen", einfuehrungGesehen: false };
   const m = migrate(structuredClone(v2), { now: t0 });
-  assert.deepEqual(m.einstellungen, { brettDesign: "gruen", einfuehrungGesehen: false, denkhilfe: true, chesscomWertung: null });
+  assert.deepEqual(m.einstellungen, { brettDesign: "gruen", einfuehrungGesehen: false, denkhilfe: true, chesscomWertung: null, zuruecknahme: false, patzerWarnung: null, pruefset: null });
 });
 
 test("Neue Nutzer: Design Klassisch, Einführung noch nicht gesehen", () => {
   const d = createStore({ backend: backend(), now: () => t0 }).get();
   assert.equal(d.version, SCHEMA_VERSION);
-  assert.deepEqual(d.einstellungen, { brettDesign: "klassisch", einfuehrungGesehen: false, denkhilfe: true, chesscomWertung: null });
+  assert.deepEqual(d.einstellungen, { brettDesign: "klassisch", einfuehrungGesehen: false, denkhilfe: true, chesscomWertung: null, zuruecknahme: false, patzerWarnung: null, pruefset: null });
 });
 
 test("Alte Sicherungsdatei (Version 2) lässt sich importieren und bekommt Dunkel", () => {
@@ -324,7 +324,7 @@ test("Migration 5 auf 6: Analysen, laufende Analyse und eigene Rätsel kommen da
   v5.spielen.partien.push({ id: "p1", pgn: "1. e4 e5" });
   v5.spielen.gestartet = 4;
   const m = migrate(structuredClone(v5), { now: t0 });
-  assert.equal(m.version, 6);
+  assert.equal(m.version, SCHEMA_VERSION);
   assert.deepEqual([m.spielen.analysen, m.spielen.analyseLauf, m.spielen.eigene], [[], null, []]);
   assert.equal(m.spielen.partien[0].id, "p1");
   assert.equal(m.spielen.gestartet, 4);
@@ -346,4 +346,50 @@ test("Obergrenzen 50 Analysen und 300 eigene Rätsel; kaputte Analyse-Daten werd
   const e = defaults(t0);
   e.spielen.eigene = "x";
   assert.throws(() => validate(e), DataError);
+});
+
+test("Migration 6 auf 7: drei neue Einstellungen mit dem bisherigen Verhalten als Standard, alles Übrige bleibt", () => {
+  const v6 = defaults(t0);
+  v6.version = 6;
+  delete v6.einstellungen.zuruecknahme;
+  delete v6.einstellungen.patzerWarnung;
+  delete v6.einstellungen.pruefset;
+  v6.einstellungen.chesscomWertung = 452;
+  v6.einstellungen.brettDesign = "gruen";
+  v6.spielen.partien.push({ id: "p1", pgn: "1. e4 e5" });
+  v6.taktik.staerke = 640;
+  const m = migrate(structuredClone(v6), { now: t0 });
+  assert.equal(m.version, 7);
+  assert.equal(m.einstellungen.zuruecknahme, false);
+  assert.equal(m.einstellungen.patzerWarnung, null);
+  assert.equal(m.einstellungen.pruefset, null);
+  assert.equal(m.einstellungen.chesscomWertung, 452);
+  assert.equal(m.einstellungen.brettDesign, "gruen");
+  assert.equal(m.spielen.partien[0].id, "p1");
+  assert.equal(m.taktik.staerke, 640);
+  validate(m);
+});
+
+test("Prüfung: ungültige Standardwerte werden abgelehnt", () => {
+  for (const [key, bad] of [["zuruecknahme", "ja"], ["patzerWarnung", "an"], ["pruefset", "profi"]]) {
+    const d = defaults(t0);
+    d.einstellungen[key] = bad;
+    assert.throws(() => validate(d), DataError, key);
+  }
+  const ok = defaults(t0);
+  ok.einstellungen.patzerWarnung = false;
+  ok.einstellungen.pruefset = "einsteiger";
+  validate(ok);
+});
+
+test("Alte Sicherungsdatei (Version 6) lässt sich importieren", () => {
+  const s = createStore({ backend: backend(), now: () => t0 });
+  const alt = defaults(t0);
+  alt.version = 6;
+  delete alt.einstellungen.zuruecknahme;
+  delete alt.einstellungen.patzerWarnung;
+  delete alt.einstellungen.pruefset;
+  s.importJson(JSON.stringify(alt));
+  assert.equal(s.get().version, SCHEMA_VERSION);
+  assert.equal(s.get().einstellungen.patzerWarnung, null);
 });

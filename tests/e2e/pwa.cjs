@@ -71,6 +71,8 @@ function pngSize(buf) {
   await context.setOffline(true);
   await page.reload();
   await page.waitForTimeout(600);
+  await page.evaluate(() => { location.hash = "#/einstellungen/brett"; });
+  await page.waitForTimeout(400);
   r.check("Offline: App lädt aus dem Cache", await page.evaluate(() => !!document.querySelector("#board .cg-wrap, #board cg-container, #board cg-board") && !document.getElementById("page-brett").hidden));
   await tapMove(page, "e2", "e4");
   r.check("Offline: Brett funktioniert", (await page.inputValue("#fen-input")).startsWith("rnbqkbnr/pppppppp/8/8/4P3/8/"));

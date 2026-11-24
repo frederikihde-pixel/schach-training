@@ -1,5 +1,5 @@
 // Fortschritt: leer ("zu wenig Daten") und mit Beispieldaten; nur aktuelle Stufenversion, Patzer-Warnung getrennt.
-const { startServer, launch, newPage, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, reporter, oeffneAlle } = require("./lib.cjs");
 
 (async () => {
   const r = reporter("Fortschritt");
@@ -10,13 +10,14 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
 
   // --- leer ---
   await page.goto(url + "index.html#/spielen/fortschritt");
-  await page.waitForSelector("#sp-fortschritt:not([hidden])");
-  r.check("Reiter Spielen markiert, Unterreiter Fortschritt aktiv", (await page.getAttribute("#tab-spielen", "aria-current")) === "page" && (await page.getAttribute("#sp-fortschritt .subnav a[aria-current]", "href")) === "#/spielen/fortschritt");
+  await page.waitForSelector("#page-fortschritt:not([hidden])");
+  await oeffneAlle(page);
+  r.check("Alte Adresse #/spielen/fortschritt führt zu Fortschritt, Reiter markiert, Hauptort ohne Zurück-Pfeil", (await page.getAttribute("#tab-fortschritt", "aria-current")) === "page" && (await page.evaluate(() => location.hash)) === "#/fortschritt" && (await page.isHidden("#btn-zurueck")));
   r.check("Leer: 'zu wenig Daten' statt Zahlen, kein Diagramm", /zu wenig Daten/.test(await text("#fs-partien")) && /zu wenig Daten/.test(await text("#fs-analyse")) && (await page.isHidden("#fs-analyse-inhalt")) && (await page.locator("#fs-diagramm svg").count()) === 0);
   r.check("Leer: Stufenempfehlung nennt, was fehlt", /Noch keine Empfehlung/.test(await text("#fs-empfehlung-text")));
-  r.check("Leer: eigene Rätsel 0, Grundmatts und Vorteil 'noch keine'", /Gespeicherte eigene Rätsel 0/.test((await text("#fs-eigene-zahlen")).replace(/\s+/g, " ")) && /noch keine/.test(await text("#fs-grundmatt")) && /noch keine/.test(await text("#fs-vorteil")));
-  r.check("Ehrliche Hinweise: Zufall, ab 10 Partien aussagekräftig, Computer spielt anders", /Zufall in einzelnen Partien ist groß/.test(await text("#sp-fortschritt")) && /10 oder mehr Partien/.test(await text("#sp-fortschritt")) && /Computer spielt anders als Menschen/.test(await text("#sp-fortschritt")));
-  r.check("Keine Punkte, Abzeichen, Serien, Effekte im Text", !/Punkte|Abzeichen|Serie|Streak|Bestenliste|Konfetti|Level/i.test(await text("#sp-fortschritt")));
+  r.check("Leer: eigene Rätsel 0, Grundmatts und Vorteil 'noch keine'", /Gespeicherte eigene Rätsel 0/.test((await text("#fs-eigene-zahlen")).replace(/\s+/g, " ")) && /noch keine/.test(await text("#fs-grundmatt-zahlen")) && /noch keine/.test(await text("#fs-vorteil-zahlen")));
+  r.check("Ehrliche Hinweise: Zufall, ab 10 Partien aussagekräftig, Computer spielt anders", /Zufall in einzelnen Partien ist groß/.test(await text("#page-fortschritt")) && /10 oder mehr Partien/.test(await text("#page-fortschritt")) && /Computer spielt anders als Menschen/.test(await text("#page-fortschritt")));
+  r.check("Keine Punkte, Abzeichen, Serien, Effekte im Text", !/Punkte|Abzeichen|Serie|Streak|Bestenliste|Konfetti|Level/i.test(await text("#page-fortschritt")));
 
   // --- Beispieldaten ---
   await page.evaluate(async () => {
@@ -59,7 +60,8 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     });
   });
   await page.reload();
-  await page.waitForSelector("#sp-fortschritt:not([hidden])");
+  await page.waitForSelector("#page-fortschritt:not([hidden])");
+  await oeffneAlle(page);
   r.check("Nur die 8 Partien ohne Warnung der aktuellen Version zählen", /Partien ohne Patzer-Warnung: 8 \(noch wenig Daten\)/.test(await text("#fs-anzahl")), await text("#fs-anzahl"));
   const stufen = (await text("#fs-stufen")).replace(/\s+/g, " ");
   r.check("Ergebnisse je Stufe (gewonnen, remis, verloren)", /Stufe 2 \(Anfänger\) \(5 Partien\)\s*2 gewonnen, 1 remis, 2 verloren/.test(stufen) && /Stufe 3 \(Anfänger\) \(3 Partien\)\s*3 gewonnen, 0 remis, 0 verloren/.test(stufen), stufen);
@@ -89,15 +91,9 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
   await page.selectOption("#fs-gruppe", "ohne");
 
   // --- Layout ---
-  const tap = await page.locator("#sp-fortschritt select, #sp-fortschritt .subnav a").evaluateAll((els) => els.map((e) => [e.textContent.trim(), Math.round(e.getBoundingClientRect().height), Math.round(e.getBoundingClientRect().width)]));
-  r.check("Auswahl und Reiter mindestens 44 px hoch", tap.every(([, h, w]) => h >= 44 && w >= 44), JSON.stringify(tap));
-  r.check("Seite läuft bei 390 px nicht über, Reiter passen nebeneinander", await page.evaluate(() => { const n = document.querySelector("#sp-fortschritt .subnav"); return document.documentElement.scrollWidth === window.innerWidth && n.scrollWidth <= n.clientWidth + 1; }));
-  const links = await page.locator("#sp-fortschritt .subnav a").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().top));
-  r.check("Die drei Reiter stehen in einer Zeile", new Set(links.map(Math.round)).size === 1);
-  // Reiter auch auf den anderen Spielen-Seiten
-  await page.goto(url + "index.html#/spielen/liste");
-  await page.waitForTimeout(200);
-  r.check("Auf 'Meine Partien' führt der Reiter Fortschritt hierher", (await page.locator('#sp-liste .subnav a[href="#/spielen/fortschritt"]').count()) === 1);
+  const tap = await page.locator("#page-fortschritt select").evaluateAll((els) => els.map((e) => [e.textContent.trim(), Math.round(e.getBoundingClientRect().height), Math.round(e.getBoundingClientRect().width)]));
+  r.check("Auswahl mindestens 44 px hoch", tap.every(([, h, w]) => h >= 44 && w >= 44), JSON.stringify(tap));
+  r.check("Seite läuft bei 390 px nicht über", await page.evaluate(() => document.documentElement.scrollWidth === window.innerWidth));
 
   // --- alte Version: Stand mit Version 0 nur, aktuelle leer ---
   await page.evaluate(async () => {
@@ -106,8 +102,9 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
       d.spielen.partien = [1, 2, 3, 4, 5, 6].map((i) => ({ id: "alt" + i, datum: new Date().toISOString(), modus: "partie", farbe: "w", stufe: 2, stufenversion: 0, ausgang: "gewonnen", grund: "Matt", warnung: false, pgn: "" }));
     });
   });
-  await page.goto(url + "index.html#/spielen/fortschritt");
-  await page.waitForTimeout(300);
+  await page.reload();
+  await page.waitForTimeout(400);
+  await oeffneAlle(page);
   r.check("Nur Partien einer früheren Version: die aktuelle Auswertung bleibt leer, die frühere steht getrennt da", /Partien ohne Patzer-Warnung: 0 \(zu wenig Daten\)/.test(await text("#fs-anzahl")) && /6 Partien/.test(await text("#fs-aeltere-zahlen")));
   r.check("Keine Seitenfehler", page.__errors.length === 0, page.__errors.join(" | "));
   await browser.close();

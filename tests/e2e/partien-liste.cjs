@@ -1,6 +1,6 @@
 // Meine Partien: Liste, Im Brett ansehen, PGN kopieren, PGN im Brett laden, Obergrenzen, Export und Import.
 const fs = require("fs");
-const { startServer, launch, newPage, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, reporter, oeffneAlle } = require("./lib.cjs");
 
 async function seedPartien(page, anzahl, versuche) {
   await page.evaluate(async ({ anzahl, versuche }) => {
@@ -36,15 +36,19 @@ async function seedPartien(page, anzahl, versuche) {
   const browser = await launch();
   const { context, page } = await newPage(browser, { acceptDownloads: true, permissions: ["clipboard-read", "clipboard-write"] });
   await page.goto(url + "index.html#/spielen/liste");
+  await page.waitForTimeout(300);
+  await oeffneAlle(page);
   r.check("Leer: ruhige Hinweise statt leerer Liste", /Noch keine Partie gespeichert/.test(await page.textContent("#liste-partien")) && /Noch keine Übung/.test(await page.textContent("#liste-versuche")));
 
   await seedPartien(page, 3, 2);
   await page.goto(url + "index.html#/spielen/start");
   await page.goto(url + "index.html#/spielen/liste");
   await page.reload();
+  await page.waitForTimeout(300);
+  await oeffneAlle(page);
   r.check("Liste zeigt 3 Partien und 2 Übungen", (await page.locator("#liste-partien .game-item").count()) === 3 && (await page.locator("#liste-versuche .game-item").count()) === 2);
   r.check("Eintrag nennt Stufe, Farbe, Ausgang, Grund, Datum, Züge", /Stufe 3.*Weiß|Stufe 2.*Schwarz|Stufe 1.*Weiß/.test(await page.textContent("#liste-partien")) && /verloren|gewonnen/.test(await page.textContent("#liste-partien .game-item")) && /2026|\d{2}\.\d{2}\./.test(await page.textContent("#liste-partien .game-item")));
-  const knoepfe = await page.locator("#sp-liste .game-buttons button").evaluateAll((els) => els.map((e) => [e.textContent, e.getBoundingClientRect().height, e.getBoundingClientRect().width]));
+  const knoepfe = await page.locator("#fp-alle .game-buttons button").evaluateAll((els) => els.map((e) => [e.textContent, e.getBoundingClientRect().height, e.getBoundingClientRect().width]));
   r.check("Jeder Eintrag hat 'Im Brett ansehen' und 'PGN kopieren', mindestens 44 px", knoepfe.length === 10 && knoepfe.every(([t, h, w]) => (t === "Im Brett ansehen" || t === "PGN kopieren") && h >= 44 && w >= 44), JSON.stringify(knoepfe.slice(0, 2)));
 
   // PGN kopieren
@@ -68,6 +72,8 @@ async function seedPartien(page, anzahl, versuche) {
 
   // Vorteil-Partie mit eigener Startstellung im Brett
   await page.goto(url + "index.html#/spielen/liste");
+  await page.waitForTimeout(300);
+  await oeffneAlle(page);
   await page.locator("#liste-versuche .game-item").first().locator("button", { hasText: "Im Brett ansehen" }).click();
   await page.waitForSelector("#page-brett:not([hidden])");
   r.check("Übung mit eigener Startstellung (ohne Dame) lässt sich im Brett laden", (await page.locator("#board piece.queen.black").count()) === 0 && (await page.locator("#move-list .move-entry").count()) === 3);
@@ -94,6 +100,8 @@ async function seedPartien(page, anzahl, versuche) {
   r.check("Obergrenzen: höchstens 30 Partien und 100 Übungen, älteste fallen weg", sp.p === 30 && sp.v === 100 && !sp.status, JSON.stringify(sp));
   await page.goto(url + "index.html#/spielen/liste");
   await page.reload();
+  await page.waitForTimeout(300);
+  await oeffneAlle(page);
   r.check("Liste zeigt 30 Partien und 100 Übungen ohne seitlichen Überlauf", (await page.locator("#liste-partien .game-item").count()) === 30 && (await page.locator("#liste-versuche .game-item").count()) === 100 && (await page.evaluate(() => document.documentElement.scrollWidth === window.innerWidth)));
 
   // Export und Import nehmen alles mit
@@ -130,6 +138,8 @@ async function seedPartien(page, anzahl, versuche) {
   const alt = JSON.parse(vorher);
   r.check("Import ergibt dieselben Partien, Übungen, laufende Partie und Einstellungen", JSON.stringify(nachher.spielen) === JSON.stringify(alt.spielen) && nachher.einstellungen.chesscomWertung === 452);
   await page2.goto(url + "index.html#/spielen/liste");
+  await page2.waitForTimeout(300);
+  await oeffneAlle(page2);
   await page2.waitForTimeout(300);
   r.check("Importierte Partien erscheinen in der Liste", (await page2.locator("#liste-partien .game-item").count()) === 30);
   await page2.goto(url + "index.html#/spielen");

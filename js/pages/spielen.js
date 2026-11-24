@@ -12,23 +12,18 @@ import { GRUNDMATT, VORTEIL_ARTEN, vorteilStart } from "../uebungen.js";
 import { pruefeZug } from "../warnung.js";
 import { empfehlung } from "../empfehlung.js";
 import { ladePgn } from "./brett.js";
-import { renderListe } from "./partien-liste.js";
 import { zeigeRueckblick } from "./rueckblick.js";
-import { onShowFortschritt } from "./fortschritt.js";
-import { offeneRueckblicke } from "../rueckblick.js";
-import { eigeneZahlen } from "../eigene.js";
-import { dayKey } from "../leitner.js";
-import { startFaelligeEigene } from "./taktik.js";
+import { baueAuswahl } from "../ui/auswahl.js";
+import { warnungStandard, warnungIstAutomatisch, zuruecknahmeStandard } from "../standards.js";
 
 const $ = (id) => document.getElementById(id);
-const VIEWS = ["sp-start", "sp-setup", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-liste", "sp-rueckblick", "sp-fortschritt"];
+const VIEWS = ["sp-start", "sp-vorteil", "sp-grundmatt", "sp-lauf", "sp-ende", "sp-rueckblick"];
 const GRUNDMATT_MS = 700; // kürzeste angezeigte Bedenkzeit bei den Grundmatts
 
 let cg = null;
 let sitz = null; // laufende Sitzung: { aktiv, chess, token, denkt, pruefen, fehler }
 let letzte = null; // zuletzt beendeter Eintrag (für die Endseite)
 let letzteUngesehen = false;
-let setupModus = "partie";
 let setupWarnung = true;
 let setupZurueck = false;
 
@@ -57,46 +52,48 @@ export function onShowSpielen(path) {
     zeige("sp-rueckblick");
     return zeigeRueckblick(path.slice("spielen/rueckblick/".length));
   }
-  if (path === "spielen/fortschritt") {
-    zeige("sp-fortschritt");
-    return onShowFortschritt();
-  }
-  if (path === "spielen/liste") {
-    zeige("sp-liste");
-    return renderListe();
-  }
-  if (path === "spielen/partie") return zeigeSetup("partie");
-  if (path === "spielen/vorteil") return zeigeSetup("vorteil");
+  if (path === "spielen/vorteil") return zeigeVorteil();
   if (path === "spielen/grundmatt") return zeigeGrundmatt();
   return zeigeStart();
 }
 
-// ---------- Startseite ----------
+// ---------- Startseite: Partie starten ----------
+
+const FARBEN = [
+  { wert: "w", text: "Weiß" },
+  { wert: "b", text: "Schwarz" },
+  { wert: "z", text: "Zufall" },
+];
+
+// Große Schalter für Farbe und Stufe (Partie und Vorteil haben je einen Satz).
+const auswahl = {};
+
+function stufenOptionen(empfohlen) {
+  return STUFEN.map((s) => ({ wert: s.nr, text: String(s.nr), label: `${stufenName(s.nr)}, ${ungefaehreStaerke(s.nr)}`, zusatz: s.nr === empfohlen ? "empfohlen" : "" }));
+}
 
 function aktivText(a) {
   const modus = { partie: "Partie", vorteil: "Vorteil verwerten", grundmatt: "Grundmatt" }[a.modus] || "Partie";
   return `Es läuft eine Übung: ${modus}, du spielst ${farbName(a.farbe)}, ${a.zuege.length} Halbzüge gespielt.`;
 }
 
-let offenerRueckblickZiel = "#/spielen/liste";
+// Startstufe: Empfehlung aus den letzten Partien, sonst nach der Chess.com-Wertung aus den Einstellungen, sonst Stufe 2.
+function empfohleneStufe(d, mitEmpfehlung) {
+  const emp = mitEmpfehlung ? empfehlung(d.spielen.partien) : null;
+  const wert = d.einstellungen.chesscomWertung;
+  return { emp, stufe: emp ? emp.stufe : wert ? startStufe(wert) : 2, nachWertung: !emp && !!wert };
+}
 
-// Kleiner Hinweis auf der Startseite: offene Rückblicke und fällige eigene Rätsel, je mit Knopf.
-function hinweiseAktualisieren() {
-  const offen = offeneRueckblicke(store.get().spielen);
-  $("sp-hinweis-rueckblick").textContent = `Offene Rückblicke: ${offen.length}`;
-  $("sp-hinweis-rueckblick-btn").disabled = offen.length === 0;
-  offenerRueckblickZiel = offen.length === 1 ? `#/spielen/rueckblick/${offen[0].id}` : "#/spielen/liste";
-  const faellig = eigeneZahlen(store.get(), dayKey(store.now())).faellig;
-  $("sp-hinweis-raetsel").textContent = `Fällige eigene Rätsel: ${faellig}`;
-  $("sp-hinweis-raetsel-btn").disabled = faellig === 0;
-  meldung("sp-hinweis-meldung", "");
+function stufeInfo(el, nr, nachWertung = false) {
+  el.textContent = `${stufenName(nr)}: ${ungefaehreStaerke(nr)}${nachWertung ? " (nach deiner Wertung vorgeschlagen)" : ""}`;
 }
 
 function zeigeStart() {
   zeige("sp-start");
-  hinweiseAktualisieren();
-  const a = store.get().spielen.aktiv;
+  const d = store.get();
+  const a = d.spielen.aktiv;
   $("sp-fortsetzen").hidden = !a;
+  $("sp-neu").hidden = !!a;
   $("sp-verwerfen-frage").hidden = true;
   if (a) $("sp-fortsetzen-text").textContent = aktivText(a);
   $("sp-letzte").hidden = !(letzteUngesehen && letzte);
@@ -104,100 +101,31 @@ function zeigeStart() {
     const e = letzte.eintrag;
     $("sp-letzte-text").textContent = e.modus === "grundmatt" ? "Deine letzte Übung ist beendet." : endeText({ ergebnis: e.ergebnis, grund: e.grund }, e.farbe);
   }
-  for (const link of document.querySelectorAll("#sp-start .subnav a")) {
-    if (link.getAttribute("href") === "#/spielen") link.setAttribute("aria-current", "page");
-  }
-}
-
-// ---------- Einstellungen: Partie und Vorteil ----------
-
-function warnungStandard() {
-  return store.get().spielen.gestartet < 3;
-}
-
-function stufenOptionen(select, gewaehlt) {
-  select.innerHTML = "";
-  for (const s of STUFEN) {
-    const o = document.createElement("option");
-    o.value = String(s.nr);
-    o.textContent = `${stufenName(s.nr)} - ${ungefaehreStaerke(s.nr)}`;
-    select.appendChild(o);
-  }
-  select.value = String(gewaehlt);
-}
-
-function zeigeSetup(modus) {
-  setupModus = modus;
-  zeige("sp-setup");
-  const d = store.get();
-  $("sp-setup-titel").textContent = modus === "vorteil" ? "Vorteil verwerten" : "Partie";
-  $("sp-setup-text").textContent =
-    modus === "vorteil"
-      ? "Du startest mit einem Vorteil: Der Computer hat von Anfang an eine Figur weniger. Es zählt: gewonnen, remis oder verloren. Das wird getrennt von normalen Partien gezählt."
-      : "Eine ganze Partie ohne Uhr. Der Computer antwortet nach kurzer Bedenkzeit.";
-  $("sp-btn-start").textContent = modus === "vorteil" ? "Übung starten" : "Partie starten";
-  $("sp-feld-art").hidden = modus !== "vorteil";
-  if (modus === "vorteil") {
-    const sel = $("sp-art");
-    if (!sel.options.length) {
-      for (const [k, v] of Object.entries(VORTEIL_ARTEN)) sel.add(new Option(v.name, k));
-    }
-  }
-  const emp = modus === "partie" ? empfehlung(d.spielen.partien) : null;
-  const wert = d.einstellungen.chesscomWertung;
-  const start = emp ? emp.stufe : wert ? startStufe(wert) : 2;
-  stufenOptionen($("sp-stufe"), start);
+  if (a) return;
+  const { emp, stufe: start, nachWertung } = empfohleneStufe(d, true);
+  auswahl.farbe.set("z");
+  auswahl.stufe = baueAuswahl($("sp-stufe"), stufenOptionen(start), { wert: start, onChange: (nr) => stufeInfo($("sp-stufe-info"), nr) });
+  stufeInfo($("sp-stufe-info"), start, nachWertung);
+  $("sp-stufe-hinweis").textContent = STAERKE_HINWEIS;
   const e = $("sp-empfehlung");
   e.hidden = !emp;
   if (emp) e.textContent = emp.satz;
-  $("sp-wertung").value = wert ? String(wert) : "";
-  aktualisiereStufeInfo();
-  aktualisiereWertungInfo();
-  setupZurueck = false;
-  setupWarnung = warnungStandard();
+  setupZurueck = zuruecknahmeStandard(d);
+  setupWarnung = warnungStandard(d);
   setSwitch($("sp-sw-zurueck"), setupZurueck, "Zug zurücknehmen: an", "Zug zurücknehmen: aus");
   setSwitch($("sp-sw-warnung"), setupWarnung, "Patzer-Warnung: an", "Patzer-Warnung: aus");
-  $("sp-warn-info").textContent = warnungStandard()
-    ? ""
-    : "Du hast schon 3 Partien begonnen. Deshalb ist die Warnung zunächst aus. Du kannst sie einschalten.";
+  $("sp-warn-info").textContent =
+    warnungIstAutomatisch(d) && !warnungStandard(d) ? "Du hast schon 3 Partien begonnen. Deshalb ist die Warnung zunächst aus. Du kannst sie einschalten." : "";
+  $("sp-optionen").open = false;
   meldung("sp-setup-meldung", "");
 }
 
-function aktualisiereStufeInfo() {
-  const nr = Number($("sp-stufe").value);
-  $("sp-stufe-info").textContent = `Ungefähre Stärke: ${ungefaehreStaerke(nr)}. ${STAERKE_HINWEIS}`;
-}
-
-function liesWertung() {
-  const t = $("sp-wertung").value.trim();
-  if (!t) return null;
-  const n = Number(t);
-  return Number.isInteger(n) && n >= 100 && n <= 3500 ? n : NaN;
-}
-
-function aktualisiereWertungInfo() {
-  const w = liesWertung();
-  const info = $("sp-wertung-info");
-  if (w === null) info.textContent = "Mit deiner Wertung schlägt die App eine Startstufe vor.";
-  else if (Number.isNaN(w)) info.textContent = "Bitte eine ganze Zahl zwischen 100 und 3500 eingeben.";
-  else info.textContent = `Vorschlag für den Start: ${stufenName(startStufe(w))}. Das ist nur ein Richtwert.`;
+function farbeWaehlen(wert) {
+  return wert === "z" ? (Math.random() < 0.5 ? "w" : "b") : wert;
 }
 
 function setupEvents() {
-  $("sp-stufe").addEventListener("change", aktualisiereStufeInfo);
-  $("sp-wertung").addEventListener("input", () => {
-    const w = liesWertung();
-    aktualisiereWertungInfo();
-    if (w === null || !Number.isNaN(w)) {
-      store.update((d) => {
-        d.einstellungen.chesscomWertung = w;
-      });
-      if (w !== null && $("sp-empfehlung").hidden) {
-        $("sp-stufe").value = String(startStufe(w));
-        aktualisiereStufeInfo();
-      }
-    }
-  });
+  auswahl.farbe = baueAuswahl($("sp-farbe"), FARBEN, { wert: "z" });
   $("sp-sw-zurueck").addEventListener("click", () => {
     setupZurueck = !setupZurueck;
     setSwitch($("sp-sw-zurueck"), setupZurueck, "Zug zurücknehmen: an", "Zug zurücknehmen: aus");
@@ -207,18 +135,45 @@ function setupEvents() {
     setSwitch($("sp-sw-warnung"), setupWarnung, "Patzer-Warnung: an", "Patzer-Warnung: aus");
   });
   $("sp-btn-start").addEventListener("click", () => {
-    if (Number.isNaN(liesWertung())) return meldung("sp-setup-meldung", "Bitte zuerst die Wertung korrigieren oder leer lassen.");
-    let farbe = $("sp-farbe").value;
-    if (farbe === "z") farbe = Math.random() < 0.5 ? "w" : "b";
-    const stufeNr = Number($("sp-stufe").value);
-    let startFen;
-    let extra = {};
-    if (setupModus === "vorteil") {
-      const art = $("sp-art").value;
-      startFen = vorteilStart(art, farbe);
-      extra = { art };
-    }
-    starte(neueAktive({ modus: setupModus, farbe, stufe: stufeNr, startFen, zuruecknahme: setupZurueck, warnung: setupWarnung, extra }));
+    starte(neueAktive({ modus: "partie", farbe: farbeWaehlen(auswahl.farbe.get()), stufe: auswahl.stufe.get(), zuruecknahme: setupZurueck, warnung: setupWarnung }));
+  });
+}
+
+// ---------- Vorteil verwerten ----------
+
+let vorteilZurueck = false;
+let vorteilWarnung = true;
+
+function zeigeVorteil() {
+  zeige("sp-vorteil");
+  const d = store.get();
+  const { stufe: start, nachWertung } = empfohleneStufe(d, false);
+  auswahl.vtArt.set("dame");
+  auswahl.vtFarbe.set("z");
+  auswahl.vtStufe = baueAuswahl($("vt-stufe"), stufenOptionen(start), { wert: start, onChange: (nr) => stufeInfo($("vt-stufe-info"), nr) });
+  stufeInfo($("vt-stufe-info"), start, nachWertung);
+  vorteilZurueck = zuruecknahmeStandard(d);
+  vorteilWarnung = warnungStandard(d);
+  setSwitch($("vt-sw-zurueck"), vorteilZurueck, "Zug zurücknehmen: an", "Zug zurücknehmen: aus");
+  setSwitch($("vt-sw-warnung"), vorteilWarnung, "Patzer-Warnung: an", "Patzer-Warnung: aus");
+  $("vt-optionen").open = false;
+}
+
+function vorteilEvents() {
+  auswahl.vtArt = baueAuswahl($("vt-art"), Object.entries(VORTEIL_ARTEN).map(([k, v]) => ({ wert: k, text: v.kurz, label: v.name })), { wert: "dame" });
+  auswahl.vtFarbe = baueAuswahl($("vt-farbe"), FARBEN, { wert: "z" });
+  $("vt-sw-zurueck").addEventListener("click", () => {
+    vorteilZurueck = !vorteilZurueck;
+    setSwitch($("vt-sw-zurueck"), vorteilZurueck, "Zug zurücknehmen: an", "Zug zurücknehmen: aus");
+  });
+  $("vt-sw-warnung").addEventListener("click", () => {
+    vorteilWarnung = !vorteilWarnung;
+    setSwitch($("vt-sw-warnung"), vorteilWarnung, "Patzer-Warnung: an", "Patzer-Warnung: aus");
+  });
+  $("vt-btn-start").addEventListener("click", () => {
+    const farbe = farbeWaehlen(auswahl.vtFarbe.get());
+    const art = auswahl.vtArt.get();
+    starte(neueAktive({ modus: "vorteil", farbe, stufe: auswahl.vtStufe.get(), startFen: vorteilStart(art, farbe), zuruecknahme: vorteilZurueck, warnung: vorteilWarnung, extra: { art } }));
   });
 }
 
@@ -226,31 +181,33 @@ function setupEvents() {
 
 function zeigeGrundmatt() {
   zeige("sp-grundmatt");
-  const art = $("gm-art");
-  if (!art.options.length) for (const [k, v] of Object.entries(GRUNDMATT)) art.add(new Option(v.name, k));
+  $("gm-optionen").open = false;
   fuelleStellungen();
 }
 
-function fuelleStellungen() {
-  const art = $("gm-art").value || "dame";
-  const sel = $("gm-stellung");
+function gezaehlteStellungen(art) {
   const versuche = store.get().spielen.versuche.filter((v) => v.modus === "grundmatt" && v.art === art);
-  const gezaehlt = GRUNDMATT[art].stellungen.map((_, i) => versuche.filter((v) => v.stellungNr === i).length);
+  return GRUNDMATT[art].stellungen.map((_, i) => versuche.filter((v) => v.stellungNr === i).length);
+}
+
+function fuelleStellungen() {
+  const art = auswahl.gmArt.get();
+  const sel = $("gm-stellung");
+  const gezaehlt = gezaehlteStellungen(art);
   const naechste = gezaehlt.indexOf(Math.min(...gezaehlt));
   sel.innerHTML = "";
   sel.add(new Option(`Nächste Stellung (Nr. ${naechste + 1})`, "auto"));
   GRUNDMATT[art].stellungen.forEach((_, i) => sel.add(new Option(`Stellung ${i + 1}${gezaehlt[i] ? ` (${gezaehlt[i]}x geübt)` : ""}`, String(i))));
-  $("gm-info").textContent = `Referenz: ${GRUNDMATT[art].kurz} und König gegen König ist in höchstens ${GRUNDMATT[art].referenz} Zügen erzwingbar.`;
+  $("gm-info").textContent = `${GRUNDMATT[art].name}: in höchstens ${GRUNDMATT[art].referenz} Zügen erzwingbar.`;
 }
 
 function grundmattEvents() {
-  $("gm-art").addEventListener("change", fuelleStellungen);
+  auswahl.gmArt = baueAuswahl($("gm-art"), Object.entries(GRUNDMATT).map(([k, v]) => ({ wert: k, text: v.kurz, label: v.name })), { wert: "dame", onChange: fuelleStellungen });
   $("gm-btn-start").addEventListener("click", () => {
-    const art = $("gm-art").value;
+    const art = auswahl.gmArt.get();
     let nr = $("gm-stellung").value;
     if (nr === "auto") {
-      const versuche = store.get().spielen.versuche.filter((v) => v.modus === "grundmatt" && v.art === art);
-      const gezaehlt = GRUNDMATT[art].stellungen.map((_, i) => versuche.filter((v) => v.stellungNr === i).length);
+      const gezaehlt = gezaehlteStellungen(art);
       nr = gezaehlt.indexOf(Math.min(...gezaehlt));
     } else nr = Number(nr);
     starte(neueAktive({ modus: "grundmatt", farbe: "w", stufe: GRUNDMATT_STUFE, startFen: GRUNDMATT[art].stellungen[nr], zuruecknahme: false, warnung: false, extra: { art, stellungNr: nr } }));
@@ -585,7 +542,7 @@ function zeigeEnde() {
     ev.preventDefault();
     try {
       ladePgn(e.pgn, { farbe: e.farbe });
-      location.hash = "#/brett";
+      location.hash = "#/einstellungen/brett";
     } catch (err) {
       meldung("sp-ende-meldung", "Die Partie konnte nicht ins Brett geladen werden.");
     }
@@ -611,6 +568,7 @@ function zeigeEnde() {
 
 export function initSpielen() {
   setupEvents();
+  vorteilEvents();
   grundmattEvents();
   laufEvents();
   $("sp-btn-fortsetzen").addEventListener("click", () => {
@@ -623,12 +581,6 @@ export function initSpielen() {
     $("sp-verwerfen-frage").hidden = true;
   });
   $("sp-btn-verwerfen-ja").addEventListener("click", verwerfen);
-  $("sp-hinweis-rueckblick-btn").addEventListener("click", () => {
-    location.hash = offenerRueckblickZiel;
-  });
-  $("sp-hinweis-raetsel-btn").addEventListener("click", () => {
-    if (!startFaelligeEigene()) meldung("sp-hinweis-meldung", "Es läuft gerade eine Sitzung. Beende oder verwirf sie zuerst auf der Seite Taktik.");
-  });
   document.addEventListener("daten-geaendert", () => {
     sitz = null;
   });

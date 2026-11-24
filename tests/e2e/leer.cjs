@@ -74,7 +74,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     await page.reload();
     await page.waitForTimeout(500);
     const info = await page.textContent("#taktik-info");
-    r.check("Üben ohne Wiederholungen: erklärender Satz", /Noch keine Wiederholungen/.test(info) && /nach 1, 3, 7 und 21 Tagen wieder/.test(info), info);
+    r.check("Üben ohne Wiederholungen: kurzer Satz, die Erklärung steht hinter 'Info'", /Noch keine Wiederholungen/.test(info) && /nach 1, 3, 7 und 21 Tagen wieder/.test(await page.textContent("#page-taktik details.info")), info);
     r.check("Daneben steht der Knopf 'Sitzung starten' (mindestens 44 px)", await page.evaluate(() => {
       const b = document.getElementById("btn-sitzung");
       const x = b.getBoundingClientRect();

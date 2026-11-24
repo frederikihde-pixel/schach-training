@@ -41,18 +41,51 @@ body {
 }
 
 .app-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
   align-items: center;
-  justify-content: space-between;
-  padding: 4px 8px 4px 16px;
-  border-bottom: 1px solid var(--border);
+  padding: 6px 8px;
 }
 
 .app-header h1 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
+  text-align: center;
   color: var(--text);
+}
+
+.header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.header-icon[hidden] {
+  display: none;
+}
+
+#btn-zurueck {
+  grid-column: 1;
+}
+
+#app-titel {
+  grid-column: 2;
+}
+
+#link-einstellungen {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.header-icon[aria-current="page"] {
+  color: var(--text);
+  background: var(--surface-2);
 }
 
 .header-link {
@@ -65,7 +98,7 @@ body {
   border-radius: 8px;
   color: var(--text-muted);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .header-link[aria-current="page"] {
@@ -106,10 +139,6 @@ a {
   color: #8fb0d6;
 }
 
-.back-row {
-  margin: 0 0 8px;
-}
-
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -145,7 +174,7 @@ a {
 
 .block h3 {
   margin: 0 0 6px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -185,7 +214,7 @@ details.license summary {
   overflow: auto;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
@@ -221,7 +250,7 @@ details.license summary {
 .status-message {
   min-height: 1.4em;
   margin: 10px 16px 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
@@ -262,7 +291,7 @@ details.license summary {
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .controls {
@@ -280,7 +309,7 @@ button {
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -309,7 +338,7 @@ section {
 
 section h2 {
   margin: 0 0 8px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -325,7 +354,7 @@ section h2 {
   border: 1px solid var(--border);
   border-radius: 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .fen-buttons {
@@ -341,7 +370,7 @@ section h2 {
 .fen-error {
   margin: 8px 0 0;
   color: var(--danger);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .move-list {
@@ -359,7 +388,7 @@ section h2 {
 .move-list:empty::after {
   content: "Noch keine Züge.";
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .move-entry {
@@ -369,7 +398,7 @@ section h2 {
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -461,7 +490,7 @@ section h2 {
 }
 
 .promo-label {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
@@ -471,7 +500,7 @@ section h2 {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .notice[hidden] {
@@ -521,7 +550,7 @@ section h2 {
   border: 1px solid var(--border);
   border-radius: 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.8rem;
+  font-size: 1rem;
   overflow-wrap: anywhere;
   user-select: all;
 }
@@ -605,7 +634,7 @@ section h2 {
 
 .field label {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 select {
@@ -623,7 +652,7 @@ select {
   justify-content: space-between;
   min-height: 2em;
   padding: 10px 16px 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .side-line {
@@ -636,7 +665,7 @@ select {
 .thinking-aid {
   min-height: 2.8em; /* Platz bleibt reserviert, damit das Brett nicht springt */
   margin: 0 16px 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.4;
   color: var(--text-muted);
 }
@@ -683,7 +712,7 @@ select {
 
 .subhead {
   margin: 16px 0 6px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -729,7 +758,7 @@ select {
   align-items: center;
   gap: 10px;
   min-height: 32px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .week-label {
@@ -765,7 +794,7 @@ select {
 
 .list-title {
   margin: 20px 0 4px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -777,15 +806,19 @@ select {
 }
 
 .theme-row {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 12px;
   padding: 12px 0;
-  border-bottom: 1px solid var(--border);
+}
+
+.theme-row strong {
+  font-size: 1.05rem;
 }
 
 .theme-row p {
+  grid-column: 1 / -1;
   margin: 0;
   color: var(--text-muted);
 }
@@ -808,7 +841,7 @@ select {
   padding: 2px 8px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--text-muted);
 }
 
@@ -875,11 +908,11 @@ select {
 }
 
 .design-text .muted {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .design-status {
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--text);
 }
 
@@ -989,30 +1022,6 @@ body.intro-open {
 }
 
 /* Spielen */
-.way-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.way {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: 44px;
-  padding: 12px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  text-decoration: none;
-}
-
-.way span {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
 
 .text-input {
   min-height: 44px;
@@ -1030,7 +1039,7 @@ body.intro-open {
 
 .field p {
   margin: 4px 0 0;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .pgn-input {
@@ -1042,7 +1051,7 @@ body.intro-open {
   border: 1px solid var(--border);
   border-radius: 8px;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .game-list {
@@ -1091,13 +1100,7 @@ body.intro-open {
 
 .rb-eintrag span {
   color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.subnav-3 a {
-  padding: 0 6px;
-  font-size: 0.92rem;
-  text-align: center;
+  font-size: 1rem;
 }
 
 .hint-row {
@@ -1110,4 +1113,240 @@ body.intro-open {
 
 .hint-row button {
   flex: 0 0 auto;
+}
+
+/* Einstellungen */
+.set-section {
+  margin-bottom: 32px;
+}
+
+.set-titel {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0 4px;
+}
+
+.set-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.set-row button[role="switch"] {
+  flex: 0 0 auto;
+  min-width: 72px;
+}
+
+.set-row button[role="switch"][aria-checked="true"] {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+details.info {
+  margin: 0 0 8px;
+  color: var(--text-muted);
+}
+
+details.info summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+details.info p {
+  margin: 0 0 8px;
+}
+
+.choice-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choice-group.row {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 48px;
+  text-align: left;
+}
+
+.choice .muted {
+  font-size: 1rem;
+}
+
+.choice[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+.choice[aria-pressed="true"] .muted {
+  color: var(--accent-text);
+}
+
+.field-label {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* Hauptknopf: genau einer je Seite, gefüllt; alles andere ruhiger */
+.btn-haupt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 60px;
+  padding: 12px 16px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-haupt:disabled {
+  opacity: 0.5;
+}
+
+/* Heute */
+.heute {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 32px;
+}
+
+.heute-text {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.neben-liste {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.neben {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 4px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 1rem;
+  text-align: left;
+}
+
+.neben::after {
+  content: "\203A";
+  color: var(--text-muted);
+  font-size: 1.4rem;
+}
+
+/* Aufklappbare Zusatzoptionen und gleichmäßige Abstände */
+.stack-gross {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stack-gross > p,
+.stack-gross > details {
+  margin: 0;
+}
+
+details.optionen > summary {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.optionen-inhalt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0 4px;
+}
+
+.optionen-inhalt .field {
+  margin-bottom: 0;
+}
+
+/* Große Schalter (Farbe, Stufe, Figur) und Karten */
+.choice.mittig {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.choice-group.row .choice {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.choice-group.stufen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.choice-group.stufen .choice {
+  min-height: 56px;
+  padding: 6px 4px;
+}
+
+.karten {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.karte {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 96px;
+  padding: 14px;
+  background: var(--surface);
+  border-radius: 12px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.karte span {
+  color: var(--text-muted);
+  font-size: 1rem;
 }

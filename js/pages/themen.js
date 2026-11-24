@@ -16,22 +16,23 @@ function row(tag) {
   info.textContent = themeInfo(tag);
   const button = document.createElement("button");
   button.type = "button";
-  button.textContent = "Dieses Thema üben";
+  button.textContent = "Üben";
+  button.setAttribute("aria-label", `Thema ${themeLabel(tag)} üben`);
   button.dataset.thema = tag;
   button.addEventListener("click", () => {
     const t = store.get().taktik;
     if (t.aktiv) {
-      $("themen-meldung").textContent = "Es läuft gerade eine Sitzung. Beende oder verwirf sie zuerst auf der Seite Üben.";
+      $("themen-meldung").textContent = "Es läuft gerade eine Sitzung. Beende oder verwirf sie zuerst auf der Seite Taktik.";
       return;
     }
     if (!t.eingestuft) {
-      $("themen-meldung").textContent = "Zum Üben schätzt die App zuerst deine Stärke ein. Starte dazu auf der Seite Üben die Einstufung.";
+      $("themen-meldung").textContent = "Zum Üben schätzt die App zuerst deine Stärke ein. Starte dazu auf der Seite Taktik die Einstufung.";
       return;
     }
     $("themen-meldung").textContent = "";
     practiceTheme(tag);
   });
-  li.append(name, info, button);
+  li.append(name, button, info);
   return li;
 }
 

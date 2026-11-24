@@ -1,0 +1,79 @@
+[
+ {
+  "route": "heute",
+  "hoehe": 844,
+  "tipps": 8,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "taktik",
+  "hoehe": 844,
+  "tipps": 10,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "taktik/themen",
+  "hoehe": 1648,
+  "tipps": 56,
+  "breite": 390,
+  "bildschirme": 1.95
+ },
+ {
+  "route": "spielen",
+  "hoehe": 894,
+  "tipps": 21,
+  "breite": 390,
+  "bildschirme": 1.06
+ },
+ {
+  "route": "spielen/vorteil",
+  "hoehe": 844,
+  "tipps": 23,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "spielen/grundmatt",
+  "hoehe": 844,
+  "tipps": 10,
+  "breite": 390,
+  "bildschirme": 1
+ },
+ {
+  "route": "fortschritt",
+  "hoehe": 2039,
+  "tipps": 35,
+  "breite": 390,
+  "bildschirme": 2.42
+ },
+ {
+  "route": "einstellungen",
+  "hoehe": 1772,
+  "tipps": 19,
+  "breite": 390,
+  "bildschirme": 2.1
+ },
+ {
+  "route": "einstellungen/daten",
+  "hoehe": 1038,
+  "tipps": 9,
+  "breite": 390,
+  "bildschirme": 1.23
+ },
+ {
+  "route": "einstellungen/brett",
+  "hoehe": 1063,
+  "tipps": 16,
+  "breite": 390,
+  "bildschirme": 1.26
+ },
+ {
+  "route": "einstellungen/info",
+  "hoehe": 1737,
+  "tipps": 12,
+  "breite": 390,
+  "bildschirme": 2.06
+ }
+]

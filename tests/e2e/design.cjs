@@ -1,5 +1,5 @@
 // Brett-Designs: Standard, Wechsel wirkt sofort auf alle Bretter, Speichern, Migration, Vorschau, Umwandlung.
-const { startServer, launch, newPage, tapMove, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, tapMove, reporter, startStandort } = require("./lib.cjs");
 
 const COLORS = {
   klassisch: { hell: "rgb(240, 230, 210)", dunkel: "rgb(139, 94, 60)" },
@@ -24,8 +24,7 @@ const COLORS = {
   r.check("Neue Nutzer: Standard ist Klassisch", (await dataset(page)) === "klassisch" && (await bg(page, "#board cg-board")) === COLORS.klassisch.hell, await dataset(page));
 
   // ---- Auswahl über Mehr > Darstellung ----
-  await page.click("#link-mehr");
-  await page.click('a[href="#/mehr/darstellung"]');
+  await page.click("#link-einstellungen");
   await page.waitForSelector("#design-liste .design-card");
   const cards = await page.$$eval(".design-card", (c) => c.map((x) => ({ name: x.querySelector("strong").textContent, h: x.getBoundingClientRect().height, w: x.getBoundingClientRect().width, pressed: x.getAttribute("aria-pressed") })));
   r.check("Drei Karten: Klassisch, Dunkel, Grün", cards.map((c) => c.name).join() === "Klassisch,Dunkel,Grün", cards.map((c) => c.name).join());
@@ -43,7 +42,7 @@ const COLORS = {
   r.check("Gespeichert (Einstellungen)", (await stored(page)).einstellungen.brettDesign === "dunkel");
 
   // Wirkt auf das Brett
-  await page.click("#tab-brett");
+  await page.evaluate(() => { location.hash = "#/einstellungen/brett"; });
   await page.waitForTimeout(300);
   r.check("Brett zeigt die Dunkel-Farben", (await bg(page, "#board cg-board")) === COLORS.dunkel.hell, await bg(page, "#board cg-board"));
   await tapMove(page, "e2", "e4");
@@ -66,7 +65,7 @@ const COLORS = {
   await page.click("#btn-beenden-ja");
   await page.goto(url + "index.html#/taktik/statistik");
   await page.waitForTimeout(600);
-  await page.click("#btn-standort-fortgeschritten");
+  await startStandort(page, "fortgeschritten");
   await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
   await page.waitForTimeout(600);
   r.check("Standortbestimmung zeigt die Dunkel-Farben", (await bg(page, "#taktik-board cg-board")) === COLORS.dunkel.hell);
@@ -74,7 +73,7 @@ const COLORS = {
   await page.click("#btn-beenden-ja");
 
   // Wechsel zu Grün und Klassisch, zurück auf die Darstellung
-  await page.goto(url + "index.html#/mehr/darstellung");
+  await page.goto(url + "index.html#/einstellungen");
   await page.waitForSelector(".design-card");
   await page.locator(".design-card").nth(2).click();
   await page.waitForTimeout(100);
@@ -85,7 +84,7 @@ const COLORS = {
 
   // ---- Umwandlungsauswahl: Figuren auf der Feldfarbe mit dem besten Kontrast ----
   await page.locator(".design-card").nth(1).click();
-  await page.click("#tab-brett");
+  await page.evaluate(() => { location.hash = "#/einstellungen/brett"; });
   await page.waitForTimeout(300);
   await page.fill("#fen-input", "8/8/8/8/8/8/p6k/4K3 b - - 0 1");
   await page.click("#btn-fen-load");

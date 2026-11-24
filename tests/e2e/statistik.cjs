@@ -1,5 +1,5 @@
 // Statistik-Seite und Standortbestimmung (390 px, Touch-Emulation, verschobene Uhr).
-const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, reporter, startStandort } = require("./lib.cjs");
 
 (async () => {
   const r = reporter("Statistik und Standortbestimmung");
@@ -37,7 +37,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
         mateIn2: {n: 8, ok: 7, ms: 8*40000}, endgame: {n: 20, ok: 12, ms: 20*25000}, trappedPiece: {n: 3, ok: 0, ms: 3*10000},
       };
     `);
-    const text = await page.innerText("#page-statistik");
+    const text = await page.textContent("#page-fortschritt");
     r.check("Taktikstärke wird als ruhige Zahl angezeigt", (await page.textContent("#stat-staerke")) === "Taktikstärke: 1520");
     r.check("Liniendiagramm mit einem Punkt je Sitzung (6)", await page.evaluate(() => { const p = document.querySelector("#stat-diagramm polyline"); return !!p && p.getAttribute("points").split(" ").length === 6; }));
     r.check("Diagramm hat eine Beschriftung für Screenreader", /Verlauf der Taktikstärke: von 1400 auf 1520 in 6 Sitzungen/.test(await page.getAttribute("#stat-diagramm svg", "aria-label")));
@@ -65,7 +65,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     const { page } = await newPage(browser);
     await page.goto(url + "index.html#/taktik/statistik");
     await page.waitForTimeout(500);
-    const text = await page.innerText("#page-statistik");
+    const text = await page.textContent("#page-fortschritt");
     r.check("Ohne Daten: erklärender Satz und Knopf statt einer leeren Seite", /Die Statistik füllt sich/.test(text) && /Einstufung starten/.test(text) && /Noch keine Ergebnisse/.test(text), text.replace(/\s+/g, " ").slice(0, 200));
     r.check("keine Skriptfehler (leere Statistik)", page.__errors.length === 0, page.__errors.join("; "));
   }
@@ -78,8 +78,8 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
       t.versuche = [{id:"x1",t:new Date().toISOString(),ok:true,ms:1000,r:1500}]; t.themen = {fork:{n:1,ok:1,ms:1000}};
     `);
     const before = await state(page);
-    r.check("Standortbestimmung ist anbietbar", await page.evaluate(() => !document.getElementById("btn-standort-fortgeschritten").disabled));
-    await page.click("#btn-standort-fortgeschritten");
+    r.check("Standortbestimmung ist anbietbar", await page.evaluate(() => !document.getElementById("btn-standort").disabled));
+    await startStandort(page, "fortgeschritten");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
     const t = await state(page);
     const ratings = t.aktiv.plan.map((i) => i.puzzle.rating);
@@ -122,7 +122,7 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     r.check("keine Skriptfehler (Standortbestimmung)", page.__errors.length === 0, page.__errors.join("; "));
 
     // Liste früherer Ergebnisse
-    await page.click('a[href="#/taktik/statistik"].btn-link-quiet');
+    await page.click('a[href="#/fortschritt"].btn-link-quiet');
     await page.waitForTimeout(400);
     const items = await page.$$eval("#stat-standort-liste-fortgeschritten li", (li) => li.map((x) => x.textContent));
     r.check("Frühere Ergebnisse als einfache Liste", items.length === 1 && /12\. November 2026: 10 von 20 gelöst, durchschnittlich \d+ Sekunden je Rätsel/.test(items[0]), items.join("|"));
@@ -130,20 +130,21 @@ const { startServer, launch, newPage, currentPuzzle, waitForSide, playUci, repor
     // Erinnerung nach 4 Wochen
     await page.clock.setFixedTime(day(27));
     await page.reload(); await page.waitForTimeout(500);
-    r.check("Nach 27 Tagen: keine Erinnerung", await page.evaluate(() => document.getElementById("hinweis-standort").hidden));
+    r.check("Nach 27 Tagen: keine Erinnerung", !/vier Wochen her/.test(await page.textContent("#stat-standort-meldung")));
     // Die Uhr lief während der Standortbestimmung weiter: eine Stunde Reserve nach 28 Tagen.
     await page.clock.setFixedTime(new Date(day(28).getTime() + 3600 * 1000));
     await page.reload(); await page.waitForTimeout(500);
-    const banner = await page.evaluate(() => ({ hidden: document.getElementById("hinweis-standort").hidden, text: document.getElementById("hinweis-standort").innerText }));
-    r.check("Nach 28 Tagen: ruhige Erinnerung, ohne Druck", !banner.hidden && /vier Wochen/.test(banner.text) && /Wenn du magst/.test(banner.text) && !/!|sofort|unbedingt|verpass/i.test(banner.text), banner.text.replace(/\s+/g, " "));
-    await page.click("#hinweis-standort-spaeter");
-    r.check("'Später' blendet die Erinnerung aus", await page.evaluate(() => document.getElementById("hinweis-standort").hidden));
+    await page.goto(url + "index.html#/fortschritt");
+    await page.waitForTimeout(500);
+    const banner = await page.evaluate(() => ({ hidden: false, text: document.getElementById("stat-standort-meldung").textContent }));
+    r.check("Nach 28 Tagen: ruhige Erinnerung im Abschnitt Standortbestimmung, ohne Druck", !banner.hidden && /vier Wochen/.test(banner.text) && /Wenn du magst/.test(banner.text) && !/!|sofort|unbedingt|verpass/i.test(banner.text), banner.text.replace(/\s+/g, " "));
+    r.check("Es gibt keine eigene Erinnerungsleiste mehr (kein doppelter Weg neben Heute und Fortschritt)", (await page.locator("#hinweis-standort").count()) === 0);
 
     // Zweite Standortbestimmung: Abbrechen speichert nichts
     await page.reload(); await page.waitForTimeout(500);
-    await page.goto(url + "index.html#/taktik/statistik");
+    await page.goto(url + "index.html#/fortschritt");
     await page.waitForTimeout(400);
-    await page.click("#btn-standort-fortgeschritten");
+    await startStandort(page, "fortgeschritten");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 15000 });
     await page.click("#btn-beenden");
     r.check("Abbrechen fragt nach", /kein Ergebnis gespeichert/.test(await page.textContent("#beenden-text")));

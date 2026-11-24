@@ -16,14 +16,15 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     const { page } = await newPage(browser);
     await page.goto(url + "index.html#/taktik");
     await page.waitForTimeout(400);
-    r.check("Üben-Seite hat drei Reiter: Üben, Statistik, Themen", await page.evaluate(() => [...document.querySelectorAll("#taktik-start .subnav a")].map((a) => a.textContent.trim()).join() === "Üben,Statistik,Themen"));
-    await page.click('#taktik-start .subnav a[href="#/taktik/themen"]');
+    await setTaktik(page, "d.taktik.staerke = 800; d.taktik.eingestuft = true;");
+    await page.reload();
+    await page.waitForTimeout(500);
+    r.check("Taktik-Seite führt zur Themen-Übersicht (keine zweite Reihe von Reitern mehr)", (await page.locator("#page-taktik .subnav").count()) === 0 && (await page.locator('#taktik-start a[href="#/taktik/themen"]').count()) === 1);
+    await page.evaluate(() => { document.getElementById("taktik-optionen").open = true; });
+    await page.click('#taktik-start a[href="#/taktik/themen"]');
     await page.waitForTimeout(300);
     r.check("Themen-Seite sichtbar, Reiter Taktik markiert", await page.evaluate(() => !document.getElementById("page-themen").hidden && document.getElementById("tab-taktik").getAttribute("aria-current") === "page"));
-    r.check("Der Reiter 'Themen' ist markiert, die anderen nicht", await page.evaluate(() => {
-      const links = [...document.querySelectorAll("#page-themen .subnav a")];
-      return links.length === 3 && links[2].getAttribute("aria-current") === "page" && !links[0].hasAttribute("aria-current");
-    }));
+    r.check("Kopfzeile nennt 'Themen', der Zurück-Pfeil führt zur Taktik", (await page.textContent("#app-titel")) === "Themen" && (await page.getAttribute("#btn-zurueck", "href")) === "#/taktik");
     const info = await page.evaluate(() => {
       const names = (id) => [...document.querySelectorAll(`#${id} .theme-row strong`)].map((e) => e.textContent);
       const rows = [...document.querySelectorAll(".theme-row")];
@@ -31,7 +32,7 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
         einstieg: names("themen-einstieg"),
         weitere: names("themen-weitere"),
         alleMitSatz: rows.every((li) => li.querySelector("p").textContent.length > 20),
-        alleMitKnopf: rows.every((li) => li.querySelector("button").textContent === "Dieses Thema üben"),
+        alleMitKnopf: rows.every((li) => li.querySelector("button").textContent === "Üben"),
         gabel: rows.find((li) => li.querySelector("strong").textContent === "Gabel").querySelector("p").textContent,
       };
     });
@@ -41,11 +42,12 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     r.check("Erklärung der Gabel ist einfaches Deutsch", /zwei gegnerische Figuren/.test(info.gabel), info.gabel);
     r.check("Kein Überlauf, Tippflächen mindestens 44 px", await page.evaluate(() => {
       const ok = document.documentElement.scrollWidth === window.innerWidth;
-      const small = [...document.querySelectorAll("#page-themen a, #page-themen button")].filter((e) => { const b = e.getBoundingClientRect(); return b.width < 43.5 || b.height < 43.5; });
+      const small = [...document.querySelectorAll("#page-themen a, #page-themen button")].filter((e) => e.offsetParent).filter((e) => { const b = e.getBoundingClientRect(); return b.width < 43.5 || b.height < 43.5; });
       return ok && small.length === 0;
     }));
 
     // noch nicht eingestuft: Hinweis, keine Sitzung
+    await setTaktik(page, "d.taktik.staerke = null; d.taktik.eingestuft = false;");
     await page.click('.theme-row button[data-thema="fork"]');
     r.check("Ohne Einstufung: freundlicher Hinweis statt Sitzung", /zuerst deine Stärke ein/.test(await page.textContent("#themen-meldung")) && !(await page.evaluate(() => document.getElementById("page-themen").hidden)));
 

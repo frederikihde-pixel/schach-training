@@ -57,7 +57,7 @@ function renderStart() {
   if (t.eingestuft) {
     info = Object.keys(t.karten).length
       ? `Fällige Wiederholungen: ${due}`
-      : "Noch keine Wiederholungen. Rätsel, die du nicht löst, kommen nach 1, 3, 7 und 21 Tagen wieder.";
+      : "Noch keine Wiederholungen.";
   }
   $("taktik-info").textContent = info;
 
@@ -78,8 +78,6 @@ function renderStart() {
     for (const [tag, label] of themes) select.add(new Option(label, tag));
   }
 
-  const last = t.standort[t.standort.length - 1];
-  $("taktik-standort-info").textContent = last ? `Letzte Standortbestimmung: ${formatDate(last.datum)}.` : "";
 
   warmForOffline();
 }
@@ -196,6 +194,14 @@ export async function startStandortbestimmung(id = "fortgeschritten") {
   });
   autoRun = true;
   location.hash = "#/taktik";
+}
+
+// Wird von der Startseite "Heute" aufgerufen: die angefangene Sitzung (auch Einstufung oder Standortbestimmung) fortsetzen.
+export function fortsetzenSitzung() {
+  if (!taktik().aktiv) return false;
+  autoRun = true;
+  location.hash = "#/taktik";
+  return true;
 }
 
 // Wird vom Rückblick aufgerufen: ein einzelnes eigenes Rätsel üben.

@@ -40,9 +40,9 @@ const { startServer, launch, newPage, reporter } = require("./lib.cjs");
     r.check(`${name}: kein seitliches Überlaufen`, w[0] === w[1], w.join("/"));
   };
   await pruefe("Startseite (mit laufender Partie)", "#/spielen");
-  await pruefe("Meine Partien", "#/spielen/liste");
-  await pruefe("Partie: Einstellungen", "#/spielen/partie");
-  await pruefe("Vorteil: Einstellungen", "#/spielen/vorteil");
+  await pruefe("Fortschritt", "#/fortschritt");
+  await pruefe("Spielen: Partie starten", "#/spielen");
+  await pruefe("Vorteil verwerten", "#/spielen/vorteil");
   await pruefe("Grundmatts: Auswahl", "#/spielen/grundmatt");
   await pruefe("Partie läuft", "#/spielen/lauf", async () => {
     await page.click("#sp-btn-aufgeben");

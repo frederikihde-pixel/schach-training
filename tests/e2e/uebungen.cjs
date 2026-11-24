@@ -1,5 +1,5 @@
 // Grundmatts üben und Vorteil verwerten: Stellungen, Ablauf, Zählung, getrennte Statistik. Echte Engine.
-const { startServer, launch, newPage, tapMove, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, tapMove, reporter, waehle } = require("./lib.cjs");
 
 const spielen = (page) => page.evaluate(async () => JSON.parse(JSON.stringify((await import("./js/storage.js")).store.get().spielen)));
 async function until(page, fn, arg, ms = 20000) {
@@ -54,7 +54,7 @@ async function seedUebung(page, o) {
   // --- Grundmatts: Stellungen gültig (auch im Browser), Seite ---
   await page.goto(url + "index.html#/spielen/grundmatt");
   await page.waitForSelector("#sp-grundmatt:not([hidden])");
-  r.check("Auswahl: zwei Figuren, 10 Stellungen plus 'Nächste Stellung'", (await page.locator("#gm-art option").count()) === 2 && (await page.locator("#gm-stellung option").count()) === 11);
+  r.check("Auswahl: zwei Figuren, 10 Stellungen plus 'Nächste Stellung'", (await page.locator("#gm-art .choice").count()) === 2 && (await page.locator("#gm-stellung option").count()) === 11);
   r.check("Referenz sichtbar: Dame 10 Züge, Turm 16 Züge", /höchstens 10 Zügen/.test(await page.textContent("#gm-info")) && /höchstens 10 Züge/.test(await page.textContent("#sp-grundmatt")) && /16 Züge/.test(await page.textContent("#sp-grundmatt")));
   const gueltig = await page.evaluate(async () => {
     const { GRUNDMATT, pruefeStellung } = await import("./js/uebungen.js");
@@ -70,7 +70,8 @@ async function seedUebung(page, o) {
   r.check("Alle 20 Grundmatt-Stellungen sind gültig (chess.js)", gueltig.length === 20 && gueltig.every(Boolean));
 
   // --- Grundmatt Dame: bis zum Matt spielen ---
-  await page.selectOption("#gm-art", "dame");
+  await waehle(page, "#gm-art", "dame");
+  await page.evaluate(() => { document.getElementById("gm-optionen").open = true; });
   await page.selectOption("#gm-stellung", "3");
   await page.click("#gm-btn-start");
   await page.waitForSelector("#sp-lauf:not([hidden])");
@@ -90,7 +91,8 @@ async function seedUebung(page, o) {
   r.check("'Nächste Stellung' wählt eine noch nicht geübte (Nr. 1)", /Nr\. 1\)/.test(await page.textContent("#gm-stellung option")), await page.textContent("#gm-stellung option"));
 
   // --- Grundmatt Turm: Misserfolge zählen ---
-  await page.selectOption("#gm-art", "turm");
+  await waehle(page, "#gm-art", "turm");
+  await page.evaluate(() => { document.getElementById("gm-optionen").open = true; });
   await page.selectOption("#gm-stellung", "0");
   await page.click("#gm-btn-start");
   await page.waitForSelector("#sp-lauf:not([hidden])");
@@ -135,13 +137,13 @@ async function seedUebung(page, o) {
 
   // --- Vorteil verwerten ---
   await page.goto(url + "index.html#/spielen/vorteil");
-  await page.waitForSelector("#sp-setup:not([hidden])");
-  r.check("Vorteil: Einstellungen mit Art, Farbe, Stufe", (await page.isVisible("#sp-art")) && (await page.locator("#sp-art option").count()) === 3 && (await page.isVisible("#sp-stufe")) && /Eigene Statistik|getrennt/.test(await page.textContent("#sp-setup-text")));
+  await page.waitForSelector("#sp-vorteil:not([hidden])");
+  r.check("Vorteil: Einstellungen mit Art, Farbe, Stufe (große Schalter), getrennte Zählung erklärt", (await page.isVisible("#vt-art")) && (await page.locator("#vt-art .choice").count()) === 3 && (await page.locator("#vt-farbe .choice").count()) === 3 && (await page.locator("#vt-stufe .choice").count()) === 8 && /getrennt/.test(await page.textContent("#sp-vorteil")));
   const partienVorher = (await spielen(page)).partien.length;
-  await page.selectOption("#sp-art", "dame");
-  await page.selectOption("#sp-farbe", "w");
-  await page.selectOption("#sp-stufe", "1");
-  await page.click("#sp-btn-start");
+  await waehle(page, "#vt-art", "dame");
+  await waehle(page, "#vt-farbe", "w");
+  await waehle(page, "#vt-stufe", "1");
+  await page.click("#vt-btn-start");
   await page.waitForSelector("#sp-lauf:not([hidden])");
   let a = (await spielen(page)).aktiv;
   r.check("Startstellung: Computer ohne Dame, Weiß ist komplett", a.startFen === "rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" && a.modus === "vorteil" && a.art === "dame");
@@ -158,11 +160,11 @@ async function seedUebung(page, o) {
 
   // Vorteil als Schwarz, ohne Turm: Computer (Weiß) beginnt
   await page.goto(url + "index.html#/spielen/vorteil");
-  await page.waitForSelector("#sp-setup:not([hidden])");
-  await page.selectOption("#sp-art", "turm");
-  await page.selectOption("#sp-farbe", "b");
-  await page.selectOption("#sp-stufe", "1");
-  await page.click("#sp-btn-start");
+  await page.waitForSelector("#sp-vorteil:not([hidden])");
+  await waehle(page, "#vt-art", "turm");
+  await waehle(page, "#vt-farbe", "b");
+  await waehle(page, "#vt-stufe", "1");
+  await page.click("#vt-btn-start");
   await page.waitForSelector("#sp-lauf:not([hidden])");
   await until(page, async () => ((await import("./js/storage.js")).store.get().spielen.aktiv?.zuege.length || 0) >= 1);
   a = (await spielen(page)).aktiv;

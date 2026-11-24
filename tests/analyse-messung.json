@@ -1,46 +1,46 @@
 {
  "halbzuege": 80,
  "stellungen": 81,
- "startMs": 327,
+ "startMs": 206,
  "varianten": {
   "movetime150": {
-   "gesamtSek": 11.9,
-   "proStellungMs": 147,
-   "langsteMs": 157,
-   "patzer": 1,
+   "gesamtSek": 12.3,
+   "proStellungMs": 152,
+   "langsteMs": 170,
+   "patzer": 0,
    "fehler": 2,
-   "chancen": 0
+   "chancen": 2
   },
   "movetime300": {
-   "gesamtSek": 23.2,
-   "proStellungMs": 287,
-   "langsteMs": 306,
-   "patzer": 1,
+   "gesamtSek": 24.4,
+   "proStellungMs": 301,
+   "langsteMs": 310,
+   "patzer": 0,
    "fehler": 4,
-   "chancen": 0
+   "chancen": 2
   },
   "movetime600": {
-   "gesamtSek": 46,
-   "proStellungMs": 568,
-   "langsteMs": 606,
-   "patzer": 1,
-   "fehler": 6,
-   "chancen": 0
+   "gesamtSek": 48.7,
+   "proStellungMs": 602,
+   "langsteMs": 611,
+   "patzer": 0,
+   "fehler": 4,
+   "chancen": 2
   },
   "tiefe10": {
-   "gesamtSek": 0.8,
-   "proStellungMs": 10,
-   "langsteMs": 51
+   "gesamtSek": 0.9,
+   "proStellungMs": 11,
+   "langsteMs": 68
   },
   "tiefe12": {
-   "gesamtSek": 1.8,
-   "proStellungMs": 22,
-   "langsteMs": 97
+   "gesamtSek": 2.1,
+   "proStellungMs": 26,
+   "langsteMs": 233
   }
  },
  "tiefeBei300ms": {
-  "mittel": 36.9,
-  "min": 14,
-  "max": 245
+  "mittel": 17.1,
+  "min": 15,
+  "max": 20
  }
 }

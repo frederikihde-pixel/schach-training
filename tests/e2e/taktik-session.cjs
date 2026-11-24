@@ -60,6 +60,7 @@ const band = (b) => JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles/ban
     pool.slice(0, 5).forEach((p, i) => (cards[p.id] = card(p, 1, "2026-11-11")));
     await prepare(page, { cards });
     r.check("5 fällige Wiederholungen angezeigt", (await page.textContent("#taktik-info")) === "Fällige Wiederholungen: 5");
+    await page.evaluate(() => { document.getElementById("taktik-optionen").open = true; });
     await page.selectOption("#sel-groesse", "10");
     await page.click("#btn-sitzung");
     await page.waitForSelector("#taktik-lauf:not([hidden])", { timeout: 10000 });
@@ -71,7 +72,7 @@ const band = (b) => JSON.parse(fs.readFileSync(path.join(ROOT, `data/puzzles/ban
     r.check("keine doppelten Rätsel, keine schon gesehenen", new Set(plan.map((i) => i.puzzle.id)).size === 10);
     r.check("Fortschrittsanzeige 'Rätsel 1 von 10' ohne Serien oder Punkte", (await page.textContent("#lauf-fortschritt")) === "Rätsel 1 von 10" && !/Serie|Punkte|Streak/i.test(await page.innerText("#page-taktik")));
     // Fortsetzen nach Verlassen der Seite
-    await page.click("#tab-brett");
+    await page.evaluate(() => { location.hash = "#/einstellungen/brett"; });
     await page.waitForTimeout(300);
     await page.click("#tab-taktik");
     await page.waitForTimeout(400);

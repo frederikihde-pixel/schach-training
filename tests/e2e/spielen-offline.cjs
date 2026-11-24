@@ -1,5 +1,5 @@
 // Offline nach dem ersten Spiel: Die Engine liegt im Zwischenspeicher. Ohne vorherigen Gebrauch: verständliche Meldung.
-const { startServer, launch, newPage, tapMove, reporter } = require("./lib.cjs");
+const { startServer, launch, newPage, tapMove, reporter, waehle } = require("./lib.cjs");
 
 async function until(page, fn, arg, ms = 20000) {
   const t0 = Date.now();
@@ -25,7 +25,8 @@ let arguments_page;
   await page.evaluate(() => navigator.serviceWorker.ready);
   const engineVorher = Object.keys(hits).filter((k) => /stockfish-19.*\.(js|wasm)$/.test(k));
   r.check("Vor dem Spielen ist die Engine nicht geladen", engineVorher.length === 0);
-  await page.selectOption("#sp-stufe", "1");
+  await waehle(page, "#sp-stufe", "1");
+  await page.evaluate(() => { document.getElementById("sp-optionen").open = true; });
   if ((await page.getAttribute("#sp-sw-warnung", "aria-checked")) === "true") await page.click("#sp-sw-warnung");
   await page.click("#sp-btn-start");
   await page.waitForSelector("#sp-lauf:not([hidden])");
@@ -57,8 +58,9 @@ let arguments_page;
   await p2.waitForTimeout(800);
   await p2.evaluate(() => navigator.serviceWorker.ready);
   await c2.setOffline(true);
+  await p2.evaluate(() => { document.getElementById("sp-optionen").open = true; });
   if ((await p2.getAttribute("#sp-sw-warnung", "aria-checked")) === "true") await p2.click("#sp-sw-warnung");
-  await p2.selectOption("#sp-farbe", "b"); // Schwarz: der Computer muss zuerst ziehen
+  await waehle(p2, "#sp-farbe", "b"); // Schwarz: der Computer muss zuerst ziehen
   await p2.click("#sp-btn-start");
   await p2.waitForSelector("#sp-lauf:not([hidden])");
   await p2.waitForSelector("#sp-fehler:not([hidden])", { timeout: 40000 });

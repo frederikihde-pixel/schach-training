@@ -6,7 +6,8 @@ import { puzzleStore } from "../puzzles.js";
 import { themeStats, weakestThemes, sessionsPerWeek, MIN_ATTEMPTS } from "../stats.js";
 import { themeLabel } from "../themes.js";
 import { dayKey } from "../leitner.js";
-import { PRUEFSETS, pruefsetName, recommendedPruefset } from "../pruefsets.js";
+import { PRUEFSETS, pruefsetName } from "../pruefsets.js";
+import { pruefsetStandard } from "../standards.js";
 import { practiceTheme, startStandortbestimmung, startFromStatistik } from "./taktik.js";
 
 const $ = (id) => document.getElementById(id);
@@ -34,7 +35,7 @@ function renderChart(verlauf) {
     return;
   }
   const W = 340;
-  const H = 160;
+  const H = 130;
   const left = 38;
   const right = 10;
   const top = 12;
@@ -142,8 +143,9 @@ function renderThemes(themen) {
 }
 
 async function renderStandort() {
-  const t = taktik();
-  const rec = recommendedPruefset(t.staerke, t.eingestuft);
+  const d = store.get();
+  const t = d.taktik;
+  const satzId = pruefsetStandard(d);
   let anyOk = false;
   const status = {};
 
@@ -152,7 +154,6 @@ async function renderStandort() {
     list.innerHTML = "";
     const entries = t.standort.filter((e) => e.pruefset === info.id);
     $(`stat-standort-leer-${info.id}`).hidden = entries.length > 0;
-    $(`empf-${info.id}`).hidden = rec !== info.id;
 
     let satz = null;
     try {
@@ -172,13 +173,15 @@ async function renderStandort() {
 
   const note = $("stat-standort-meldung");
   const last = t.standort[t.standort.length - 1];
-  for (const info of PRUEFSETS) {
-    $(`btn-standort-${info.id}`).disabled = !!t.aktiv || !status[info.id];
-  }
+  const erinnerung = store.standortReminder();
+  $("btn-standort").disabled = !!t.aktiv || !status[satzId];
+  $("stat-standort-satz").textContent = `${pruefsetName(satzId)}${d.einstellungen.pruefset === null ? " (automatisch gewählt)" : ""}. Du kannst das Prüfset in den Einstellungen ändern.`;
   if (t.aktiv) {
-    note.textContent = "Es läuft gerade eine Sitzung. Beende oder verwirf sie zuerst auf der Seite Üben.";
+    note.textContent = "Es läuft gerade eine Sitzung. Beende oder verwirf sie zuerst auf der Seite Taktik.";
   } else if (!anyOk) {
     note.textContent = "Die Prüfrätsel sind gerade nicht verfügbar (Daten fehlen oder keine Verbindung).";
+  } else if (erinnerung) {
+    note.textContent = `Deine letzte Standortbestimmung (${pruefsetName(erinnerung.pruefset)}) ist vier Wochen her. Wenn du magst, wiederhole sie.`;
   } else {
     note.textContent = last ? `Letzte Standortbestimmung: ${longDate(last.datum)} (${pruefsetName(last.pruefset)}).` : "";
   }
@@ -223,19 +226,17 @@ export function initStatistik() {
     if (aktion === "sitzung-fortsetzen") location.hash = "#/taktik";
     else startFromStatistik(aktion);
   });
-  for (const info of PRUEFSETS) {
-    const button = $(`btn-standort-${info.id}`);
-    button.addEventListener("click", async () => {
-      button.disabled = true;
-      try {
-        await startStandortbestimmung(info.id);
-      } catch (err) {
-        $("stat-standort-meldung").textContent = "Die Prüfrätsel konnten nicht geladen werden.";
-        button.disabled = false;
-      }
-    });
-  }
+  $("btn-standort").addEventListener("click", async () => {
+    const button = $("btn-standort");
+    button.disabled = true;
+    try {
+      await startStandortbestimmung(pruefsetStandard(store.get()));
+    } catch (err) {
+      $("stat-standort-meldung").textContent = "Die Prüfrätsel konnten nicht geladen werden.";
+      button.disabled = false;
+    }
+  });
   document.addEventListener("daten-geaendert", () => {
-    if (!$("page-statistik").hidden) onShowStatistik();
+    if (!$("page-fortschritt").hidden) onShowStatistik();
   });
 }
